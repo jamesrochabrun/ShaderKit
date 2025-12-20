@@ -2,7 +2,7 @@
 //  ShaderKitDemoApp.swift
 //  ShaderKitDemo
 //
-//  Demo app showcasing ShaderKit holographic effects
+//  Created by James Rochabrun on 12/19/25.
 //
 
 import SwiftUI

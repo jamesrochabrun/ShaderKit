@@ -7,7 +7,7 @@
 
 #include <metal_stdlib>
 #include <SwiftUI/SwiftUI_Metal.h>
-#include "../../../SpecialShaders/Shared/ShaderUtilities.metal"
+#include "ShaderUtilities.metal"
 using namespace metal;
 
 [[stitchable]] half4 cardOneHolographic(

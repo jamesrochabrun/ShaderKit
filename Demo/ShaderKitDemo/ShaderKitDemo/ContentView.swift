@@ -2,28 +2,42 @@
 //  ContentView.swift
 //  ShaderKitDemo
 //
-//  Main navigation for ShaderKit demos
+//  Main navigation hub for ShaderKit demos
 //
 
 import SwiftUI
 
 enum DemoCategory: String, CaseIterable, Identifiable {
-    case hologram = "Hologram Cards"
     case specialShaders = "Special Shaders"
+    case hologramCards = "Hologram Cards"
 
     var id: String { rawValue }
 
-    var icon: String {
+    var description: String {
         switch self {
-        case .hologram: return "sparkles.rectangle.stack"
-        case .specialShaders: return "wand.and.stars"
+        case .specialShaders:
+            return "12 Pokemon-style holographic effects"
+        case .hologramCards:
+            return "6 complete card demos with layered effects"
         }
     }
 
-    var description: String {
+    var icon: String {
         switch self {
-        case .hologram: return "6 motion-reactive holographic cards"
-        case .specialShaders: return "12 Pokemon-style card effects"
+        case .specialShaders:
+            return "sparkles"
+        case .hologramCards:
+            return "rectangle.stack.fill"
+        }
+    }
+
+    @ViewBuilder
+    var destination: some View {
+        switch self {
+        case .specialShaders:
+            SpecialShadersDemo()
+        case .hologramCards:
+            HologramDemoView()
         }
     }
 }
@@ -32,11 +46,11 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             List(DemoCategory.allCases) { category in
-                NavigationLink(destination: destinationView(for: category)) {
+                NavigationLink(destination: category.destination) {
                     HStack(spacing: 16) {
                         Image(systemName: category.icon)
                             .font(.title2)
-                            .foregroundStyle(.purple)
+                            .foregroundStyle(.blue)
                             .frame(width: 32)
 
                         VStack(alignment: .leading, spacing: 4) {
@@ -50,17 +64,7 @@ struct ContentView: View {
                     .padding(.vertical, 8)
                 }
             }
-            .navigationTitle("ShaderKit Demo")
-        }
-    }
-
-    @ViewBuilder
-    private func destinationView(for category: DemoCategory) -> some View {
-        switch category {
-        case .hologram:
-            HologramDemoView()
-        case .specialShaders:
-            SpecialShadersDemoView()
+            .navigationTitle("ShaderKit Demos")
         }
     }
 }

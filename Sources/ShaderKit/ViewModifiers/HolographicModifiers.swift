@@ -7,6 +7,12 @@
 
 import SwiftUI
 
+// MARK: - Shader Library Bundle
+
+private let shaderLibrary: ShaderLibrary = {
+  ShaderLibrary.bundle(.module)
+}()
+
 // MARK: - Card Three Holographic Effect
 
 public struct CardThreeHolographicModifier: ViewModifier {
@@ -26,27 +32,27 @@ public struct CardThreeHolographicModifier: ViewModifier {
             .visualEffect { view, proxy in
                 view
                     .layerEffect(
-                        ShaderLibrary.cardThreeFoil(
-                            .float2(proxy.size),
-                            .float2(tilt),
+                        shaderLibrary.cardThreeFoil(
+                            .float2(proxy.size.width, proxy.size.height),
+                            .float2(tilt.x, tilt.y),
                             .float(time),
                             .float(intensity)
                         ),
                         maxSampleOffset: .zero
                     )
                     .layerEffect(
-                        ShaderLibrary.cardThreeGlitter(
-                            .float2(proxy.size),
-                            .float2(tilt),
+                        shaderLibrary.cardThreeGlitter(
+                            .float2(proxy.size.width, proxy.size.height),
+                            .float2(tilt.x, tilt.y),
                             .float(time),
                             .float(50)
                         ),
                         maxSampleOffset: .zero
                     )
                     .layerEffect(
-                        ShaderLibrary.cardThreeSweep(
-                            .float2(proxy.size),
-                            .float2(tilt),
+                        shaderLibrary.cardThreeSweep(
+                            .float2(proxy.size.width, proxy.size.height),
+                            .float2(tilt.x, tilt.y),
                             .float(time)
                         ),
                         maxSampleOffset: .zero
@@ -74,7 +80,7 @@ public struct CardFourHolographicModifier: ViewModifier {
             .visualEffect { view, proxy in
                 view
                     .layerEffect(
-                        ShaderLibrary.cardFourStarburst(
+                        shaderLibrary.cardFourStarburst(
                             .float2(proxy.size),
                             .float2(tilt),
                             .float(time),
@@ -83,7 +89,7 @@ public struct CardFourHolographicModifier: ViewModifier {
                         maxSampleOffset: .zero
                     )
                     .layerEffect(
-                        ShaderLibrary.cardFourSweep(
+                        shaderLibrary.cardFourSweep(
                             .float2(proxy.size),
                             .float2(tilt),
                             .float(time)
@@ -91,7 +97,7 @@ public struct CardFourHolographicModifier: ViewModifier {
                         maxSampleOffset: .zero
                     )
                     .layerEffect(
-                        ShaderLibrary.cardFourGlitter(
+                        shaderLibrary.cardFourGlitter(
                             .float2(proxy.size),
                             .float2(tilt),
                             .float(time),
@@ -124,7 +130,7 @@ public struct CardFiveBackgroundHoloModifier: ViewModifier {
             .visualEffect { view, proxy in
                 view
                     .layerEffect(
-                        ShaderLibrary.cardFiveBlendedHolo(
+                        shaderLibrary.cardFiveBlendedHolo(
                             .float2(proxy.size),
                             .float2(tilt),
                             .float(time),
@@ -152,7 +158,7 @@ public struct CardFiveImageSparklesModifier: ViewModifier {
             .visualEffect { view, proxy in
                 view
                     .layerEffect(
-                        ShaderLibrary.cardFiveSparkles(
+                        shaderLibrary.cardFiveSparkles(
                             .float2(proxy.size),
                             .float2(tilt),
                             .float(time)
@@ -178,7 +184,7 @@ public struct CardFiveSweepModifier: ViewModifier {
             .visualEffect { view, proxy in
                 view
                     .layerEffect(
-                        ShaderLibrary.cardFiveSweep(
+                        shaderLibrary.cardFiveSweep(
                             .float2(proxy.size),
                             .float2(tilt),
                             .float(time)
@@ -210,7 +216,7 @@ public struct CardSixReverseHoloModifier: ViewModifier {
             .visualEffect { view, proxy in
                 view
                     .layerEffect(
-                        ShaderLibrary.cardSixReverseHolo(
+                        shaderLibrary.cardSixReverseHolo(
                             .float2(proxy.size),
                             .float2(tilt),
                             .float(time),
@@ -225,7 +231,7 @@ public struct CardSixReverseHoloModifier: ViewModifier {
                         maxSampleOffset: .zero
                     )
                     .layerEffect(
-                        ShaderLibrary.cardSixSparkle(
+                        shaderLibrary.cardSixSparkle(
                             .float2(proxy.size),
                             .float2(tilt),
                             .float(time),
@@ -239,7 +245,7 @@ public struct CardSixReverseHoloModifier: ViewModifier {
                         maxSampleOffset: .zero
                     )
                     .layerEffect(
-                        ShaderLibrary.cardSixFoilTexture(
+                        shaderLibrary.cardSixFoilTexture(
                             .float2(proxy.size),
                             .float2(tilt),
                             .float4(

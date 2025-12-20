@@ -29,13 +29,21 @@ public struct SimpleCardContent: View {
         self.gradientColors = gradientColors
     }
 
+    private var effectiveGradientColors: [Color] {
+        gradientColors.isEmpty ? [
+            Color(red: 0.2, green: 0.1, blue: 0.3),
+            Color(red: 0.1, green: 0.1, blue: 0.2),
+            Color(red: 0.15, green: 0.05, blue: 0.25)
+        ] : gradientColors
+    }
+
     public var body: some View {
         ZStack {
             // Background gradient
             RoundedRectangle(cornerRadius: 16)
                 .fill(
                     LinearGradient(
-                        colors: gradientColors,
+                        colors: effectiveGradientColors,
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
                     )
@@ -60,7 +68,7 @@ public struct SimpleCardContent: View {
                 Image(image)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: 260, height: 380)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .clipShape(RoundedRectangle(cornerRadius: 8))
                     .padding(.horizontal, 12)
 

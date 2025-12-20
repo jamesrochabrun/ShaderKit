@@ -42,4 +42,8 @@ import SwiftUI
 /// ```
 public enum ShaderKit {
     public static let version = "1.0.0"
+
+    /// The shader library containing all ShaderKit Metal shaders.
+    /// Use this instead of `ShaderLibrary` to ensure shaders are loaded from the correct bundle.
+    public static let shaders: ShaderLibrary = ShaderLibrary.bundle(.module)
 }
