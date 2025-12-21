@@ -15,9 +15,11 @@ struct CardOneView: View {
             height: 380,
             shadowColor: .orange,
             rotationMultiplier: 12
-        ) { tilt, elapsedTime in
+        ) {
             CardOneContent()
-                .cardThreeHolographicEffect(tilt: tilt, time: elapsedTime)
+                .foil()
+                .glitter()
+                .lightSweep()
         }
     }
 }

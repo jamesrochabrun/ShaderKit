@@ -75,7 +75,7 @@ struct CardFourView: View {
             height: cardHeight,
             shadowColor: .yellow,
             rotationMultiplier: 12
-        ) { tilt, elapsedTime in
+        ) {
             CardFourContent(
                 name: "Pikachu",
                 hp: 70,
@@ -90,11 +90,9 @@ struct CardFourView: View {
                 illustrator: "You Iribi",
                 flavorText: "Pikachu that can generate powerful electricity have cheek sacs that are extra soft and super stretchy."
             )
-            .cardFourHolographicEffect(
-                tilt: tilt,
-                time: elapsedTime,
-                intensity: 1.0
-            )
+            .starburst()
+            .radialSweep()
+            .multiGlitter()
         }
     }
 }

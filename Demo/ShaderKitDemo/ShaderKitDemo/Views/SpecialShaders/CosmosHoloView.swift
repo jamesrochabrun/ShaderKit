@@ -17,7 +17,7 @@ struct CosmosHoloView: View {
                 width: 260,
                 height: 380,
                 shadowColor: .purple
-            ) { tilt, elapsedTime in
+            ) {
                 SimpleCardContent(
                     title: "COSMOS HOLO",
                     subtitle: "Galaxy Rare",
@@ -27,18 +27,7 @@ struct CosmosHoloView: View {
                         Color(red: 0.08, green: 0.02, blue: 0.12)
                     ]
                 )
-                .drawingGroup()
-                .visualEffect { content, proxy in
-                    content.layerEffect(
-                        ShaderKit.shaders.cosmosHoloEffect(
-                            .float2(proxy.size),
-                            .float2(tilt),
-                            .float(Float(elapsedTime)),
-                            .float(0.8)
-                        ),
-                        maxSampleOffset: .zero
-                    )
-                }
+                .galaxyHolo(intensity: 0.8)
             }
         }
         .navigationTitle("Cosmos Holo")

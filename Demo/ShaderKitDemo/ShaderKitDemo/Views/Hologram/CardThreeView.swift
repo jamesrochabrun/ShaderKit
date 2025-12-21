@@ -349,7 +349,7 @@ struct CardThreeView: View {
       width: cardWidth,
       height: cardHeight,
       shadowColor: .purple
-    ) { tilt, elapsedTime in
+    ) {
       CardThreeContent(
         name: "Starlight",
         hp: 120,
@@ -371,11 +371,9 @@ struct CardThreeView: View {
         retreatCost: 2,
         rarity: .holoRare
       )
-      .cardThreeHolographicEffect(
-        tilt: tilt,
-        time: elapsedTime,
-        intensity: 1.0
-      )
+      .foil()
+      .glitter()
+      .lightSweep()
     }
   }
 }

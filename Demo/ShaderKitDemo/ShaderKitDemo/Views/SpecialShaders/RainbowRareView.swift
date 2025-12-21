@@ -17,7 +17,7 @@ struct RainbowRareView: View {
                 width: 260,
                 height: 380,
                 shadowColor: .pink
-            ) { tilt, elapsedTime in
+            ) {
                 SimpleCardContent(
                     title: "RAINBOW RARE",
                     subtitle: "Secret Holo",
@@ -27,18 +27,7 @@ struct RainbowRareView: View {
                         Color(red: 0.35, green: 0.2, blue: 0.4)
                     ]
                 )
-                .drawingGroup()
-                .visualEffect { content, proxy in
-                    content.layerEffect(
-                        ShaderKit.shaders.rainbowRareEffect(
-                            .float2(proxy.size),
-                            .float2(tilt),
-                            .float(Float(elapsedTime)),
-                            .float(0.75)
-                        ),
-                        maxSampleOffset: .zero
-                    )
-                }
+                .rainbowGlitter(intensity: 0.75)
             }
         }
         .navigationTitle("Rainbow Rare")

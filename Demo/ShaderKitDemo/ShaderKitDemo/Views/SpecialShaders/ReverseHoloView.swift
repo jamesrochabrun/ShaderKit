@@ -16,25 +16,14 @@ struct ReverseHoloView: View {
                 width: 260,
                 height: 380,
                 shadowColor: .green
-            ) { tilt, elapsedTime in
+            ) {
                 SimpleCardContent(
                     title: "REVERSE HOLO",
                     subtitle: "Non-Rare Holo",
                     image: "lion",
                     gradientColors: []
                 )
-                .drawingGroup()
-                .visualEffect { content, proxy in
-                    content.layerEffect(
-                        ShaderKit.shaders.reverseHoloEffect(
-                            .float2(proxy.size),
-                            .float2(tilt),
-                            .float(Float(elapsedTime)),
-                            .float(0.7)
-                        ),
-                        maxSampleOffset: .zero
-                    )
-                }
+                .invertedFoil(intensity: 0.7)
             }
         }
         .navigationTitle("Reverse Holo")

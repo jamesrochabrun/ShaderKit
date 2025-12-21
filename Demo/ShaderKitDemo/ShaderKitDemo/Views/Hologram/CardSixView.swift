@@ -255,14 +255,11 @@ struct CardSixView: View {
             height: cardHeight,
             shadowColor: .yellow,
             rotationMultiplier: 12
-        ) { tilt, elapsedTime in
+        ) {
             CardSixContent()
-                .cardSixReverseHoloEffect(
-                    tilt: tilt,
-                    time: elapsedTime,
-                    imageWindow: imageWindow,
-                    foilIntensity: 1.0
-                )
+                .maskedFoil(imageWindow: imageWindow)
+                .maskedSparkle(imageWindow: imageWindow)
+                .foilTexture(imageWindow: imageWindow)
         }
     }
 }

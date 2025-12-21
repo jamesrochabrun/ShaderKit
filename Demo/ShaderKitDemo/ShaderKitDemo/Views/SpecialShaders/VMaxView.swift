@@ -17,7 +17,7 @@ struct VMaxView: View {
                 width: 260,
                 height: 380,
                 shadowColor: .blue
-            ) { tilt, elapsedTime in
+            ) {
                 SimpleCardContent(
                     title: "VMAX",
                     subtitle: "Gigantamax Rare",
@@ -27,18 +27,7 @@ struct VMaxView: View {
                         Color(red: 0.12, green: 0.12, blue: 0.22)
                     ]
                 )
-                .drawingGroup()
-                .visualEffect { content, proxy in
-                    content.layerEffect(
-                        ShaderKit.shaders.vmaxEffect(
-                            .float2(proxy.size),
-                            .float2(tilt),
-                            .float(Float(elapsedTime)),
-                            .float(0.7)
-                        ),
-                        maxSampleOffset: .zero
-                    )
-                }
+                .subtleGradient(intensity: 0.7)
             }
         }
         .navigationTitle("VMax")

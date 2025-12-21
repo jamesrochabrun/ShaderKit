@@ -17,7 +17,7 @@ struct VStarView: View {
                 width: 260,
                 height: 380,
                 shadowColor: .yellow
-            ) { tilt, elapsedTime in
+            ) {
                 SimpleCardContent(
                     title: "VSTAR",
                     subtitle: "Star Rare",
@@ -27,18 +27,7 @@ struct VStarView: View {
                         Color(red: 0.28, green: 0.2, blue: 0.12)
                     ]
                 )
-                .drawingGroup()
-                .visualEffect { content, proxy in
-                    content.layerEffect(
-                        ShaderKit.shaders.vstarEffect(
-                            .float2(proxy.size),
-                            .float2(tilt),
-                            .float(Float(elapsedTime)),
-                            .float(0.75)
-                        ),
-                        maxSampleOffset: .zero
-                    )
-                }
+                .radialStar(intensity: 0.75)
             }
         }
         .navigationTitle("VStar")

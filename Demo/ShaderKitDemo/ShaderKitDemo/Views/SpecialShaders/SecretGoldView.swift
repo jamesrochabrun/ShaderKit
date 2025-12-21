@@ -17,7 +17,7 @@ struct SecretGoldView: View {
                 width: 260,
                 height: 380,
                 shadowColor: .yellow
-            ) { tilt, elapsedTime in
+            ) {
                 SimpleCardContent(
                     title: "SECRET GOLD",
                     subtitle: "Secret Rare",
@@ -27,18 +27,7 @@ struct SecretGoldView: View {
                         Color(red: 0.35, green: 0.28, blue: 0.1)
                     ]
                 )
-                .drawingGroup()
-                .visualEffect { content, proxy in
-                    content.layerEffect(
-                        ShaderKit.shaders.secretGoldEffect(
-                            .float2(proxy.size),
-                            .float2(tilt),
-                            .float(Float(elapsedTime)),
-                            .float(0.8)
-                        ),
-                        maxSampleOffset: .zero
-                    )
-                }
+                .goldShimmer(intensity: 0.8)
             }
         }
         .navigationTitle("Secret Gold")

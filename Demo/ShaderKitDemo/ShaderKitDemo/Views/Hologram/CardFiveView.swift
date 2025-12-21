@@ -252,8 +252,6 @@ struct CardFiveBackground: View {
 struct CardFiveSparkleContainer: View {
     let width: CGFloat
     let height: CGFloat
-    let tilt: CGPoint
-    let time: TimeInterval
 
     var body: some View {
         Rectangle()
@@ -269,7 +267,7 @@ struct CardFiveSparkleContainer: View {
             )
             .frame(width: width * 0.88, height: height * 0.41)
             .clipShape(RoundedRectangle(cornerRadius: 6))
-            .cardFiveImageSparkles(tilt: tilt, time: time)
+            .sparkles()
     }
 }
 
@@ -300,23 +298,16 @@ struct CardFiveView: View {
             height: cardHeight,
             shadowColor: .yellow,
             rotationMultiplier: 12
-        ) { tilt, elapsedTime in
+        ) {
             ZStack {
                 // Layer 1: Card background with holo effect
                 CardFiveBackground(width: cardWidth, height: cardHeight)
-                    .cardFiveBackgroundHolo(
-                        tilt: tilt,
-                        time: elapsedTime,
-                        intensity: 0.7,
-                        saturation: 0.75
-                    )
+                    .blendedHolo(intensity: 0.7, saturation: 0.75)
 
                 // Layer 2: Sparkle container
                 CardFiveSparkleContainer(
                     width: cardWidth,
-                    height: cardHeight,
-                    tilt: tilt,
-                    time: elapsedTime
+                    height: cardHeight
                 )
                 .offset(y: -cardHeight * 0.198)
 
@@ -327,7 +318,7 @@ struct CardFiveView: View {
                 )
                 .offset(y: -cardHeight * 0.198)
             }
-            .cardFiveSweep(tilt: tilt, time: elapsedTime)
+            .angledSweep()
         }
     }
 }

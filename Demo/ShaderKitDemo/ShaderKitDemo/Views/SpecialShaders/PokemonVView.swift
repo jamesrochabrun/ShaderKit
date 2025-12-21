@@ -17,7 +17,7 @@ struct PokemonVView: View {
                 width: 260,
                 height: 380,
                 shadowColor: .orange
-            ) { tilt, elapsedTime in
+            ) {
                 SimpleCardContent(
                     title: "POKEMON V",
                     subtitle: "Ultra Rare",
@@ -28,18 +28,7 @@ struct PokemonVView: View {
                         Color(red: 0.25, green: 0.15, blue: 0.1)
                     ]
                 )
-                .drawingGroup()
-                .visualEffect { content, proxy in
-                    content.layerEffect(
-                        ShaderKit.shaders.pokemonVEffect(
-                            .float2(proxy.size),
-                            .float2(tilt),
-                            .float(Float(elapsedTime)),
-                            .float(0.7)
-                        ),
-                        maxSampleOffset: .zero
-                    )
-                }
+                .diagonalHolo(intensity: 0.7)
             }
         }
         .navigationTitle("Pokemon V")

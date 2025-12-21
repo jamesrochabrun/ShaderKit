@@ -17,7 +17,7 @@ struct RegularHoloView: View {
                 width: 260,
                 height: 380,
                 shadowColor: .cyan
-            ) { tilt, elapsedTime in
+            ) {
                 SimpleCardContent(
                     title: "REGULAR HOLO",
                     subtitle: "Holofoil Rare",
@@ -27,18 +27,7 @@ struct RegularHoloView: View {
                         Color(red: 0.2, green: 0.15, blue: 0.35)
                     ]
                 )
-                .drawingGroup()
-                .visualEffect { content, proxy in
-                    content.layerEffect(
-                        ShaderKit.shaders.regularHoloEffect(
-                            .float2(proxy.size),
-                            .float2(tilt),
-                            .float(Float(elapsedTime)),
-                            .float(0.7)
-                        ),
-                        maxSampleOffset: .zero
-                    )
-                }
+                .verticalBeams(intensity: 0.7)
             }
         }
         .navigationTitle("Regular Holo")

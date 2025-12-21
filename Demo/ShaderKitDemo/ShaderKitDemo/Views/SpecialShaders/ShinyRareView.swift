@@ -17,7 +17,7 @@ struct ShinyRareView: View {
                 width: 260,
                 height: 380,
                 shadowColor: .white
-            ) { tilt, elapsedTime in
+            ) {
                 SimpleCardContent(
                     title: "SHINY RARE",
                     subtitle: "Ultra Metallic",
@@ -27,18 +27,7 @@ struct ShinyRareView: View {
                         Color(red: 0.22, green: 0.2, blue: 0.25)
                     ]
                 )
-                .drawingGroup()
-                .visualEffect { content, proxy in
-                    content.layerEffect(
-                        ShaderKit.shaders.shinyRareEffect(
-                            .float2(proxy.size),
-                            .float2(tilt),
-                            .float(Float(elapsedTime)),
-                            .float(0.75)
-                        ),
-                        maxSampleOffset: .zero
-                    )
-                }
+                .metallicCrosshatch(intensity: 0.75)
             }
         }
         .navigationTitle("Shiny Rare")

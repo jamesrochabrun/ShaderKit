@@ -17,7 +17,7 @@ struct RadiantHoloView: View {
                 width: 260,
                 height: 380,
                 shadowColor: .cyan
-            ) { tilt, elapsedTime in
+            ) {
                 SimpleCardContent(
                     title: "RADIANT HOLO",
                     subtitle: "Radiant Rare",
@@ -27,18 +27,7 @@ struct RadiantHoloView: View {
                         Color(red: 0.18, green: 0.15, blue: 0.22)
                     ]
                 )
-                .drawingGroup()
-                .visualEffect { content, proxy in
-                    content.layerEffect(
-                        ShaderKit.shaders.radiantHoloEffect(
-                            .float2(proxy.size),
-                            .float2(tilt),
-                            .float(Float(elapsedTime)),
-                            .float(0.75)
-                        ),
-                        maxSampleOffset: .zero
-                    )
-                }
+                .crisscrossHolo(intensity: 0.75)
             }
         }
         .navigationTitle("Radiant Holo")

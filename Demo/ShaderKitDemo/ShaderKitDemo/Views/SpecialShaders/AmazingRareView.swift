@@ -17,7 +17,7 @@ struct AmazingRareView: View {
                 width: 260,
                 height: 380,
                 shadowColor: .mint
-            ) { tilt, elapsedTime in
+            ) {
                 SimpleCardContent(
                     title: "AMAZING RARE",
                     subtitle: "Amazing Holo",
@@ -27,18 +27,7 @@ struct AmazingRareView: View {
                         Color(red: 0.2, green: 0.2, blue: 0.25)
                     ]
                 )
-                .drawingGroup()
-                .visualEffect { content, proxy in
-                    content.layerEffect(
-                        ShaderKit.shaders.amazingRareEffect(
-                            .float2(proxy.size),
-                            .float2(tilt),
-                            .float(Float(elapsedTime)),
-                            .float(0.8)
-                        ),
-                        maxSampleOffset: .zero
-                    )
-                }
+                .shimmer(intensity: 0.8)
             }
         }
         .navigationTitle("Amazing Rare")

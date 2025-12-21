@@ -17,7 +17,7 @@ struct BasicGlareView: View {
                 width: 260,
                 height: 380,
                 shadowColor: .white
-            ) { tilt, elapsedTime in
+            ) {
                 SimpleCardContent(
                     title: "BASIC GLARE",
                     subtitle: "Common Card",
@@ -27,18 +27,7 @@ struct BasicGlareView: View {
                         Color(red: 0.85, green: 0.8, blue: 0.7)
                     ]
                 )
-                .drawingGroup()
-                .visualEffect { content, proxy in
-                    content.layerEffect(
-                        ShaderKit.shaders.basicGlareEffect(
-                            .float2(proxy.size),
-                            .float2(tilt),
-                            .float(Float(elapsedTime)),
-                            .float(0.8)
-                        ),
-                        maxSampleOffset: .zero
-                    )
-                }
+                .simpleGlare(intensity: 0.8)
             }
         }
         .navigationTitle("Basic Glare")

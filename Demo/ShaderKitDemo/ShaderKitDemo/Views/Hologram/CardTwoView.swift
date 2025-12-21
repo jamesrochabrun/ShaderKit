@@ -15,13 +15,11 @@ struct CardTwoView: View {
             height: 400,
             cornerRadius: 20,
             shadowColor: .orange
-        ) { tilt, elapsedTime in
+        ) {
             CardTwoContent()
-                .cardThreeHolographicEffect(
-                    tilt: tilt,
-                    time: elapsedTime,
-                    intensity: 1.0
-                )
+                .foil()
+                .glitter()
+                .lightSweep()
         }
     }
 }
