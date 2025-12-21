@@ -1,8 +1,8 @@
 //
-//  VStarShader.metal
+//  RadialStarShader.metal
 //  SwiftUIAnimationDemos
 //
-//  V effect with radial mask fade creating starry effect
+//  Radial mask fade creating starry effect
 //  Based on CSS v-star.css
 //
 
@@ -11,7 +11,7 @@
 #include "ShaderUtilities.metal"
 using namespace metal;
 
-[[stitchable]] half4 vstarEffect(
+[[stitchable]] half4 radialStar(
     float2 position,
     SwiftUI::Layer layer,
     float2 size,

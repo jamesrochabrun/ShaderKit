@@ -11,7 +11,7 @@
 #include "ShaderUtilities.metal"
 using namespace metal;
 
-[[stitchable]] half4 regularHoloEffect(
+[[stitchable]] half4 verticalBeams(
     float2 position,
     SwiftUI::Layer layer,
     float2 size,

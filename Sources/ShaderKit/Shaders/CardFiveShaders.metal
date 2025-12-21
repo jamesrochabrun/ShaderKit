@@ -25,7 +25,7 @@ static half3 cardFive_softLight(half3 base, half3 blend) {
 }
 
 // Main blended holographic effect
-[[stitchable]] half4 cardFiveBlendedHolo(
+[[stitchable]] half4 blendedHolo(
     float2 position,
     SwiftUI::Layer layer,
     float2 size,
@@ -146,7 +146,7 @@ static half3 cardFive_softLight(half3 base, half3 blend) {
 }
 
 // Additional shimmer/sparkle layer
-[[stitchable]] half4 cardFiveSparkles(
+[[stitchable]] half4 sparkles(
     float2 position,
     SwiftUI::Layer layer,
     float2 size,
@@ -194,7 +194,7 @@ static half3 cardFive_softLight(half3 base, half3 blend) {
 }
 
 // Light sweep effect
-[[stitchable]] half4 cardFiveSweep(
+[[stitchable]] half4 angledSweep(
     float2 position,
     SwiftUI::Layer layer,
     float2 size,
@@ -239,7 +239,7 @@ static half3 cardFive_softLight(half3 base, half3 blend) {
 // ============================================
 
 // Simple glare effect for image - just moving light, no rainbow
-[[stitchable]] half4 cardFiveImageGlare(
+[[stitchable]] half4 glare(
     float2 position,
     SwiftUI::Layer layer,
     float2 size,
@@ -276,7 +276,7 @@ static half3 cardFive_softLight(half3 base, half3 blend) {
 }
 
 // Subtle edge shine for image frame
-[[stitchable]] half4 cardFiveImageEdgeShine(
+[[stitchable]] half4 edgeShine(
     float2 position,
     SwiftUI::Layer layer,
     float2 size,

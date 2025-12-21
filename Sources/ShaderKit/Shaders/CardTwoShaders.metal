@@ -10,7 +10,7 @@
 #include "ShaderUtilities.metal"
 using namespace metal;
 
-[[stitchable]] half4 cardTwoHolographic(
+[[stitchable]] half4 intenseBling(
     float2 position,
     SwiftUI::Layer layer,
     float2 size,

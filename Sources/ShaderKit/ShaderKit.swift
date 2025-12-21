@@ -82,9 +82,9 @@ import SwiftUI
 ///     .shader(.glitter(density: 75))
 /// ```
 public enum ShaderKit {
-    public static let version = "2.0.0"
-
-    /// The shader library containing all ShaderKit Metal shaders.
-    /// Use this instead of `ShaderLibrary` to ensure shaders are loaded from the correct bundle.
-    public static let shaders: ShaderLibrary = ShaderLibrary.bundle(.module)
+  public static let version = "2.0.0"
+  
+  /// The shader library containing all ShaderKit Metal shaders.
+  /// Use this instead of `ShaderLibrary` to ensure shaders are loaded from the correct bundle.
+  public static let shaders: ShaderLibrary = ShaderLibrary.bundle(.module)
 }

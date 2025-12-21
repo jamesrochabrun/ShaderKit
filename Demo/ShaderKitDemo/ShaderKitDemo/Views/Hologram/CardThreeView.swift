@@ -20,23 +20,23 @@ struct CardThreeContent: View {
   let resistance: CardThreePokemonType?
   let retreatCost: Int
   let rarity: CardThreeRarity
-
+  
   var body: some View {
     GeometryReader { geometry in
       let cardWidth = geometry.size.width
       let cardHeight = geometry.size.height
-
+      
       ZStack {
         // Card background with type gradient
         type.gradient
-
+        
         // Pokemon image as background
-        Image("poodle")
+        Image("unicorn")
           .resizable()
           .aspectRatio(contentMode: .fill)
           .frame(width: cardWidth, height: cardHeight)
           .clipped()
-
+        
         // Gradient overlays for readability
         VStack(spacing: 0) {
           LinearGradient(
@@ -49,9 +49,9 @@ struct CardThreeContent: View {
             endPoint: .bottom
           )
           .frame(height: cardHeight * 0.18)
-
+          
           Spacer()
-
+          
           LinearGradient(
             colors: [
               .clear,
@@ -63,7 +63,7 @@ struct CardThreeContent: View {
           )
           .frame(height: cardHeight * 0.45)
         }
-
+        
         // Card content overlay
         VStack(spacing: 0) {
           // Header with name and HP
@@ -72,9 +72,9 @@ struct CardThreeContent: View {
               .font(.system(size: cardWidth * 0.08, weight: .bold))
               .foregroundStyle(.white)
               .shadow(color: .black.opacity(0.5), radius: 2, x: 0, y: 1)
-
+            
             Spacer()
-
+            
             HStack(spacing: 4) {
               Text("HP")
                 .font(.system(size: cardWidth * 0.04, weight: .medium))
@@ -83,7 +83,7 @@ struct CardThreeContent: View {
             }
             .foregroundStyle(.white)
             .shadow(color: .black.opacity(0.5), radius: 2, x: 0, y: 1)
-
+            
             type.icon
               .resizable()
               .frame(width: cardWidth * 0.09, height: cardWidth * 0.09)
@@ -91,7 +91,7 @@ struct CardThreeContent: View {
           }
           .padding(.horizontal, cardWidth * 0.05)
           .padding(.top, cardHeight * 0.03)
-
+          
           // Stage indicator
           HStack {
             Text("BASIC")
@@ -100,9 +100,9 @@ struct CardThreeContent: View {
               .padding(.horizontal, 10)
               .padding(.vertical, 4)
               .background(Capsule().fill(.black.opacity(0.4)))
-
+            
             Spacer()
-
+            
             rarity.symbol
               .font(.system(size: cardWidth * 0.05))
               .foregroundStyle(rarity.color)
@@ -110,22 +110,22 @@ struct CardThreeContent: View {
           }
           .padding(.horizontal, cardWidth * 0.05)
           .padding(.top, 6)
-
+          
           Spacer()
-
+          
           // Bottom info panel
           VStack(spacing: cardHeight * 0.015) {
             VStack(spacing: cardHeight * 0.012) {
               CardThreeAttackRow(attack: attack1, cardWidth: cardWidth)
-
+              
               Rectangle()
                 .fill(.white.opacity(0.2))
                 .frame(height: 1)
                 .padding(.horizontal, cardWidth * 0.04)
-
+              
               CardThreeAttackRow(attack: attack2, cardWidth: cardWidth)
             }
-
+            
             // Bottom stats
             HStack {
               VStack(spacing: 2) {
@@ -141,9 +141,9 @@ struct CardThreeContent: View {
                 }
                 .foregroundStyle(.white)
               }
-
+              
               Spacer()
-
+              
               VStack(spacing: 2) {
                 Text("resistance")
                   .font(.system(size: cardWidth * 0.025))
@@ -163,9 +163,9 @@ struct CardThreeContent: View {
                     .foregroundStyle(.white)
                 }
               }
-
+              
               Spacer()
-
+              
               VStack(spacing: 2) {
                 Text("retreat cost")
                   .font(.system(size: cardWidth * 0.025))
@@ -184,7 +184,7 @@ struct CardThreeContent: View {
           }
           .padding(.bottom, cardHeight * 0.03)
         }
-
+        
         // Card border
         RoundedRectangle(cornerRadius: 16)
           .strokeBorder(
@@ -210,7 +210,7 @@ struct CardThreeContent: View {
 struct CardThreeAttackRow: View {
   let attack: CardThreeAttack
   let cardWidth: CGFloat
-
+  
   var body: some View {
     HStack(alignment: .top, spacing: 8) {
       HStack(spacing: 2) {
@@ -221,7 +221,7 @@ struct CardThreeAttackRow: View {
         }
       }
       .frame(width: cardWidth * 0.15, alignment: .leading)
-
+      
       VStack(alignment: .leading, spacing: 2) {
         Text(attack.name)
           .font(.system(size: cardWidth * 0.045, weight: .bold))
@@ -232,9 +232,9 @@ struct CardThreeAttackRow: View {
         }
       }
       .foregroundStyle(.white)
-
+      
       Spacer()
-
+      
       Text("\(attack.damage)")
         .font(.system(size: cardWidth * 0.06, weight: .bold))
         .foregroundStyle(.white)
@@ -247,7 +247,7 @@ struct CardThreeAttackRow: View {
 
 enum CardThreePokemonType: String, CaseIterable {
   case fire, water, grass, electric, psychic, fighting, dark, steel, dragon, fairy, normal
-
+  
   var primaryColor: Color {
     switch self {
     case .fire: return .orange
@@ -263,7 +263,7 @@ enum CardThreePokemonType: String, CaseIterable {
     case .normal: return Color(red: 0.6, green: 0.6, blue: 0.5)
     }
   }
-
+  
   var secondaryColor: Color {
     switch self {
     case .fire: return .red
@@ -279,7 +279,7 @@ enum CardThreePokemonType: String, CaseIterable {
     case .normal: return .brown
     }
   }
-
+  
   var gradient: LinearGradient {
     LinearGradient(
       colors: [primaryColor, secondaryColor, primaryColor.opacity(0.8)],
@@ -287,7 +287,7 @@ enum CardThreePokemonType: String, CaseIterable {
       endPoint: .bottomTrailing
     )
   }
-
+  
   var icon: Image {
     switch self {
     case .fire: return Image(systemName: "flame.fill")
@@ -314,7 +314,7 @@ struct CardThreeAttack {
 
 enum CardThreeRarity {
   case common, uncommon, rare, holoRare, ultraRare, secretRare
-
+  
   var symbol: Image {
     switch self {
     case .common: return Image(systemName: "circle.fill")
@@ -325,7 +325,7 @@ enum CardThreeRarity {
     case .secretRare: return Image(systemName: "crown.fill")
     }
   }
-
+  
   var color: Color {
     switch self {
     case .common: return .black
@@ -343,7 +343,7 @@ enum CardThreeRarity {
 struct CardThreeView: View {
   private let cardWidth: CGFloat = 280
   private var cardHeight: CGFloat { cardWidth * 1.4 }
-
+  
   var body: some View {
     HolographicCardContainer(
       width: cardWidth,

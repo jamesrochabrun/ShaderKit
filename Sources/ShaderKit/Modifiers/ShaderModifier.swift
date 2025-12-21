@@ -76,7 +76,7 @@ private func applyEffect<V: VisualEffect>(
     
   case .foil(let intensity):
     return view.layerEffect(
-      shaders.cardThreeFoil(
+      shaders.foil(
         .float2(size.width, size.height),
         .float2(tilt.x, tilt.y),
         .float(time),
@@ -87,7 +87,7 @@ private func applyEffect<V: VisualEffect>(
     
   case .invertedFoil(let intensity):
     return view.layerEffect(
-      shaders.reverseHoloEffect(
+      shaders.invertedFoil(
         .float2(size.width, size.height),
         .float2(tilt.x, tilt.y),
         .float(time),
@@ -98,7 +98,7 @@ private func applyEffect<V: VisualEffect>(
     
   case .maskedFoil(let imageWindow, let intensity):
     return view.layerEffect(
-      shaders.cardSixReverseHolo(
+      shaders.maskedFoil(
         .float2(size.width, size.height),
         .float2(tilt.x, tilt.y),
         .float(time),
@@ -110,7 +110,7 @@ private func applyEffect<V: VisualEffect>(
     
   case .foilTexture(let imageWindow):
     return view.layerEffect(
-      shaders.cardSixFoilTexture(
+      shaders.foilTexture(
         .float2(size.width, size.height),
         .float2(tilt.x, tilt.y),
         .float4(imageWindow.x, imageWindow.y, imageWindow.z, imageWindow.w)
@@ -122,7 +122,7 @@ private func applyEffect<V: VisualEffect>(
     
   case .glitter(let density):
     return view.layerEffect(
-      shaders.cardThreeGlitter(
+      shaders.glitter(
         .float2(size.width, size.height),
         .float2(tilt.x, tilt.y),
         .float(time),
@@ -133,7 +133,7 @@ private func applyEffect<V: VisualEffect>(
     
   case .multiGlitter(let density):
     return view.layerEffect(
-      shaders.cardFourGlitter(
+      shaders.multiGlitter(
         .float2(size.width, size.height),
         .float2(tilt.x, tilt.y),
         .float(time),
@@ -144,7 +144,7 @@ private func applyEffect<V: VisualEffect>(
     
   case .sparkles:
     return view.layerEffect(
-      shaders.cardFiveSparkles(
+      shaders.sparkles(
         .float2(size.width, size.height),
         .float2(tilt.x, tilt.y),
         .float(time)
@@ -154,7 +154,7 @@ private func applyEffect<V: VisualEffect>(
     
   case .maskedSparkle(let imageWindow):
     return view.layerEffect(
-      shaders.cardSixSparkle(
+      shaders.maskedSparkle(
         .float2(size.width, size.height),
         .float2(tilt.x, tilt.y),
         .float(time),
@@ -165,7 +165,7 @@ private func applyEffect<V: VisualEffect>(
     
   case .rainbowGlitter(let intensity):
     return view.layerEffect(
-      shaders.rainbowRareEffect(
+      shaders.rainbowGlitter(
         .float2(size.width, size.height),
         .float2(tilt.x, tilt.y),
         .float(time),
@@ -176,7 +176,7 @@ private func applyEffect<V: VisualEffect>(
     
   case .shimmer(let intensity):
     return view.layerEffect(
-      shaders.amazingRareEffect(
+      shaders.shimmer(
         .float2(size.width, size.height),
         .float2(tilt.x, tilt.y),
         .float(time),
@@ -187,7 +187,7 @@ private func applyEffect<V: VisualEffect>(
     
   case .goldShimmer(let intensity):
     return view.layerEffect(
-      shaders.secretGoldEffect(
+      shaders.goldShimmer(
         .float2(size.width, size.height),
         .float2(tilt.x, tilt.y),
         .float(time),
@@ -200,7 +200,7 @@ private func applyEffect<V: VisualEffect>(
     
   case .lightSweep:
     return view.layerEffect(
-      shaders.cardThreeSweep(
+      shaders.lightSweep(
         .float2(size.width, size.height),
         .float2(tilt.x, tilt.y),
         .float(time)
@@ -210,7 +210,7 @@ private func applyEffect<V: VisualEffect>(
     
   case .radialSweep:
     return view.layerEffect(
-      shaders.cardFourSweep(
+      shaders.radialSweep(
         .float2(size.width, size.height),
         .float2(tilt.x, tilt.y),
         .float(time)
@@ -220,7 +220,7 @@ private func applyEffect<V: VisualEffect>(
     
   case .angledSweep:
     return view.layerEffect(
-      shaders.cardFiveSweep(
+      shaders.angledSweep(
         .float2(size.width, size.height),
         .float2(tilt.x, tilt.y),
         .float(time)
@@ -230,7 +230,7 @@ private func applyEffect<V: VisualEffect>(
     
   case .glare(let intensity):
     return view.layerEffect(
-      shaders.cardFiveImageGlare(
+      shaders.glare(
         .float2(size.width, size.height),
         .float2(tilt.x, tilt.y),
         .float(intensity)
@@ -240,7 +240,7 @@ private func applyEffect<V: VisualEffect>(
     
   case .simpleGlare(let intensity):
     return view.layerEffect(
-      shaders.basicGlareEffect(
+      shaders.simpleGlare(
         .float2(size.width, size.height),
         .float2(tilt.x, tilt.y),
         .float(time),
@@ -251,7 +251,7 @@ private func applyEffect<V: VisualEffect>(
     
   case .edgeShine:
     return view.layerEffect(
-      shaders.cardFiveImageEdgeShine(
+      shaders.edgeShine(
         .float2(size.width, size.height),
         .float2(tilt.x, tilt.y)
       ),
@@ -262,7 +262,7 @@ private func applyEffect<V: VisualEffect>(
     
   case .diamondGrid(let intensity):
     return view.layerEffect(
-      shaders.cardOneHolographic(
+      shaders.diamondGrid(
         .float2(size.width, size.height),
         .float2(tilt.x, tilt.y),
         .float(time),
@@ -273,7 +273,7 @@ private func applyEffect<V: VisualEffect>(
     
   case .intenseBling:
     return view.layerEffect(
-      shaders.cardTwoHolographic(
+      shaders.intenseBling(
         .float2(size.width, size.height),
         .float2(tilt.x, tilt.y),
         .float(time)
@@ -283,7 +283,7 @@ private func applyEffect<V: VisualEffect>(
     
   case .starburst(let intensity):
     return view.layerEffect(
-      shaders.cardFourStarburst(
+      shaders.starburst(
         .float2(size.width, size.height),
         .float2(tilt.x, tilt.y),
         .float(time),
@@ -294,7 +294,7 @@ private func applyEffect<V: VisualEffect>(
     
   case .blendedHolo(let intensity, let saturation):
     return view.layerEffect(
-      shaders.cardFiveBlendedHolo(
+      shaders.blendedHolo(
         .float2(size.width, size.height),
         .float2(tilt.x, tilt.y),
         .float(time),
@@ -306,7 +306,7 @@ private func applyEffect<V: VisualEffect>(
     
   case .verticalBeams(let intensity):
     return view.layerEffect(
-      shaders.regularHoloEffect(
+      shaders.verticalBeams(
         .float2(size.width, size.height),
         .float2(tilt.x, tilt.y),
         .float(time),
@@ -317,7 +317,7 @@ private func applyEffect<V: VisualEffect>(
     
   case .diagonalHolo(let intensity):
     return view.layerEffect(
-      shaders.pokemonVEffect(
+      shaders.diagonalHolo(
         .float2(size.width, size.height),
         .float2(tilt.x, tilt.y),
         .float(time),
@@ -328,7 +328,7 @@ private func applyEffect<V: VisualEffect>(
     
   case .crisscrossHolo(let intensity):
     return view.layerEffect(
-      shaders.radiantHoloEffect(
+      shaders.crisscrossHolo(
         .float2(size.width, size.height),
         .float2(tilt.x, tilt.y),
         .float(time),
@@ -339,7 +339,7 @@ private func applyEffect<V: VisualEffect>(
     
   case .galaxyHolo(let intensity):
     return view.layerEffect(
-      shaders.cosmosHoloEffect(
+      shaders.galaxyHolo(
         .float2(size.width, size.height),
         .float2(tilt.x, tilt.y),
         .float(time),
@@ -350,7 +350,7 @@ private func applyEffect<V: VisualEffect>(
     
   case .radialStar(let intensity):
     return view.layerEffect(
-      shaders.vstarEffect(
+      shaders.radialStar(
         .float2(size.width, size.height),
         .float2(tilt.x, tilt.y),
         .float(time),
@@ -361,7 +361,7 @@ private func applyEffect<V: VisualEffect>(
     
   case .subtleGradient(let intensity):
     return view.layerEffect(
-      shaders.vmaxEffect(
+      shaders.subtleGradient(
         .float2(size.width, size.height),
         .float2(tilt.x, tilt.y),
         .float(time),
@@ -372,7 +372,7 @@ private func applyEffect<V: VisualEffect>(
     
   case .metallicCrosshatch(let intensity):
     return view.layerEffect(
-      shaders.shinyRareEffect(
+      shaders.metallicCrosshatch(
         .float2(size.width, size.height),
         .float2(tilt.x, tilt.y),
         .float(time),

@@ -43,7 +43,7 @@ static half3 cosmos_galaxy(float2 uv, float time) {
     return nebula;
 }
 
-[[stitchable]] half4 cosmosHoloEffect(
+[[stitchable]] half4 galaxyHolo(
     float2 position,
     SwiftUI::Layer layer,
     float2 size,

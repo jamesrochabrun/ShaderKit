@@ -19,7 +19,7 @@ static half3 cardThree_rainbow(float angle, float intensity) {
 }
 
 // Holographic foil effect
-[[stitchable]] half4 cardThreeFoil(
+[[stitchable]] half4 foil(
     float2 position,
     SwiftUI::Layer layer,
     float2 size,
@@ -66,7 +66,7 @@ static half3 cardThree_rainbow(float angle, float intensity) {
 }
 
 // Glitter sparkle effect
-[[stitchable]] half4 cardThreeGlitter(
+[[stitchable]] half4 glitter(
     float2 position,
     SwiftUI::Layer layer,
     float2 size,
@@ -112,7 +112,7 @@ static half3 cardThree_rainbow(float angle, float intensity) {
 }
 
 // Light sweep effect
-[[stitchable]] half4 cardThreeSweep(
+[[stitchable]] half4 lightSweep(
     float2 position,
     SwiftUI::Layer layer,
     float2 size,

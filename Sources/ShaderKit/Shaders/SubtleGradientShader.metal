@@ -1,5 +1,5 @@
 //
-//  VMaxShader.metal
+//  SubtleGradientShader.metal
 //  SwiftUIAnimationDemos
 //
 //  Large-scale subtle gradient with pronounced texture
@@ -11,7 +11,7 @@
 #include "ShaderUtilities.metal"
 using namespace metal;
 
-[[stitchable]] half4 vmaxEffect(
+[[stitchable]] half4 subtleGradient(
     float2 position,
     SwiftUI::Layer layer,
     float2 size,

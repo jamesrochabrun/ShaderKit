@@ -10,7 +10,7 @@
 #include "ShaderUtilities.metal"
 using namespace metal;
 
-[[stitchable]] half4 cardOneHolographic(
+[[stitchable]] half4 diamondGrid(
     float2 position,
     SwiftUI::Layer layer,
     float2 size,

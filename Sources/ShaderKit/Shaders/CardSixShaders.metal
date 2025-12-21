@@ -15,7 +15,7 @@ using namespace metal;
 
 // Main reverse holo effect
 // imageWindow: x=minX, y=minY, z=maxX, w=maxY (in UV 0-1 space)
-[[stitchable]] half4 cardSixReverseHolo(
+[[stitchable]] half4 maskedFoil(
     float2 position,
     SwiftUI::Layer layer,
     float2 size,
@@ -114,7 +114,7 @@ using namespace metal;
 }
 
 // Sparkle overlay for foil areas
-[[stitchable]] half4 cardSixSparkle(
+[[stitchable]] half4 maskedSparkle(
     float2 position,
     SwiftUI::Layer layer,
     float2 size,
@@ -162,7 +162,7 @@ using namespace metal;
 }
 
 // Foil texture pattern (optional fine detail)
-[[stitchable]] half4 cardSixFoilTexture(
+[[stitchable]] half4 foilTexture(
     float2 position,
     SwiftUI::Layer layer,
     float2 size,

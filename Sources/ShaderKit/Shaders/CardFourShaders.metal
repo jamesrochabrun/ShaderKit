@@ -12,7 +12,7 @@
 using namespace metal;
 
 // Main starburst holographic effect
-[[stitchable]] half4 cardFourStarburst(
+[[stitchable]] half4 starburst(
     float2 position,
     SwiftUI::Layer layer,
     float2 size,
@@ -173,7 +173,7 @@ using namespace metal;
 }
 
 // Radial light sweep effect
-[[stitchable]] half4 cardFourSweep(
+[[stitchable]] half4 radialSweep(
     float2 position,
     SwiftUI::Layer layer,
     float2 size,
@@ -216,7 +216,7 @@ using namespace metal;
 }
 
 // Glitter overlay effect
-[[stitchable]] half4 cardFourGlitter(
+[[stitchable]] half4 multiGlitter(
     float2 position,
     SwiftUI::Layer layer,
     float2 size,

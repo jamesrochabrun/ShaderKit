@@ -11,7 +11,7 @@
 #include "ShaderUtilities.metal"
 using namespace metal;
 
-[[stitchable]] half4 rainbowRareEffect(
+[[stitchable]] half4 rainbowGlitter(
     float2 position,
     SwiftUI::Layer layer,
     float2 size,

@@ -11,7 +11,7 @@
 #include "ShaderUtilities.metal"
 using namespace metal;
 
-[[stitchable]] half4 reverseHoloEffect(
+[[stitchable]] half4 invertedFoil(
     float2 position,
     SwiftUI::Layer layer,
     float2 size,

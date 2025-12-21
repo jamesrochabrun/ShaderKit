@@ -11,7 +11,7 @@
 #include "ShaderUtilities.metal"
 using namespace metal;
 
-[[stitchable]] half4 shinyRareEffect(
+[[stitchable]] half4 metallicCrosshatch(
     float2 position,
     SwiftUI::Layer layer,
     float2 size,

@@ -10,7 +10,7 @@
 #include <SwiftUI/SwiftUI_Metal.h>
 using namespace metal;
 
-[[stitchable]] half4 basicGlareEffect(
+[[stitchable]] half4 simpleGlare(
     float2 position,
     SwiftUI::Layer layer,
     float2 size,
