@@ -1,14 +1,14 @@
 //
-//  CardOneView.swift
+//  FoilGlitterSweepView.swift
 //  ShaderKitDemo
 //
-//  Dragon holographic card with foil, glitter, and sweep effects
+//  Holographic card with foil, glitter, and sweep effects
 //
 
 import SwiftUI
 import ShaderKit
 
-struct CardOneView: View {
+struct FoilGlitterSweepView: View {
   var body: some View {
     HolographicCardContainer(
       width: 260,
@@ -16,7 +16,7 @@ struct CardOneView: View {
       shadowColor: .orange,
       rotationMultiplier: 12
     ) {
-      CardOneContent()
+      FoilGlitterSweepContent()
         .foil()
         .glitter()
         .lightSweep()
@@ -26,10 +26,10 @@ struct CardOneView: View {
 
 // MARK: - Card Content
 
-private struct CardOneContent: View {
+private struct FoilGlitterSweepContent: View {
   var body: some View {
     ZStack {
-      // Card background - golden/yellow Pokemon card style
+      // Card background - golden style
       RoundedRectangle(cornerRadius: 16)
         .fill(
           LinearGradient(
@@ -42,137 +42,137 @@ private struct CardOneContent: View {
             endPoint: .bottomTrailing
           )
         )
-      
-      // Dragon artwork - full bleed background
+
+      // Artwork - full bleed background
       Image("unicorn")
         .resizable()
         .aspectRatio(contentMode: .fit)
         .frame(width: 260, height: 380)
         .clipped()
-      
+
       VStack(spacing: 0) {
-        // Header: Name + HP
+        // Header
         HStack(alignment: .top) {
           HStack(spacing: 4) {
-            Text("STAGE 2")
+            Text("COMBO")
               .font(.system(size: 9, weight: .bold))
               .padding(.horizontal, 5)
               .padding(.vertical, 2)
               .background(.black.opacity(0.7))
               .foregroundStyle(.white)
               .clipShape(RoundedRectangle(cornerRadius: 3))
-            
-            Text("Charizard")
+
+            Text("Triple Effect")
               .font(.system(size: 18, weight: .bold))
               .foregroundStyle(.black)
           }
-          
+
           Spacer()
-          
+
           HStack(spacing: 2) {
-            Text("HP")
+            Text("LV")
               .font(.system(size: 12, weight: .medium))
             Text("180")
               .font(.system(size: 20, weight: .bold))
-            Image(systemName: "flame.fill")
+            Image(systemName: "sparkles")
               .font(.system(size: 14))
               .foregroundStyle(.orange)
           }
-          .foregroundStyle(.red)
+          .foregroundStyle(.black)
         }
         .padding(.horizontal, 12)
         .padding(.top, 10)
-        
-        // Pokemon info line
-        Text("NO.006  Charizard  HT: 5'7\"  WT: 200 lbs")
+
+        // Info line
+        Text("Foil + Glitter + Light Sweep Combined")
           .font(.system(size: 8))
           .foregroundStyle(.black.opacity(0.5))
           .padding(.top, 4)
-        
+
         Spacer()
-        
-        // Ability section
+
+        // Effect section
         VStack(alignment: .leading, spacing: 4) {
           HStack {
-            Text("Ability")
+            Text("Effect")
               .font(.system(size: 10, weight: .bold))
               .foregroundStyle(.white)
               .padding(.horizontal, 8)
               .padding(.vertical, 3)
-              .background(.red)
+              .background(.orange)
               .clipShape(RoundedRectangle(cornerRadius: 4))
-            
-            Text("Blazing Aura")
+
+            Text("Foil Overlay")
               .font(.system(size: 14, weight: .bold))
               .foregroundStyle(.black)
           }
-          Text("Once during your turn, you may attach a Fire Energy from your discard pile to this Pokemon.")
+          Text("Rainbow iridescent layer that shifts color based on viewing angle and tilt position.")
             .font(.system(size: 9))
             .foregroundStyle(.black.opacity(0.8))
             .lineLimit(2)
         }
         .padding(.horizontal, 12)
-        
-        // Attack section
+
+        // Effect row
         HStack {
           HStack(spacing: 2) {
-            Image(systemName: "flame.fill")
+            Image(systemName: "sparkle")
               .font(.system(size: 12))
               .foregroundStyle(.orange)
-            Image(systemName: "flame.fill")
+            Image(systemName: "sparkle")
               .font(.system(size: 12))
               .foregroundStyle(.orange)
             Image(systemName: "circle.fill")
               .font(.system(size: 12))
               .foregroundStyle(.gray.opacity(0.5))
           }
-          
-          Text("Fire Blast")
+
+          Text("Glitter Burst")
             .font(.system(size: 14, weight: .bold))
             .foregroundStyle(.black)
             .padding(.leading, 8)
-          
+
           Spacer()
-          
+
           Text("150")
             .font(.system(size: 22, weight: .bold))
             .foregroundStyle(.black)
         }
         .padding(.horizontal, 12)
         .padding(.top, 8)
-        
+
         Divider()
           .padding(.horizontal, 12)
           .padding(.top, 8)
-        
-        // Footer: Weakness, Resistance, Retreat
+
+        // Stats
         HStack {
           HStack(spacing: 4) {
-            Text("weakness")
+            Text("intensity")
               .font(.system(size: 8))
-            Image(systemName: "drop.fill")
+            Image(systemName: "wand.and.stars")
               .font(.system(size: 10))
               .foregroundStyle(.blue)
             Text("x2")
               .font(.system(size: 10, weight: .bold))
           }
-          
+
           Spacer()
-          
+
           HStack(spacing: 4) {
-            Text("resistance")
+            Text("blend")
               .font(.system(size: 8))
-            Image(systemName: "leaf.fill")
+            Image(systemName: "circle.hexagongrid.fill")
               .font(.system(size: 10))
               .foregroundStyle(.green)
             Text("-30")
               .font(.system(size: 10, weight: .bold))
           }
-          
+
           Spacer()
-          
+
           HStack(spacing: 4) {
-            Text("retreat")
+            Text("layers")
               .font(.system(size: 8))
             Image(systemName: "circle.fill")
               .font(.system(size: 8))
@@ -185,16 +185,16 @@ private struct CardOneContent: View {
         .foregroundStyle(.black.opacity(0.7))
         .padding(.horizontal, 12)
         .padding(.top, 6)
-        
-        // Flavor text
-        Text("It spits fire that is hot enough to melt boulders. It may cause forest fires by blowing flames.")
+
+        // Description
+        Text("Combined foil, glitter and light sweep effects create a premium holographic appearance.")
           .font(.system(size: 8).italic())
           .foregroundStyle(.black.opacity(0.6))
           .multilineTextAlignment(.center)
           .padding(.horizontal, 20)
           .padding(.vertical, 8)
       }
-      
+
       // Card border
       RoundedRectangle(cornerRadius: 16)
         .strokeBorder(
@@ -216,6 +216,6 @@ private struct CardOneContent: View {
 #Preview {
   ZStack {
     Color.black.ignoresSafeArea()
-    CardOneView()
+    FoilGlitterSweepView()
   }
 }

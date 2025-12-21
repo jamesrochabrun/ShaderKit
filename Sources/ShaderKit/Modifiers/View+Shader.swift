@@ -100,13 +100,7 @@ public extension View {
   func shimmer(intensity: Double = 0.7) -> some View {
     shader(.shimmer(intensity: intensity))
   }
-  
-  /// Apply shimmering gold glitter overlay.
-  /// - Parameter intensity: Effect strength (default 0.7)
-  func goldShimmer(intensity: Double = 0.7) -> some View {
-    shader(.goldShimmer(intensity: intensity))
-  }
-  
+
   // MARK: - Light Effects
   
   /// Apply sweeping light band across the surface.

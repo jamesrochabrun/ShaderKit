@@ -190,18 +190,7 @@ private func applyEffect<V: VisualEffect>(
       ),
       maxSampleOffset: .zero
     )
-    
-  case .goldShimmer(let intensity):
-    return view.layerEffect(
-      shaders.goldShimmer(
-        .float2(size.width, size.height),
-        .float2(tilt.x, tilt.y),
-        .float(time),
-        .float(intensity)
-      ),
-      maxSampleOffset: .zero
-    )
-    
+
     // MARK: - Light Effects
     
   case .lightSweep:

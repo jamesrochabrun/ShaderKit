@@ -1,14 +1,14 @@
 //
-//  AmazingRareView.swift
+//  VMaxView.swift
 //  ShaderKitDemo
 //
-//  Glittery metallic shimmer effect
+//  Large-scale subtle gradient with pronounced texture
 //
 
 import SwiftUI
 import ShaderKit
 
-struct ShimmerDemo: View {
+struct VMaxView: View {
   var body: some View {
     ZStack {
       Color.black.ignoresSafeArea()
@@ -16,29 +16,29 @@ struct ShimmerDemo: View {
       HolographicCardContainer(
         width: 260,
         height: 380,
-        shadowColor: .mint
+        shadowColor: .blue
       ) {
         SimpleCardContent(
-          title: "AMAZING RARE",
-          subtitle: "Amazing Holo"
+          title: "VMAX",
+          subtitle: "Gigantamax Rare"
         ) {
           RoundedRectangle(cornerRadius: 16)
             .fill(
               LinearGradient(
                 colors: [
-                  Color(red: 0.18, green: 0.22, blue: 0.25),
-                  Color(red: 0.12, green: 0.15, blue: 0.18),
-                  Color(red: 0.2, green: 0.2, blue: 0.25)
+                  Color(red: 0.1, green: 0.15, blue: 0.25),
+                  Color(red: 0.08, green: 0.1, blue: 0.2),
+                  Color(red: 0.12, green: 0.12, blue: 0.22)
                 ],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
               )
             )
+            .subtleGradient(intensity: 0.9)
         }
-        .shimmer(intensity: 0.8)
       }
     }
-    .navigationTitle("Amazing Rare")
+    .navigationTitle("VMax")
 #if os(iOS)
     .navigationBarTitleDisplayMode(.inline)
 #endif
@@ -47,6 +47,6 @@ struct ShimmerDemo: View {
 
 #Preview {
   NavigationStack {
-    ShimmerDemo()
+    VMaxView()
   }
 }

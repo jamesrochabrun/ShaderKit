@@ -1,14 +1,14 @@
 //
-//  CardTwoView.swift
+//  GradientFoilView.swift
 //  ShaderKitDemo
 //
-//  Butterfly holographic card with intense shader effects
+//  Holographic card with intense gradient shader effects
 //
 
 import SwiftUI
 import ShaderKit
 
-struct CardTwoView: View {
+struct GradientFoilView: View {
   var body: some View {
     HolographicCardContainer(
       width: 280,
@@ -16,7 +16,7 @@ struct CardTwoView: View {
       cornerRadius: 20,
       shadowColor: .orange
     ) {
-      CardTwoContent()
+      GradientFoilContent()
         .foil()
         .glitter()
         .lightSweep()
@@ -26,7 +26,7 @@ struct CardTwoView: View {
 
 // MARK: - Card Content
 
-private struct CardTwoContent: View {
+private struct GradientFoilContent: View {
   var body: some View {
     ZStack {
       RoundedRectangle(cornerRadius: 20)
@@ -42,36 +42,36 @@ private struct CardTwoContent: View {
             endPoint: .bottomTrailing
           )
         )
-      
-      // Butterfly artwork - full bleed background
+
+      // Artwork - full bleed background
       Image("unicorn")
         .resizable()
         .aspectRatio(contentMode: .fill)
         .frame(width: 280, height: 400)
         .clipped()
-      
+
       VStack(spacing: 12) {
         HStack {
-          Text("Ultra Rare")
+          Text("Gradient Foil")
             .font(.headline)
             .fontWeight(.heavy)
             .foregroundStyle(.white)
           Spacer()
-          Text("HP 200")
+          Text("LV 200")
             .font(.subheadline)
             .fontWeight(.bold)
             .foregroundStyle(.orange)
         }
         .padding(.horizontal, 20)
         .padding(.top, 16)
-        
+
         Spacer()
-        
+
         VStack(spacing: 8) {
           HStack {
-            Image(systemName: "flame.circle.fill")
+            Image(systemName: "paintpalette.fill")
               .foregroundStyle(.red)
-            Text("Inferno Strike")
+            Text("Rainbow Gradient")
               .font(.subheadline)
               .fontWeight(.semibold)
               .foregroundStyle(.white)
@@ -81,15 +81,15 @@ private struct CardTwoContent: View {
               .fontWeight(.black)
               .foregroundStyle(.orange)
           }
-          
-          Text("Secret Rare Holographic")
+
+          Text("Multi-Color Holographic Effect")
             .font(.caption2)
             .foregroundStyle(.yellow.opacity(0.8))
         }
         .padding(.horizontal, 20)
         .padding(.bottom, 16)
       }
-      
+
       RoundedRectangle(cornerRadius: 20)
         .strokeBorder(
           LinearGradient(
@@ -106,6 +106,6 @@ private struct CardTwoContent: View {
 #Preview {
   ZStack {
     Color.black.ignoresSafeArea()
-    CardTwoView()
+    GradientFoilView()
   }
 }

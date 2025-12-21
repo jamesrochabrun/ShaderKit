@@ -53,10 +53,7 @@ public enum ShaderEffect: Equatable, Sendable {
   
   /// Glittery metallic shimmer effect
   case shimmer(intensity: Double = 0.7)
-  
-  /// Shimmering gold glitter overlay
-  case goldShimmer(intensity: Double = 0.7)
-  
+
   // MARK: - Light Effects
   
   /// Sweeping light band across the surface

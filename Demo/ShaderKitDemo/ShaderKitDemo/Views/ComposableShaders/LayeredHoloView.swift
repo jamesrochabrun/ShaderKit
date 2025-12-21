@@ -1,5 +1,5 @@
 //
-//  CardFiveView.swift
+//  LayeredHoloView.swift
 //  ShaderKitDemo
 //
 //  Split-layer holographic effect:
@@ -13,17 +13,17 @@ import ShaderKit
 
 // MARK: - Card Background
 
-struct CardFiveBackground: View {
+private struct LayeredHoloBackground: View {
   let width: CGFloat
   let height: CGFloat
-  
+
   var body: some View {
     GeometryReader { geometry in
       let w = geometry.size.width
       let h = geometry.size.height
-      
+
       ZStack {
-        // Card background - golden Pokemon card style
+        // Card background - golden style
         LinearGradient(
           colors: [
             Color(red: 0.92, green: 0.85, blue: 0.55),
@@ -33,7 +33,7 @@ struct CardFiveBackground: View {
           startPoint: .topLeading,
           endPoint: .bottomTrailing
         )
-        
+
         VStack(spacing: 0) {
           // Image placeholder area
           ZStack {
@@ -59,16 +59,16 @@ struct CardFiveBackground: View {
               )
           )
           .padding(.top, h * 0.03)
-          
-          // Pokemon info line
-          Text("NO. 248  Armor Pokemon  HT: 6'7\"  WT: 445.3 lbs.")
+
+          // Info line
+          Text("Layered Holographic Effect Demo")
             .font(.system(size: w * 0.025))
             .foregroundStyle(.black.opacity(0.6))
             .padding(.top, h * 0.01)
-          
+
           // Stats area
           VStack(spacing: h * 0.012) {
-            // Attack 1
+            // Effect 1
             HStack(alignment: .top, spacing: 6) {
               HStack(spacing: 2) {
                 ForEach(0..<2, id: \.self) { _ in
@@ -78,32 +78,32 @@ struct CardFiveBackground: View {
                     .frame(width: w * 0.055, height: w * 0.055)
                 }
               }
-              
+
               VStack(alignment: .leading, spacing: 2) {
-                Text("Raging Crash")
+                Text("Blended Holo")
                   .font(.system(size: w * 0.048, weight: .bold))
                   .foregroundStyle(.black)
-                
-                Text("This attack does 10 damage for each damage counter on all of your Benched Pokemon.")
+
+                Text("Rainbow gradient blended with the card background for subtle iridescence")
                   .font(.system(size: w * 0.026))
                   .foregroundStyle(.black.opacity(0.75))
                   .lineLimit(2)
               }
-              
+
               Spacer()
-              
+
               Text("10x")
                 .font(.system(size: w * 0.055, weight: .bold))
                 .foregroundStyle(.black)
             }
             .padding(.horizontal, w * 0.04)
-            
+
             Rectangle()
               .fill(.black.opacity(0.15))
               .frame(height: 1)
               .padding(.horizontal, w * 0.04)
-            
-            // Attack 2
+
+            // Effect 2
             HStack(alignment: .top, spacing: 6) {
               HStack(spacing: 2) {
                 ForEach(0..<3, id: \.self) { i in
@@ -123,70 +123,70 @@ struct CardFiveBackground: View {
                   .stroke(.black.opacity(0.3), lineWidth: 1)
                   .frame(width: w * 0.055, height: w * 0.055)
               }
-              
+
               VStack(alignment: .leading, spacing: 2) {
-                Text("Earthquake")
+                Text("Sparkle Layer")
                   .font(.system(size: w * 0.048, weight: .bold))
                   .foregroundStyle(.black)
-                
-                Text("This attack also does 20 damage to each of your Benched Pokemon. (Don't apply Weakness and Resistance for Benched Pokemon.)")
+
+                Text("Animated sparkles visible behind clean artwork layer for depth effect")
                   .font(.system(size: w * 0.024))
                   .foregroundStyle(.black.opacity(0.75))
                   .lineLimit(3)
               }
-              
+
               Spacer()
-              
+
               Text("180")
                 .font(.system(size: w * 0.055, weight: .bold))
                 .foregroundStyle(.black)
             }
             .padding(.horizontal, w * 0.04)
-            
+
             Rectangle()
               .fill(.black.opacity(0.15))
               .frame(height: 1)
               .padding(.horizontal, w * 0.04)
-            
-            // Weakness / Resistance / Retreat
+
+            // Stats
             HStack {
               HStack(spacing: 3) {
-                Text("weakness")
+                Text("intensity")
                   .font(.system(size: w * 0.022))
                   .foregroundStyle(.black.opacity(0.6))
-                
+
                 ZStack {
                   Circle()
                     .fill(Color.green)
                     .frame(width: w * 0.04, height: w * 0.04)
-                  Image(systemName: "leaf.fill")
+                  Image(systemName: "wand.and.stars")
                     .font(.system(size: w * 0.022))
                     .foregroundStyle(.white)
                 }
-                
+
                 Text("x2")
                   .font(.system(size: w * 0.026, weight: .bold))
                   .foregroundStyle(.black)
               }
-              
+
               Spacer()
-              
+
               HStack(spacing: 3) {
-                Text("resistance")
+                Text("blend")
                   .font(.system(size: w * 0.022))
                   .foregroundStyle(.black.opacity(0.6))
                 Text("-")
                   .font(.system(size: w * 0.026))
                   .foregroundStyle(.black.opacity(0.4))
               }
-              
+
               Spacer()
-              
+
               HStack(spacing: 3) {
-                Text("retreat")
+                Text("layers")
                   .font(.system(size: w * 0.022))
                   .foregroundStyle(.black.opacity(0.6))
-                
+
                 ForEach(0..<3, id: \.self) { _ in
                   Circle()
                     .fill(.white)
@@ -196,24 +196,24 @@ struct CardFiveBackground: View {
               }
             }
             .padding(.horizontal, w * 0.04)
-            
-            Text("Its body can't be harmed by any sort of attack, so it is very eager to make challenges against enemies.")
+
+            Text("Split-layer technique keeps artwork crisp while background shimmers with holographic effects.")
               .font(.system(size: w * 0.022).italic())
               .foregroundStyle(.black.opacity(0.55))
               .multilineTextAlignment(.center)
               .lineLimit(2)
               .padding(.horizontal, w * 0.05)
-            
+
             HStack {
-              Text("Illus. Nisota Niso")
+              Text("ShaderKit Demo")
                 .font(.system(size: w * 0.02))
-              
+
               Spacer()
-              
+
               HStack(spacing: 4) {
-                Image(systemName: "f.circle.fill")
+                Image(systemName: "square.3.layers.3d")
                   .font(.system(size: w * 0.025))
-                Text("043/078")
+                Text("003/100")
                   .font(.system(size: w * 0.02, weight: .bold))
                 Image(systemName: "star.fill")
                   .font(.system(size: w * 0.018))
@@ -225,7 +225,7 @@ struct CardFiveBackground: View {
           }
           .padding(.top, h * 0.01)
         }
-        
+
         // Card border
         RoundedRectangle(cornerRadius: 16)
           .strokeBorder(
@@ -249,10 +249,10 @@ struct CardFiveBackground: View {
 
 // MARK: - Sparkle Container
 
-struct CardFiveSparkleContainer: View {
+private struct LayeredHoloSparkleContainer: View {
   let width: CGFloat
   let height: CGFloat
-  
+
   var body: some View {
     Rectangle()
       .fill(
@@ -273,10 +273,10 @@ struct CardFiveSparkleContainer: View {
 
 // MARK: - Artwork Layer
 
-struct CardFiveArtwork: View {
+private struct LayeredHoloArtwork: View {
   let width: CGFloat
   let height: CGFloat
-  
+
   var body: some View {
     Image("unicorn")
       .resizable()
@@ -286,12 +286,12 @@ struct CardFiveArtwork: View {
   }
 }
 
-// MARK: - Card Five View
+// MARK: - Layered Holo View
 
-struct CardFiveView: View {
+struct LayeredHoloView: View {
   private let cardWidth: CGFloat = 260
   private var cardHeight: CGFloat { cardWidth * 1.4 }
-  
+
   var body: some View {
     HolographicCardContainer(
       width: cardWidth,
@@ -301,18 +301,18 @@ struct CardFiveView: View {
     ) {
       ZStack {
         // Layer 1: Card background with holo effect
-        CardFiveBackground(width: cardWidth, height: cardHeight)
+        LayeredHoloBackground(width: cardWidth, height: cardHeight)
           .blendedHolo(intensity: 0.7, saturation: 0.75)
-        
+
         // Layer 2: Sparkle container
-        CardFiveSparkleContainer(
+        LayeredHoloSparkleContainer(
           width: cardWidth,
           height: cardHeight
         )
         .offset(y: -cardHeight * 0.198)
-        
+
         // Layer 3: Image on top (clean)
-        CardFiveArtwork(
+        LayeredHoloArtwork(
           width: cardWidth,
           height: cardHeight
         )
@@ -326,6 +326,6 @@ struct CardFiveView: View {
 #Preview {
   ZStack {
     Color.black.ignoresSafeArea()
-    CardFiveView()
+    LayeredHoloView()
   }
 }

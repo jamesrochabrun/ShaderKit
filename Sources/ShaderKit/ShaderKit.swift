@@ -41,7 +41,6 @@ import SwiftUI
 /// - `.multiGlitter()` - Multi-scale sparkles
 /// - `.sparkles()` - Tilt-activated sparkle grid
 /// - `.shimmer()` - Metallic shimmer
-/// - `.goldShimmer()` - Gold glitter overlay
 /// - `.rainbowGlitter()` - Rainbow with luminosity blend
 ///
 /// ### Light Effects

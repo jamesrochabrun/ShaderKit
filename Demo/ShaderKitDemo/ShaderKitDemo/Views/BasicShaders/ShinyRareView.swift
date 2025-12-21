@@ -34,8 +34,8 @@ struct ShinyRareView: View {
                 endPoint: .bottomTrailing
               )
             )
+            .metallicCrosshatch(intensity: 0.75)
         }
-        .metallicCrosshatch(intensity: 0.75)
       }
     }
     .navigationTitle("Shiny Rare")
