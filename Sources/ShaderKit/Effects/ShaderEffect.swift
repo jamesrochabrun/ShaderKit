@@ -108,4 +108,12 @@ public enum ShaderEffect: Equatable, Sendable {
   
   /// Metallic sun-pillar with crosshatch texture
   case metallicCrosshatch(intensity: Double = 0.7)
+
+  /// Concentric spiral rings with metallic golden effect
+  case spiralRings(
+    intensity: Double = 0.8,
+    ringCount: Double = 20,
+    spiralTwist: Double = 0.5,
+    baseColor: SIMD4<Float> = SIMD4<Float>(1.0, 0.85, 0.3, 1.0)
+  )
 }

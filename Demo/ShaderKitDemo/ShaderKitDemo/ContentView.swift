@@ -13,7 +13,7 @@ enum ShaderSection: String, CaseIterable {
 }
 
 enum ShaderType: String, CaseIterable, Identifiable {
-  // Basic Shaders (11 items)
+  // Basic Shaders (12 items)
   case basicGlare = "Basic Glare"
   case verticalBeams = "Vertical Beams"
   case reverseHolo = "Reverse Holo"
@@ -25,6 +25,7 @@ enum ShaderType: String, CaseIterable, Identifiable {
   case vStar = "VStar"
   case radiantHolo = "Radiant Holo"
   case amazingRare = "Amazing Rare"
+  case spiralRings = "Spiral Rings"
 
   // Composable Shaders (6 items)
   case foilGlitterSweep = "Foil + Glitter + Sweep"
@@ -40,7 +41,7 @@ enum ShaderType: String, CaseIterable, Identifiable {
     switch self {
     case .basicGlare, .verticalBeams, .reverseHolo, .cosmosHolo,
         .rainbowRare, .shinyRare, .diagonalHolo, .vMax, .vStar,
-        .radiantHolo, .amazingRare:
+        .radiantHolo, .amazingRare, .spiralRings:
       return .basic
     case .foilGlitterSweep, .gradientFoil, .psychicHolo,
         .starburstRadial, .layeredHolo, .maskedFoil:
@@ -73,6 +74,8 @@ enum ShaderType: String, CaseIterable, Identifiable {
       return "Criss-cross diamond pattern"
     case .amazingRare:
       return "Glittery metallic shimmer effect"
+    case .spiralRings:
+      return "Golden spiral rings with holographic rainbow"
     // Composable Shaders
     case .foilGlitterSweep:
       return "Combined foil, glitter, and light sweep"
@@ -103,6 +106,7 @@ enum ShaderType: String, CaseIterable, Identifiable {
     case .vStar: return "star.circle.fill"
     case .radiantHolo: return "rays"
     case .amazingRare: return "wand.and.stars"
+    case .spiralRings: return "circle.circle"
     // Composable Shaders
     case .foilGlitterSweep: return "wand.and.sparkles"
     case .gradientFoil: return "paintpalette.fill"
@@ -139,6 +143,8 @@ enum ShaderType: String, CaseIterable, Identifiable {
       CrisscrossHoloView()
     case .amazingRare:
       ShimmerDemo()
+    case .spiralRings:
+      SpiralRingsView()
     // Composable Shaders
     case .foilGlitterSweep:
       FoilGlitterSweepView()
