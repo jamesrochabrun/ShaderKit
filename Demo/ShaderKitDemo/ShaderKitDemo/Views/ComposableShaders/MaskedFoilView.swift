@@ -30,6 +30,9 @@ private struct MaskedFoilContent: View {
           startPoint: .topLeading,
           endPoint: .bottomTrailing
         )
+        .maskedFoil(imageWindow: imageWindow)
+        .maskedSparkle(imageWindow: imageWindow)
+        .foilTexture(imageWindow: imageWindow)
 
         VStack(spacing: 0) {
           // HEADER (Foil area)
@@ -241,14 +244,6 @@ struct MaskedFoilView: View {
   private let cardWidth: CGFloat = 260
   private var cardHeight: CGFloat { cardWidth * 1.4 }
 
-  // Image window bounds (UV space 0-1)
-  private let imageWindow = SIMD4<Float>(
-    0.04,   // minX
-    0.11,   // minY
-    0.96,   // maxX
-    0.55    // maxY
-  )
-
   var body: some View {
     HolographicCardContainer(
       width: cardWidth,
@@ -257,9 +252,6 @@ struct MaskedFoilView: View {
       rotationMultiplier: 12
     ) {
       MaskedFoilContent()
-        .maskedFoil(imageWindow: imageWindow)
-        .maskedSparkle(imageWindow: imageWindow)
-        .foilTexture(imageWindow: imageWindow)
     }
   }
 }
@@ -270,3 +262,12 @@ struct MaskedFoilView: View {
     MaskedFoilView()
   }
 }
+
+
+// Image window bounds (UV space 0-1)
+private let imageWindow = SIMD4<Float>(
+  0.04,   // minX
+  0.20,   // minY
+  0.96,   // maxX
+  0.64   // maxY
+)

@@ -116,4 +116,36 @@ public enum ShaderEffect: Equatable, Sendable {
     spiralTwist: Double = 0.5,
     baseColor: SIMD4<Float> = SIMD4<Float>(1.0, 0.85, 0.3, 1.0)
   )
+
+  // MARK: - Glass Effects
+
+  /// Plastic/glass layer over the card - like lamination or screen protector
+  /// Flat glossy surface with beveled edges and soft reflections
+  case glassEnclosure(
+    intensity: Double = 1.0,
+    cornerRadius: Double = 0.05,
+    bevelSize: Double = 0.7,
+    glossiness: Double = 0.8
+  )
+
+  /// Simple glass sheen overlay - specular and sweep reflections
+  /// Good for layering with other effects
+  case glassSheen(
+    intensity: Double = 0.7,
+    spread: Double = 0.5
+  )
+
+  /// Glass edge bevel effect - adds visual thickness to cards
+  /// Creates highlighted top-left edges and shadowed bottom-right edges
+  case glassBevel(
+    intensity: Double = 0.8,
+    thickness: Double = 0.6
+  )
+
+  /// Chromatic glass distortion - subtle RGB separation at edges
+  /// Creates a premium prismatic glass feel
+  case chromaticGlass(
+    intensity: Double = 0.6,
+    separation: Double = 0.4
+  )
 }

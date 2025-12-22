@@ -391,5 +391,59 @@ private func applyEffect<V: VisualEffect>(
       ),
       maxSampleOffset: .zero
     )
+
+    // MARK: - Glass Effects
+
+  case .glassEnclosure(let intensity, let cornerRadius, let bevelSize, let glossiness):
+    return view.layerEffect(
+      shaders.glassEnclosure(
+        .float2(size.width, size.height),
+        .float2(tilt.x, tilt.y),
+        .float(time),
+        .float(intensity),
+        .float(cornerRadius),
+        .float(bevelSize),
+        .float(glossiness)
+      ),
+      maxSampleOffset: .zero
+    )
+
+  case .glassSheen(let intensity, let spread):
+    return view.layerEffect(
+      shaders.glassSheen(
+        .float2(size.width, size.height),
+        .float2(tilt.x, tilt.y),
+        .float(time),
+        .float(intensity),
+        .float(spread)
+      ),
+      maxSampleOffset: .zero
+    )
+
+  case .glassBevel(let intensity, let thickness):
+    return view.layerEffect(
+      shaders.glassBevel(
+        .float2(size.width, size.height),
+        .float2(tilt.x, tilt.y),
+        .float(time),
+        .float(intensity),
+        .float(thickness)
+      ),
+      maxSampleOffset: .zero
+    )
+
+  case .chromaticGlass(let intensity, let separation):
+    // Small sample offset needed for chromatic aberration
+    let maxOffset = separation * 5.0
+    return view.layerEffect(
+      shaders.chromaticGlass(
+        .float2(size.width, size.height),
+        .float2(tilt.x, tilt.y),
+        .float(time),
+        .float(intensity),
+        .float(separation)
+      ),
+      maxSampleOffset: CGSize(width: maxOffset, height: maxOffset)
+    )
   }
 }

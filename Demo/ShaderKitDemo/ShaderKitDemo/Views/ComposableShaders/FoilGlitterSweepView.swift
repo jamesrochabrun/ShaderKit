@@ -17,9 +17,7 @@ struct FoilGlitterSweepView: View {
       rotationMultiplier: 12
     ) {
       FoilGlitterSweepContent()
-        .foil()
-        .glitter()
-        .lightSweep()
+       // .lightSweep()
     }
   }
 }
@@ -42,6 +40,8 @@ private struct FoilGlitterSweepContent: View {
             endPoint: .bottomTrailing
           )
         )
+        .glitter()
+        .foil()
 
       // Artwork - full bleed background
       Image("unicorn")

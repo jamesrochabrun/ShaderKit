@@ -322,6 +322,302 @@ float sdCapsule(float2 p, float2 size) {
     return refractedColor;
 }
 
+// MARK: - Rounded Rectangle SDF helper
+float sdRoundedRect(float2 p, float2 size, float radius) {
+    float2 q = abs(p) - size + radius;
+    return min(max(q.x, q.y), 0.0) + length(max(q, 0.0)) - radius;
+}
+
+// MARK: - Glass Enclosure Effect
+// Plastic/glass layer over the card - like lamination or screen protector
+// Flat glossy surface with beveled edges and soft reflections
+
+[[stitchable]] half4 glassEnclosure(
+    float2 position,
+    SwiftUI::Layer layer,
+    float2 size,
+    float2 tilt,
+    float time,
+    float intensity,         // Overall effect strength (0.0 - 1.0)
+    float cornerRadius,      // Corner radius (0.0 - 0.5)
+    float bevelSize,         // Edge bevel thickness (0.0 - 1.0)
+    float glossiness         // How shiny/reflective (0.0 - 1.0)
+) {
+    float2 uv = position / size;
+    float2 centered = uv - 0.5;
+    half4 color = layer.sample(position);
+
+    // --- EDGE DISTANCES ---
+    float edgeL = uv.x;
+    float edgeR = 1.0 - uv.x;
+    float edgeT = uv.y;
+    float edgeB = 1.0 - uv.y;
+
+    // --- FIXED LIGHT SOURCE (like room light above) ---
+    // Light is FIXED - doesn't move with tilt
+    float3 lightDir3D = normalize(float3(-0.4, -0.6, 1.0));
+
+    // --- CARD SURFACE NORMAL (changes with tilt) ---
+    // When card tilts, its surface normal changes
+    float3 cardNormal = normalize(float3(
+        -tilt.x * 0.5,  // Tilt right = normal points left
+        -tilt.y * 0.5,  // Tilt down = normal points up
+        1.0
+    ));
+
+    // --- REFLECTION CALCULATION ---
+    // Where does the fixed light reflect off the tilted card surface?
+    float3 viewDir = float3(0.0, 0.0, 1.0);
+    float3 reflectDir = reflect(-lightDir3D, cardNormal);
+
+    // How much does the reflection point toward viewer?
+    float reflectToView = max(dot(reflectDir, viewDir), 0.0);
+
+    // === EFFECT 1: ANGLE-BASED SHEEN ===
+    // Sheen based on card angle relative to light
+    float sheen = reflectToView * 0.06 * glossiness;
+
+    // === EFFECT 2: SPECULAR REFLECTION ===
+    // The specular highlight position is determined by card angle
+    // It sweeps across the card as you tilt
+
+    // Calculate where specular would appear on card surface
+    // Based on reflection geometry
+    float2 specOffset = float2(
+        tilt.x * 0.4,
+        tilt.y * 0.4
+    );
+    float2 specPos = float2(0.35, 0.3) - specOffset; // Moves opposite to tilt
+
+    float specDist = length(uv - specPos);
+
+    // Only show specular when angle is right (reflection toward viewer)
+    float specVisible = smoothstep(0.3, 0.8, reflectToView);
+
+    float specSoft = smoothstep(0.3, 0.0, specDist) * 0.1 * glossiness * specVisible;
+    float specSharp = smoothstep(0.08, 0.0, specDist);
+    specSharp = pow(specSharp, 2.0) * 0.2 * glossiness * specVisible;
+
+    // === EFFECT 3: EDGE BEVELS ===
+    // Bevels respond to card tilt - edges facing light get brighter
+    float bevelWidth = 0.02 + bevelSize * 0.04;
+
+    // Edge bevels based on card tilt angle
+    // When card tilts, certain edges face the light more
+    float topBevel = smoothstep(bevelWidth, 0.0, edgeT);
+    float topLight = clamp(0.5 - tilt.y * 0.8, 0.0, 1.0); // Bright when tilted back
+
+    float leftBevel = smoothstep(bevelWidth, 0.0, edgeL);
+    float leftLight = clamp(0.5 - tilt.x * 0.8, 0.0, 1.0); // Bright when tilted right
+
+    float bottomBevel = smoothstep(bevelWidth, 0.0, edgeB);
+    float bottomLight = clamp(0.3 + tilt.y * 0.6, 0.0, 1.0); // Bright when tilted forward
+
+    float rightBevel = smoothstep(bevelWidth, 0.0, edgeR);
+    float rightLight = clamp(0.3 + tilt.x * 0.6, 0.0, 1.0); // Bright when tilted left
+
+    // Combine bevels
+    float bevelHighlight = (topBevel * topLight + leftBevel * leftLight) * 0.3;
+    float bevelDim = (bottomBevel * (1.0 - bottomLight) + rightBevel * (1.0 - rightLight)) * 0.08;
+
+    // === EFFECT 4: CORNER HIGHLIGHTS ===
+    // Corners respond to tilt angle
+    float2 tlPos = float2(cornerRadius, cornerRadius);
+    float tlDist = length(uv - tlPos);
+    float tlCorner = smoothstep(cornerRadius * 1.5, 0.0, tlDist);
+    tlCorner *= clamp(0.4 - tilt.x * 0.5 - tilt.y * 0.5, 0.0, 1.0) * 0.15;
+
+    float2 trPos = float2(1.0 - cornerRadius, cornerRadius);
+    float trDist = length(uv - trPos);
+    float trCorner = smoothstep(cornerRadius * 1.5, 0.0, trDist);
+    trCorner *= clamp(0.3 + tilt.x * 0.4 - tilt.y * 0.4, 0.0, 1.0) * 0.1;
+
+    float cornerHighlight = (tlCorner + trCorner) * glossiness;
+
+    // === EFFECT 5: INNER EDGE LINE ===
+    // Thin line showing glass thickness - responds to tilt
+    float innerEdgeDist = min(min(edgeL, edgeR), min(edgeT, edgeB));
+    float innerLine = smoothstep(bevelWidth * 1.2, bevelWidth * 0.8, innerEdgeDist);
+    innerLine *= smoothstep(bevelWidth * 0.2, bevelWidth * 0.6, innerEdgeDist);
+    innerLine *= 0.1 * glossiness;
+
+    float innerLineLight = innerLine * (
+        smoothstep(bevelWidth, 0.0, edgeT) * topLight * 0.4 +
+        smoothstep(bevelWidth, 0.0, edgeL) * leftLight * 0.4 +
+        0.15
+    );
+
+    // === COMBINE ALL EFFECTS ===
+    half3 result = color.rgb;
+
+    // Angle-based sheen
+    result += half(sheen) * half3(1.0, 1.0, 1.0) * half(intensity);
+
+    // Specular (only when angle is right)
+    result += half(specSoft) * half3(1.0, 1.0, 1.0) * half(intensity);
+    result += half(specSharp) * half3(1.0, 1.0, 1.0) * half(intensity);
+
+    // Edge bevels
+    result += half(bevelHighlight) * half3(1.0, 1.0, 1.0) * half(intensity);
+    result -= half(bevelDim) * half3(0.08, 0.06, 0.04) * half(intensity);
+
+    // Corners
+    result += half(cornerHighlight) * half3(1.0, 1.0, 1.0) * half(intensity);
+
+    // Inner edge
+    result += half(innerLineLight) * half3(1.0, 1.0, 1.0) * half(intensity);
+
+    return half4(result, color.a);
+}
+
+// MARK: - Glass Sheen Effect
+// Simpler glass reflection overlay - just the reflection sweep and specular
+// Good for layering with other effects
+
+[[stitchable]] half4 glassSheen(
+    float2 position,
+    SwiftUI::Layer layer,
+    float2 size,
+    float2 tilt,
+    float time,
+    float intensity,
+    float spread    // How wide the reflection spreads (0.0 - 1.0)
+) {
+    float2 uv = position / size;
+    half4 color = layer.sample(position);
+
+    // Light position follows tilt
+    float2 lightPos = float2(0.3 + tilt.x * 0.5, 0.25 + tilt.y * 0.4);
+
+    // Main specular blob
+    float specDist = length(uv - lightPos);
+    float specSize = 0.25 + spread * 0.25;
+    float specular = smoothstep(specSize, 0.0, specDist);
+    specular = pow(specular, 1.5);
+
+    // Diagonal sweep band
+    float angle = -0.6 + tilt.x * 0.2;
+    float sweep = uv.x * cos(angle) + uv.y * sin(angle);
+    float sweepCenter = 0.5 + tilt.x * 0.25 + tilt.y * 0.15;
+    float sweepWidth = 0.12 + spread * 0.08;
+    float band = smoothstep(sweepWidth, 0.0, abs(sweep - sweepCenter));
+    band *= smoothstep(0.0, 0.3, uv.y) * smoothstep(1.0, 0.7, uv.y); // Fade at edges
+
+    // Secondary subtle reflection
+    float2 lightPos2 = float2(0.7 - tilt.x * 0.3, 0.6 - tilt.y * 0.3);
+    float spec2Dist = length(uv - lightPos2);
+    float specular2 = smoothstep(0.4, 0.0, spec2Dist) * 0.2;
+
+    // Combine
+    half3 result = color.rgb;
+    result += specular * half3(1.0, 1.0, 1.03) * intensity * 0.35;
+    result += band * half3(1.0, 1.0, 1.02) * intensity * 0.25;
+    result += specular2 * half3(0.98, 0.99, 1.0) * intensity * 0.15;
+
+    return half4(result, color.a);
+}
+
+// MARK: - Glass Edge Bevel
+// Just the edge bevel effect - great for adding "thickness" to any card
+
+[[stitchable]] half4 glassBevel(
+    float2 position,
+    SwiftUI::Layer layer,
+    float2 size,
+    float2 tilt,
+    float time,
+    float intensity,
+    float thickness   // Bevel thickness (0.0 - 1.0)
+) {
+    float2 uv = position / size;
+    half4 color = layer.sample(position);
+
+    // Edge distances
+    float distLeft = uv.x;
+    float distRight = 1.0 - uv.x;
+    float distTop = uv.y;
+    float distBottom = 1.0 - uv.y;
+
+    float bevelWidth = 0.06 * thickness + 0.02;
+
+    // Light direction from tilt
+    float2 lightDir = normalize(float2(-0.5 + tilt.x * 0.5, -0.6 + tilt.y * 0.5));
+
+    // Edge highlights (facing light)
+    float topBevel = smoothstep(bevelWidth, 0.0, distTop) * clamp(-lightDir.y, 0.0, 1.0);
+    float leftBevel = smoothstep(bevelWidth, 0.0, distLeft) * clamp(-lightDir.x, 0.0, 1.0);
+
+    // Edge shadows (away from light)
+    float bottomBevel = smoothstep(bevelWidth, 0.0, distBottom) * clamp(lightDir.y, 0.0, 1.0);
+    float rightBevel = smoothstep(bevelWidth, 0.0, distRight) * clamp(lightDir.x, 0.0, 1.0);
+
+    // Corner intensity boost
+    float cornerTL = smoothstep(bevelWidth * 2.0, 0.0, length(uv));
+    float cornerBR = smoothstep(bevelWidth * 2.0, 0.0, length(uv - float2(1.0, 1.0)));
+
+    cornerTL *= clamp(-lightDir.x - lightDir.y, 0.0, 1.0) * 0.5;
+    cornerBR *= clamp(lightDir.x + lightDir.y, 0.0, 1.0) * 0.3;
+
+    half3 result = color.rgb;
+
+    // Apply highlights
+    float highlight = (topBevel + leftBevel + cornerTL);
+    result += highlight * half3(1.15, 1.18, 1.25) * intensity;
+
+    // Apply shadows
+    float shadow = (bottomBevel + rightBevel + cornerBR);
+    result -= shadow * half3(0.15, 0.12, 0.08) * intensity;
+
+    return half4(result, color.a);
+}
+
+// MARK: - Chromatic Glass Distortion
+// Subtle RGB split that shifts with tilt - creates premium glass feel
+
+[[stitchable]] half4 chromaticGlass(
+    float2 position,
+    SwiftUI::Layer layer,
+    float2 size,
+    float2 tilt,
+    float time,
+    float intensity,
+    float separation   // How much RGB channels separate (0.0 - 1.0)
+) {
+    float2 uv = position / size;
+
+    // Chromatic offset based on tilt and position
+    // Stronger at edges, follows tilt direction
+    float2 center = float2(0.5, 0.5);
+    float2 fromCenter = uv - center;
+    float edgeFactor = length(fromCenter) * 2.0; // 0 at center, 1 at corners
+    edgeFactor = pow(edgeFactor, 1.5); // Non-linear falloff
+
+    // Offset direction influenced by tilt
+    float2 offsetDir = normalize(fromCenter + tilt * 0.3 + 0.001);
+    float offsetAmount = separation * edgeFactor * 3.0; // pixels
+
+    // Sample each channel at slightly different positions
+    float2 redOffset = offsetDir * offsetAmount;
+    float2 blueOffset = -offsetDir * offsetAmount;
+
+    half4 redSample = layer.sample(position + redOffset);
+    half4 greenSample = layer.sample(position);
+    half4 blueSample = layer.sample(position + blueOffset);
+
+    half4 result;
+    half h_intensity = half(intensity);
+    result.r = mix(greenSample.r, redSample.r, h_intensity);
+    result.g = greenSample.g;
+    result.b = mix(greenSample.b, blueSample.b, h_intensity);
+    result.a = greenSample.a;
+
+    // Add subtle brightness boost at center
+    float centerGlow = smoothstep(0.7, 0.0, length(fromCenter)) * 0.03 * intensity;
+    result.rgb += centerGlow;
+
+    return result;
+}
+
 // MARK: - Glass Capsule with Background Blur Simulation
 [[stitchable]] half4 glassButton(
     float2 position,

@@ -27,13 +27,14 @@ enum ShaderType: String, CaseIterable, Identifiable {
   case amazingRare = "Amazing Rare"
   case spiralRings = "Spiral Rings"
 
-  // Composable Shaders (6 items)
+  // Composable Shaders (7 items)
   case foilGlitterSweep = "Foil + Glitter + Sweep"
   case gradientFoil = "Gradient Foil"
   case psychicHolo = "Psychic Holo"
   case starburstRadial = "Starburst Radial"
   case layeredHolo = "Layered Holo"
   case maskedFoil = "Masked Foil"
+  case glassEnclosure = "Glass Enclosure"
 
   var id: String { rawValue }
 
@@ -44,7 +45,7 @@ enum ShaderType: String, CaseIterable, Identifiable {
         .radiantHolo, .amazingRare, .spiralRings:
       return .basic
     case .foilGlitterSweep, .gradientFoil, .psychicHolo,
-        .starburstRadial, .layeredHolo, .maskedFoil:
+        .starburstRadial, .layeredHolo, .maskedFoil, .glassEnclosure:
       return .composable
     }
   }
@@ -89,6 +90,8 @@ enum ShaderType: String, CaseIterable, Identifiable {
       return "Split-layer holo with clean artwork"
     case .maskedFoil:
       return "Reverse holo with masked foil areas"
+    case .glassEnclosure:
+      return "Card behind curved reflective glass"
     }
   }
 
@@ -114,6 +117,7 @@ enum ShaderType: String, CaseIterable, Identifiable {
     case .starburstRadial: return "sun.max.trianglebadge.exclamationmark.fill"
     case .layeredHolo: return "square.3.layers.3d"
     case .maskedFoil: return "theatermask.and.paintbrush.fill"
+    case .glassEnclosure: return "rectangle.inset.filled.and.cursorarrow"
     }
   }
 
@@ -158,6 +162,8 @@ enum ShaderType: String, CaseIterable, Identifiable {
       LayeredHoloView()
     case .maskedFoil:
       MaskedFoilView()
+    case .glassEnclosure:
+      GlassEnclosureView()
     }
   }
 }

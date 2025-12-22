@@ -267,7 +267,7 @@ private struct LayeredHoloSparkleContainer: View {
       )
       .frame(width: width * 0.88, height: height * 0.41)
       .clipShape(RoundedRectangle(cornerRadius: 6))
-      .sparkles()
+      .verticalBeams()
   }
 }
 
@@ -318,7 +318,6 @@ struct LayeredHoloView: View {
         )
         .offset(y: -cardHeight * 0.198)
       }
-      .angledSweep()
     }
   }
 }
