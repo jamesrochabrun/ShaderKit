@@ -477,5 +477,18 @@ private func applyEffect<V: VisualEffect>(
       ),
       maxSampleOffset: .zero
     )
+
+    // MARK: - Metallic Effects
+
+  case .polishedAluminum(let intensity):
+    return view.layerEffect(
+      shaders.polishedAluminum(
+        .float2(size.width, size.height),
+        .float2(tilt.x, tilt.y),
+        .float(time),
+        .float(intensity)
+      ),
+      maxSampleOffset: .zero
+    )
   }
 }

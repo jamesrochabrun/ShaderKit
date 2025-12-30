@@ -54,7 +54,7 @@ dependencies: [
 
 ## Available Shaders
 
-ShaderKit provides 33 composable shader effects across 6 categories.
+ShaderKit provides 34 composable shader effects across 7 categories.
 
 ### Foil Effects
 
@@ -119,6 +119,12 @@ ShaderKit provides 33 composable shader effects across 6 categories.
 |--------|-------------|------------|
 | `.snowfall()` | Falling snowflakes with twinkling stars | `intensity: Double = 0.8, snowDensity: Double = 0.5, starDensity: Double = 0.6, primaryColor: SIMD4<Float>, secondaryColor: SIMD4<Float>` |
 | `.frozen()` | Icy silver shimmer with floating blue stars | `intensity: Double = 0.85, starDensity: Double = 0.6, shimmerIntensity: Double = 0.8, iceColor: SIMD4<Float>, starColor: SIMD4<Float>` |
+
+### Metallic Effects
+
+| Effect | Description | Parameters |
+|--------|-------------|------------|
+| `.polishedAluminum()` | Polished aluminum with diagonal rainbow reflection | `intensity: Double = 0.85` |
 
 ## Composing Effects
 
@@ -189,6 +195,12 @@ HolographicCardContainer(width: 260, height: 380, shadowColor: .cyan) {
 HolographicCardContainer(width: 260, height: 380, shadowColor: .cyan) {
     CardContent()
         .frozen(starDensity: 0.7, shimmerIntensity: 0.9)
+}
+
+// Polished aluminum holographic card
+HolographicCardContainer(width: 260, height: 380, shadowColor: .gray) {
+    CardContent()
+        .polishedAluminum()
 }
 ```
 

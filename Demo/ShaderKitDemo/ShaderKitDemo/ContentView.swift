@@ -28,6 +28,7 @@ enum ShaderType: String, CaseIterable, Identifiable {
   case spiralRings = "Spiral Rings"
   case snowfall = "Snowfall"
   case frozen = "Frozen"
+  case polishedAluminum = "Polished Aluminum"
 
   // Composable Shaders (7 items)
   case foilGlitterSweep = "Foil + Glitter + Sweep"
@@ -44,7 +45,8 @@ enum ShaderType: String, CaseIterable, Identifiable {
     switch self {
     case .basicGlare, .verticalBeams, .reverseHolo, .cosmosHolo,
         .rainbowRare, .shinyRare, .diagonalHolo, .vMax, .vStar,
-        .radiantHolo, .amazingRare, .spiralRings, .snowfall, .frozen:
+        .radiantHolo, .amazingRare, .spiralRings, .snowfall, .frozen,
+        .polishedAluminum:
       return .basic
     case .foilGlitterSweep, .gradientFoil, .psychicHolo,
         .starburstRadial, .layeredHolo, .maskedFoil, .glassEnclosure:
@@ -83,6 +85,8 @@ enum ShaderType: String, CaseIterable, Identifiable {
       return "Falling snowflakes, twinkling stars, gradient colors"
     case .frozen:
       return "Icy silver shimmer with floating blue stars"
+    case .polishedAluminum:
+      return "Brushed aluminum with diagonal rainbow reflection"
     // Composable Shaders
     case .foilGlitterSweep:
       return "Combined foil, glitter, and light sweep"
@@ -118,6 +122,7 @@ enum ShaderType: String, CaseIterable, Identifiable {
     case .spiralRings: return "circle.circle"
     case .snowfall: return "snowflake"
     case .frozen: return "sparkle"
+    case .polishedAluminum: return "rectangle.fill"
     // Composable Shaders
     case .foilGlitterSweep: return "wand.and.sparkles"
     case .gradientFoil: return "paintpalette.fill"
@@ -161,6 +166,8 @@ enum ShaderType: String, CaseIterable, Identifiable {
       SnowfallView()
     case .frozen:
       FrozenView()
+    case .polishedAluminum:
+      PolishedAluminumView()
     // Composable Shaders
     case .foilGlitterSweep:
       FoilGlitterSweepView()

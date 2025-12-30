@@ -170,4 +170,9 @@ public enum ShaderEffect: Equatable, Sendable {
     iceColor: SIMD4<Float> = SIMD4<Float>(0.9, 0.95, 1.0, 1.0),
     starColor: SIMD4<Float> = SIMD4<Float>(0.6, 0.85, 1.0, 1.0)
   )
+
+  // MARK: - Metallic Effects
+
+  /// Polished aluminum with diagonal rainbow holographic reflection
+  case polishedAluminum(intensity: Double = 0.85)
 }
