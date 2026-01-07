@@ -75,7 +75,10 @@ public struct HolographicCardContainer<Content: View>: View {
 
       content()
         .shaderContext(tilt: effectiveTilt, time: elapsedTime, touchPosition: touchPosition)
-        .frame(width: width, height: height)
+        .frame(
+          width: width > 0 && width.isFinite ? width : 1,
+          height: height > 0 && height.isFinite ? height : 1
+        )
         .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
         .rotation3DEffect(
           .degrees(effectiveTilt.x * rotationMultiplier),
@@ -101,8 +104,8 @@ public struct HolographicCardContainer<Content: View>: View {
               }
               // Track touch position normalized to 0-1
               touchPosition = CGPoint(
-                x: value.location.x / width,
-                y: value.location.y / height
+                x: width > 0 ? value.location.x / width : 0,
+                y: height > 0 ? value.location.y / height : 0
               )
             }
             .onEnded { _ in
