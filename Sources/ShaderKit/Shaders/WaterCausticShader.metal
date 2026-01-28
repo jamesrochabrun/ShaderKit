@@ -181,8 +181,15 @@ static float2 causticPattern(float2 p, float time, float patternSize, float spee
   // Clamp to prevent blowout
   causticColor = min(causticColor, half3(2.0));
 
-  // === Sample the image WITHOUT distortion ===
-  float2 samplePos = position;  // No distortion - keep original position
+  // === Sample the image WITH water distortion ===
+  // Use simplex noise for organic water ripple effect
+  float2 distortUV = uv * 3.0 + time * speed * 0.3;
+  float noiseX = simplexNoise2D(distortUV);
+  float noiseY = simplexNoise2D(distortUV + float2(100.0, 100.0));
+
+  // Apply distortion scaled by waves parameter
+  float2 distortion = float2(noiseX, noiseY) * waves * 15.0;
+  float2 samplePos = position + distortion;
   half4 sampledColor = layer.sample(samplePos);
 
   // === Apply caustic as overlay on top ===
@@ -192,25 +199,22 @@ static float2 causticPattern(float2 p, float time, float patternSize, float spee
     // Transparent - show caustic background
     result = causticColor;
   } else {
-    // Opaque - blend caustic on top using screen blend
+    // Opaque - add subtle caustic light network on top of image
     half3 base = sampledColor.rgb;
 
-    // Scale caustic intensity properly for visibility
-    // Use causticLines directly (already 0-1+ range from pow(0.45))
-    float overlayStrength = causticLines * caustic;
+    // Isolate the bright caustic peaks
+    float causticBase = 0.35;
+    float causticVariation = max(0.0, causticLines - causticBase);
 
-    // Create bright white/colored caustic overlay
-    half3 causticOverlayColor = half3(overlayStrength * 1.5);
+    // Scale for visibility
+    float causticIntensity = causticVariation * caustic * 3.0;
 
-    // Screen blend: brighter result, caustics add light on top
-    result = 1.0h - (1.0h - base) * (1.0h - causticOverlayColor);
+    // Create caustic light
+    half3 causticLight = highlightColor * half(causticIntensity);
 
-    // Add highlights on peak caustic areas
-    float peakMask = smoothstep(0.6, 1.0, causticLines);
-    result += highlightColor * half(peakMask * caustic * 0.5);
-
-    // Clamp to prevent blowout
-    result = min(result, half3(1.0));
+    // Screen blend - gentler than additive, prevents harsh blowout
+    // Formula: 1 - (1 - base) * (1 - light)
+    result = half3(1.0) - (half3(1.0) - base) * (half3(1.0) - causticLight);
   }
 
   return half4(result, max(sampledColor.a, half(causticLines > 0.1 ? 1.0 : 0.0)));
