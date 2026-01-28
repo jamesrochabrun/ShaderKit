@@ -175,4 +175,21 @@ public enum ShaderEffect: Equatable, Sendable {
 
   /// Polished aluminum with diagonal rainbow holographic reflection
   case polishedAluminum(intensity: Double = 0.85)
+
+  // MARK: - Paper Effects
+
+  /// Water caustic effect with realistic light refraction patterns
+  /// Inspired by Paper Design water shader
+  case waterCaustic(
+    colorBack: SIMD4<Float> = SIMD4<Float>(0.56, 0.56, 0.56, 1.0),
+    colorHighlight: SIMD4<Float> = SIMD4<Float>(1.0, 1.0, 1.0, 1.0),
+    highlights: Double = 0.07,
+    layering: Double = 0.5,
+    edges: Double = 0.8,
+    waves: Double = 0.3,
+    caustic: Double = 0.8,
+    patternSize: Double = 1.0,
+    speed: Double = 1.0,
+    scale: Double = 0.8
+  )
 }
