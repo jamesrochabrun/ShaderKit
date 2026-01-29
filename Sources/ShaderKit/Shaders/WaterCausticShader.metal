@@ -148,18 +148,23 @@ static float3 causticFieldV2(float2 p, float time, float patternSize) {
   distortion += flow2 * edgeWarp * 0.015;
 
   // === Soft caustic modulation (subtle) ===
-  float2 causticUV = uv * 2.4 + tiltOffset + flow * 0.12;
+  float2 causticUV = (position / size.y) + tiltOffset;
   float3 causticA = causticFieldV2(causticUV, t * 0.2, 1.0);
-  float3 causticB = causticFieldV2(causticUV * 1.1 + float2(0.7, 1.3), t * 0.23 + 1.5, 0.85);
-
-  float a = causticA.x + causticB.x * layering;
-  float2 N = float2(causticA.y, causticA.z) + float2(causticB.y, causticB.z) * layering;
+  float a = causticA.x;
+  float2 N = float2(causticA.y, causticA.z);
 
   float nLen = length(N);
   float causticBase = (a + 0.5) * 0.1;
   float causticGlow = 0.003 / max(nLen, 0.0004);
   float causticField = max(0.0, causticBase + causticGlow);
-  float causticBoost = pow(causticField, 0.45) * caustic;
+  float causticIntensity = clamp(pow(causticField, 0.45), 0.0, 1.0);
+  float causticBoost = causticIntensity * caustic;
+
+  float layeringBoost = mix(0.6, 1.4, clamp(layering, 0.0, 1.0));
+  float base = (a + 0.5) * 0.1 * layeringBoost;
+  float3 twiglColor = max(float3(0.0), float3(base * 6.0, base * 1.0, base * 2.0) + causticGlow);
+  float3 twiglPow = pow(twiglColor, float3(0.45));
+  float twiglIntensity = max(twiglPow.r, max(twiglPow.g, twiglPow.b));
 
   distortion += normalize(N + float2(0.0001, 0.0001)) * (causticBoost * 0.008);
 
@@ -193,16 +198,17 @@ static float3 causticFieldV2(float2 p, float time, float patternSize) {
   float sunGlow = smoothstep(1.05, 0.0, distance(uv, sunPos));
   float glint = (spec * sunMask + sunGlow * 0.35) * highlights;
 
-  half3 causticLight = highlightColor * half(causticBoost * highlights * 1.4 + glint * 1.8);
+  half3 causticLight = highlightColor * half(twiglIntensity * highlights * 1.4 + glint * 0.6);
 
   if (sampledColor.a < 0.1h) {
-    result = backColor;
-    result = half3(1.0) - (half3(1.0) - result) * (half3(1.0) - causticLight);
+    result = backColor + causticLight;
+    result = min(result, half3(1.0));
   } else {
     half3 base = sampledColor.rgb;
     // Apply backColor as color tint/wash
     base = mix(base, base * backColor, half(0.2));
-    result = half3(1.0) - (half3(1.0) - base) * (half3(1.0) - causticLight);
+    result = base + causticLight;
+    result = min(result, half3(1.0));
   }
 
   return half4(result, sampledColor.a);
