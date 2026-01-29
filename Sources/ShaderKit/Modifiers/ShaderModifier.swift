@@ -490,5 +490,45 @@ private func applyEffect<V: VisualEffect>(
       ),
       maxSampleOffset: .zero
     )
+
+    // MARK: - Tech Effects
+
+  case .liquidTech(let intensity, let speed, let scale):
+    return view.layerEffect(
+      shaders.liquidTech(
+        .float2(size.width, size.height),
+        .float2(tilt.x, tilt.y),
+        .float(time),
+        .float(intensity),
+        .float(speed),
+        .float(scale)
+      ),
+      maxSampleOffset: .zero
+    )
+
+    // MARK: - Paper Effects
+
+  case .water(let colorBack, let colorHighlight, let highlights,
+              let edges, let waves, let caustic,
+              let patternSize, let speed, let scale):
+    let maxDimension = max(size.width, size.height)
+    let maxOffset = CGFloat((waves * 0.04 + edges * 0.02 + caustic * 0.03) * Double(maxDimension))
+    return view.layerEffect(
+      shaders.water(
+        .float2(size.width, size.height),
+        .float2(tilt.x, tilt.y),
+        .float(time),
+        .float4(colorBack.x, colorBack.y, colorBack.z, colorBack.w),
+        .float4(colorHighlight.x, colorHighlight.y, colorHighlight.z, colorHighlight.w),
+        .float(highlights),
+        .float(edges),
+        .float(waves),
+        .float(caustic),
+        .float(patternSize),
+        .float(speed),
+        .float(scale)
+      ),
+      maxSampleOffset: CGSize(width: maxOffset, height: maxOffset)
+    )
   }
 }

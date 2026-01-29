@@ -253,4 +253,60 @@ public extension View {
       starColor: starColor
     ))
   }
+
+  // MARK: - Tech Effects
+
+  /// Apply liquid tech procedural effect inspired by Twigl GLSL.
+  /// - Parameters:
+  ///   - intensity: Blend strength for the effect (default 0.9)
+  ///   - speed: Animation speed (default 1.0)
+  ///   - scale: Overall zoom (default 1.0)
+  func liquidTech(
+    intensity: Double = 0.9,
+    speed: Double = 1.0,
+    scale: Double = 1.0
+  ) -> some View {
+    shader(.liquidTech(
+      intensity: intensity,
+      speed: speed,
+      scale: scale
+    ))
+  }
+
+  // MARK: - Paper Effects
+
+  /// Apply water caustic effect inspired by Twigl GLSL.
+  /// - Parameters:
+  ///   - colorBack: Background/tint color (default gray)
+  ///   - colorHighlight: Highlight color (default white)
+  ///   - highlights: Highlight intensity for caustic overlay (default 0.07)
+  ///   - edges: Edge distortion power (default 0.8)
+  ///   - waves: Additional wave noise distortion (default 0.3)
+  ///   - caustic: Caustic distortion power (default 0.1)
+  ///   - size: Pattern scale relative to the image (default 1.0)
+  ///   - speed: Animation speed (default 1.0)
+  ///   - scale: Overall zoom (default 0.8)
+  func water(
+    colorBack: SIMD4<Float> = SIMD4<Float>(0.56, 0.56, 0.56, 1.0),
+    colorHighlight: SIMD4<Float> = SIMD4<Float>(1.0, 1.0, 1.0, 1.0),
+    highlights: Double = 0.07,
+    edges: Double = 0.8,
+    waves: Double = 0.3,
+    caustic: Double = 0.1,
+    size patternSize: Double = 1.0,
+    speed: Double = 1.0,
+    scale: Double = 0.8
+  ) -> some View {
+    shader(.water(
+      colorBack: colorBack,
+      colorHighlight: colorHighlight,
+      highlights: highlights,
+      edges: edges,
+      waves: waves,
+      caustic: caustic,
+      size: patternSize,
+      speed: speed,
+      scale: scale
+    ))
+  }
 }

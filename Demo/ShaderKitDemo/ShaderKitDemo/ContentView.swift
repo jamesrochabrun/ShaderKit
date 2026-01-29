@@ -10,6 +10,8 @@ import SwiftUI
 enum ShaderSection: String, CaseIterable {
   case basic = "Basic Shaders"
   case composable = "Composable Shaders"
+  case paper = "Paper Shaders"
+  case experimental = "Experimental Shaders"
 }
 
 enum ShaderType: String, CaseIterable, Identifiable {
@@ -39,6 +41,12 @@ enum ShaderType: String, CaseIterable, Identifiable {
   case maskedFoil = "Masked Foil"
   case glassEnclosure = "Glass Enclosure"
 
+  // Paper Shaders (1 item)
+  case water = "Water"
+
+  // Experimental Shaders (1 item)
+  case liquidTech = "Liquid Tech [234]"
+
   var id: String { rawValue }
 
   var section: ShaderSection {
@@ -51,6 +59,10 @@ enum ShaderType: String, CaseIterable, Identifiable {
     case .foilGlitterSweep, .gradientFoil, .psychicHolo,
         .starburstRadial, .layeredHolo, .maskedFoil, .glassEnclosure:
       return .composable
+    case .water:
+      return .paper
+    case .liquidTech:
+      return .experimental
     }
   }
 
@@ -102,6 +114,10 @@ enum ShaderType: String, CaseIterable, Identifiable {
       return "Reverse holo with masked foil areas"
     case .glassEnclosure:
       return "Card behind curved reflective glass"
+    case .water:
+      return "Water surface caustic light refraction"
+    case .liquidTech:
+      return "Liquid tech procedural highlights"
     }
   }
 
@@ -131,6 +147,10 @@ enum ShaderType: String, CaseIterable, Identifiable {
     case .layeredHolo: return "square.3.layers.3d"
     case .maskedFoil: return "theatermask.and.paintbrush.fill"
     case .glassEnclosure: return "rectangle.inset.filled.and.cursorarrow"
+    // Paper Shaders
+    case .water: return "drop.fill"
+    // Experimental Shaders
+    case .liquidTech: return "waveform.path.ecg"
     }
   }
 
@@ -183,6 +203,12 @@ enum ShaderType: String, CaseIterable, Identifiable {
       MaskedFoilView()
     case .glassEnclosure:
       GlassEnclosureView()
+    // Paper Shaders
+    case .water:
+      WaterView()
+    // Experimental Shaders
+    case .liquidTech:
+      LiquidTechView()
     }
   }
 }
@@ -198,7 +224,7 @@ struct ContentView: View {
                 HStack(spacing: 16) {
                   Image(systemName: shader.icon)
                     .font(.title2)
-                    .foregroundStyle(section == .basic ? .purple : .orange)
+                    .foregroundStyle(section == .basic ? .purple : section == .composable ? .orange : section == .paper ? .cyan : .mint)
                     .frame(width: 32)
 
                   VStack(alignment: .leading, spacing: 4) {
