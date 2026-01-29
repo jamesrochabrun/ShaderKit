@@ -254,6 +254,25 @@ public extension View {
     ))
   }
 
+  // MARK: - Tech Effects
+
+  /// Apply liquid tech procedural effect inspired by Twigl GLSL.
+  /// - Parameters:
+  ///   - intensity: Blend strength for the effect (default 0.9)
+  ///   - speed: Animation speed (default 1.0)
+  ///   - scale: Overall zoom (default 1.0)
+  func liquidTech(
+    intensity: Double = 0.9,
+    speed: Double = 1.0,
+    scale: Double = 1.0
+  ) -> some View {
+    shader(.liquidTech(
+      intensity: intensity,
+      speed: speed,
+      scale: scale
+    ))
+  }
+
   // MARK: - Paper Effects
 
   /// Apply water caustic effect with realistic light refraction patterns.

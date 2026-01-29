@@ -176,6 +176,15 @@ public enum ShaderEffect: Equatable, Sendable {
   /// Polished aluminum with diagonal rainbow holographic reflection
   case polishedAluminum(intensity: Double = 0.85)
 
+  // MARK: - Tech Effects
+
+  /// Liquid tech procedural flow inspired by Twigl GLSL
+  case liquidTech(
+    intensity: Double = 0.9,
+    speed: Double = 1.0,
+    scale: Double = 1.0
+  )
+
   // MARK: - Paper Effects
 
   /// Water caustic effect with realistic light refraction patterns

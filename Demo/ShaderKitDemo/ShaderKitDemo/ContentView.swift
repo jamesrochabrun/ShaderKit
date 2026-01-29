@@ -11,6 +11,7 @@ enum ShaderSection: String, CaseIterable {
   case basic = "Basic Shaders"
   case composable = "Composable Shaders"
   case paper = "Paper Shaders"
+  case experimental = "Experimental Shaders"
 }
 
 enum ShaderType: String, CaseIterable, Identifiable {
@@ -44,6 +45,9 @@ enum ShaderType: String, CaseIterable, Identifiable {
   case waterCaustic = "Water Caustic"
   case waterCausticV2 = "Water Caustic V2"
 
+  // Experimental Shaders (1 item)
+  case liquidTech = "Liquid Tech [234]"
+
   var id: String { rawValue }
 
   var section: ShaderSection {
@@ -58,6 +62,8 @@ enum ShaderType: String, CaseIterable, Identifiable {
       return .composable
     case .waterCaustic, .waterCausticV2:
       return .paper
+    case .liquidTech:
+      return .experimental
     }
   }
 
@@ -113,6 +119,8 @@ enum ShaderType: String, CaseIterable, Identifiable {
       return "Water surface caustic light refraction"
     case .waterCausticV2:
       return "Sharper caustic lines with layered motion"
+    case .liquidTech:
+      return "Liquid tech procedural highlights"
     }
   }
 
@@ -123,6 +131,7 @@ enum ShaderType: String, CaseIterable, Identifiable {
     case .verticalBeams: return "rainbow"
     case .reverseHolo: return "rectangle.on.rectangle.angled"
     case .cosmosHolo: return "sparkles"
+    case .liquidTech: return "waveform.path.ecg"
     case .rainbowRare: return "star.fill"
     case .shinyRare: return "diamond.fill"
     case .diagonalHolo: return "line.diagonal"
@@ -145,6 +154,8 @@ enum ShaderType: String, CaseIterable, Identifiable {
     // Paper Shaders
     case .waterCaustic: return "drop.fill"
     case .waterCausticV2: return "drop.circle.fill"
+    // Experimental Shaders
+    case .liquidTech: return "waveform.path.ecg"
     }
   }
 
@@ -160,6 +171,8 @@ enum ShaderType: String, CaseIterable, Identifiable {
       ReverseHoloView()
     case .cosmosHolo:
       CosmosHoloView()
+    case .liquidTech:
+      LiquidTechView()
     case .rainbowRare:
       RainbowRareView()
     case .shinyRare:
@@ -202,6 +215,9 @@ enum ShaderType: String, CaseIterable, Identifiable {
       WaterCausticView()
     case .waterCausticV2:
       WaterCausticV2View()
+    // Experimental Shaders
+    case .liquidTech:
+      LiquidTechView()
     }
   }
 }
@@ -217,7 +233,7 @@ struct ContentView: View {
                 HStack(spacing: 16) {
                   Image(systemName: shader.icon)
                     .font(.title2)
-                    .foregroundStyle(section == .basic ? .purple : section == .composable ? .orange : .cyan)
+                    .foregroundStyle(section == .basic ? .purple : section == .composable ? .orange : section == .paper ? .cyan : .mint)
                     .frame(width: 32)
 
                   VStack(alignment: .leading, spacing: 4) {
