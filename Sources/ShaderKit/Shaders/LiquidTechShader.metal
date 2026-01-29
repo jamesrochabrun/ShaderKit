@@ -29,7 +29,8 @@ static float2x2 rotate2D(float angle) {
   float t = time * speed;
 
   float2 uv = (position * 2.0 - r) / r.y;
-  uv *= scale;
+  float safeScale = max(scale, 0.001);
+  uv /= safeScale;
   uv += tilt * 0.12;
 
   float d = 0.0;

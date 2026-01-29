@@ -54,7 +54,7 @@ dependencies: [
 
 ## Available Shaders
 
-ShaderKit provides 34 composable shader effects across 7 categories.
+ShaderKit provides 37 composable shader effects across 9 categories.
 
 ### Foil Effects
 
@@ -125,6 +125,18 @@ ShaderKit provides 34 composable shader effects across 7 categories.
 | Effect | Description | Parameters |
 |--------|-------------|------------|
 | `.polishedAluminum()` | Polished aluminum with diagonal rainbow reflection | `intensity: Double = 0.85` |
+
+### Paper Effects
+
+| Effect | Description | Parameters |
+|--------|-------------|------------|
+| `.water()` | Water caustic effect inspired by https://shaders.paper.design/water | `colorBack: SIMD4<Float>, colorHighlight: SIMD4<Float>, highlights: Double = 0.07, edges: Double = 0.8, waves: Double = 0.3, caustic: Double = 0.1, size: Double = 1.0, speed: Double = 1.0, scale: Double = 0.8` |
+
+### Experimental Effects
+
+| Effect | Description | Parameters |
+|--------|-------------|------------|
+| `.liquidTech()` | Experimental liquid tech highlights | `intensity: Double = 0.9, speed: Double = 1.0, scale: Double = 1.0` |
 
 ## Composing Effects
 
