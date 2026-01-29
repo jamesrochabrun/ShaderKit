@@ -10,6 +10,7 @@ import SwiftUI
 enum ShaderSection: String, CaseIterable {
   case basic = "Basic Shaders"
   case composable = "Composable Shaders"
+  case paper = "Paper Shaders"
 }
 
 enum ShaderType: String, CaseIterable, Identifiable {
@@ -39,6 +40,10 @@ enum ShaderType: String, CaseIterable, Identifiable {
   case maskedFoil = "Masked Foil"
   case glassEnclosure = "Glass Enclosure"
 
+  // Paper Shaders (2 items)
+  case waterCaustic = "Water Caustic"
+  case waterCausticV2 = "Water Caustic V2"
+
   var id: String { rawValue }
 
   var section: ShaderSection {
@@ -51,6 +56,8 @@ enum ShaderType: String, CaseIterable, Identifiable {
     case .foilGlitterSweep, .gradientFoil, .psychicHolo,
         .starburstRadial, .layeredHolo, .maskedFoil, .glassEnclosure:
       return .composable
+    case .waterCaustic, .waterCausticV2:
+      return .paper
     }
   }
 
@@ -102,6 +109,10 @@ enum ShaderType: String, CaseIterable, Identifiable {
       return "Reverse holo with masked foil areas"
     case .glassEnclosure:
       return "Card behind curved reflective glass"
+    case .waterCaustic:
+      return "Water surface caustic light refraction"
+    case .waterCausticV2:
+      return "Sharper caustic lines with layered motion"
     }
   }
 
@@ -131,6 +142,9 @@ enum ShaderType: String, CaseIterable, Identifiable {
     case .layeredHolo: return "square.3.layers.3d"
     case .maskedFoil: return "theatermask.and.paintbrush.fill"
     case .glassEnclosure: return "rectangle.inset.filled.and.cursorarrow"
+    // Paper Shaders
+    case .waterCaustic: return "drop.fill"
+    case .waterCausticV2: return "drop.circle.fill"
     }
   }
 
@@ -183,6 +197,11 @@ enum ShaderType: String, CaseIterable, Identifiable {
       MaskedFoilView()
     case .glassEnclosure:
       GlassEnclosureView()
+    // Paper Shaders
+    case .waterCaustic:
+      WaterCausticView()
+    case .waterCausticV2:
+      WaterCausticV2View()
     }
   }
 }
@@ -198,7 +217,7 @@ struct ContentView: View {
                 HStack(spacing: 16) {
                   Image(systemName: shader.icon)
                     .font(.title2)
-                    .foregroundStyle(section == .basic ? .purple : .orange)
+                    .foregroundStyle(section == .basic ? .purple : section == .composable ? .orange : .cyan)
                     .frame(width: 32)
 
                   VStack(alignment: .leading, spacing: 4) {

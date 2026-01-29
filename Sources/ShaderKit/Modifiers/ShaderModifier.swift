@@ -490,5 +490,54 @@ private func applyEffect<V: VisualEffect>(
       ),
       maxSampleOffset: .zero
     )
+
+    // MARK: - Paper Effects
+
+  case .waterCaustic(let colorBack, let colorHighlight, let highlights,
+                     let layering, let edges, let waves, let caustic,
+                     let speed, let scale):
+    let maxDimension = max(size.width, size.height)
+    let maxOffset = CGFloat((waves * 0.03 + edges * 0.015 + caustic * 0.01) * Double(maxDimension))
+    return view.layerEffect(
+      shaders.waterCaustic(
+        .float2(size.width, size.height),
+        .float2(tilt.x, tilt.y),
+        .float(time),
+        .float4(colorBack.x, colorBack.y, colorBack.z, colorBack.w),
+        .float4(colorHighlight.x, colorHighlight.y, colorHighlight.z, colorHighlight.w),
+        .float(highlights),
+        .float(layering),
+        .float(edges),
+        .float(waves),
+        .float(caustic),
+        .float(speed),
+        .float(scale)
+      ),
+      maxSampleOffset: CGSize(width: maxOffset, height: maxOffset)
+    )
+
+  case .waterCausticV2(let colorBack, let colorHighlight, let highlights,
+                       let layering, let edges, let waves, let caustic,
+                       let patternSize, let speed, let scale):
+    let maxDimension = max(size.width, size.height)
+    let maxOffset = CGFloat((waves * 0.04 + edges * 0.02 + caustic * 0.03) * Double(maxDimension))
+    return view.layerEffect(
+      shaders.waterCausticV2(
+        .float2(size.width, size.height),
+        .float2(tilt.x, tilt.y),
+        .float(time),
+        .float4(colorBack.x, colorBack.y, colorBack.z, colorBack.w),
+        .float4(colorHighlight.x, colorHighlight.y, colorHighlight.z, colorHighlight.w),
+        .float(highlights),
+        .float(layering),
+        .float(edges),
+        .float(waves),
+        .float(caustic),
+        .float(patternSize),
+        .float(speed),
+        .float(scale)
+      ),
+      maxSampleOffset: CGSize(width: maxOffset, height: maxOffset)
+    )
   }
 }

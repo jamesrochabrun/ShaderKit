@@ -253,4 +253,79 @@ public extension View {
       starColor: starColor
     ))
   }
+
+  // MARK: - Paper Effects
+
+  /// Apply water caustic effect with realistic light refraction patterns.
+  /// - Parameters:
+  ///   - colorBack: Background/tint color (default gray)
+  ///   - colorHighlight: Highlight color (default white)
+  ///   - highlights: Highlight intensity for caustic + glints (default 0.12)
+  ///   - layering: Second caustic layer intensity (default 0.35)
+  ///   - edges: Edge distortion power (default 0.55)
+  ///   - waves: Simplex noise wave distortion (default 0.7)
+  ///   - caustic: Caustic distortion power (default 0.2)
+  ///   - speed: Animation speed (default 0.8)
+  ///   - scale: Overall zoom (default 0.9)
+  func waterCaustic(
+    colorBack: SIMD4<Float> = SIMD4<Float>(0.56, 0.56, 0.56, 1.0),
+    colorHighlight: SIMD4<Float> = SIMD4<Float>(1.0, 1.0, 1.0, 1.0),
+    highlights: Double = 0.12,
+    layering: Double = 0.35,
+    edges: Double = 0.55,
+    waves: Double = 0.7,
+    caustic: Double = 0.2,
+    speed: Double = 0.8,
+    scale: Double = 0.9
+  ) -> some View {
+    shader(.waterCaustic(
+      colorBack: colorBack,
+      colorHighlight: colorHighlight,
+      highlights: highlights,
+      layering: layering,
+      edges: edges,
+      waves: waves,
+      caustic: caustic,
+      speed: speed,
+      scale: scale
+    ))
+  }
+
+  /// Apply water caustic v2 effect inspired by Twigl GLSL.
+  /// - Parameters:
+  ///   - colorBack: Background/tint color (default gray)
+  ///   - colorHighlight: Highlight color (default white)
+  ///   - highlights: Highlight intensity for caustic overlay (default 0.07)
+  ///   - layering: Second caustic layer intensity (default 0.5)
+  ///   - edges: Edge distortion power (default 0.8)
+  ///   - waves: Additional wave noise distortion (default 0.3)
+  ///   - caustic: Caustic distortion power (default 0.1)
+  ///   - size: Pattern scale relative to the image (default 1.0)
+  ///   - speed: Animation speed (default 1.0)
+  ///   - scale: Overall zoom (default 0.8)
+  func waterCausticV2(
+    colorBack: SIMD4<Float> = SIMD4<Float>(0.56, 0.56, 0.56, 1.0),
+    colorHighlight: SIMD4<Float> = SIMD4<Float>(1.0, 1.0, 1.0, 1.0),
+    highlights: Double = 0.07,
+    layering: Double = 0.5,
+    edges: Double = 0.8,
+    waves: Double = 0.3,
+    caustic: Double = 0.1,
+    size patternSize: Double = 1.0,
+    speed: Double = 1.0,
+    scale: Double = 0.8
+  ) -> some View {
+    shader(.waterCausticV2(
+      colorBack: colorBack,
+      colorHighlight: colorHighlight,
+      highlights: highlights,
+      layering: layering,
+      edges: edges,
+      waves: waves,
+      caustic: caustic,
+      size: patternSize,
+      speed: speed,
+      scale: scale
+    ))
+  }
 }
