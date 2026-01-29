@@ -57,7 +57,6 @@ static float3 causticFieldV2(float2 p, float time, float patternSize) {
   float4 colorBack,
   float4 colorHighlight,
   float highlights,
-  float layering,
   float edges,
   float waves,
   float caustic,
@@ -74,10 +73,8 @@ static float3 causticFieldV2(float2 p, float time, float patternSize) {
   float t = time * speed;
 
   float3 causticA = causticFieldV2(p, t * 0.2, patternSize);
-  float3 causticB = causticFieldV2(p * 1.1 + float2(0.7, 1.3), t * 0.23 + 1.5, patternSize * 0.85);
-
-  float a = causticA.x + causticB.x * layering;
-  float2 N = float2(causticA.y, causticA.z) + float2(causticB.y, causticB.z) * layering;
+  float a = causticA.x;
+  float2 N = float2(causticA.y, causticA.z);
 
   float nLen = length(N);
   float causticBase = (a + 0.5) * 0.1;

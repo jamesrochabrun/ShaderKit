@@ -296,7 +296,6 @@ public extension View {
   ///   - colorBack: Background/tint color (default gray)
   ///   - colorHighlight: Highlight color (default white)
   ///   - highlights: Highlight intensity for caustic overlay (default 0.07)
-  ///   - layering: Second caustic layer intensity (default 0.5)
   ///   - edges: Edge distortion power (default 0.8)
   ///   - waves: Additional wave noise distortion (default 0.3)
   ///   - caustic: Caustic distortion power (default 0.1)
@@ -307,7 +306,6 @@ public extension View {
     colorBack: SIMD4<Float> = SIMD4<Float>(0.56, 0.56, 0.56, 1.0),
     colorHighlight: SIMD4<Float> = SIMD4<Float>(1.0, 1.0, 1.0, 1.0),
     highlights: Double = 0.07,
-    layering: Double = 0.5,
     edges: Double = 0.8,
     waves: Double = 0.3,
     caustic: Double = 0.1,
@@ -319,7 +317,6 @@ public extension View {
       colorBack: colorBack,
       colorHighlight: colorHighlight,
       highlights: highlights,
-      layering: layering,
       edges: edges,
       waves: waves,
       caustic: caustic,

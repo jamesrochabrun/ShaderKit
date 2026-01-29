@@ -517,7 +517,7 @@ private func applyEffect<V: VisualEffect>(
     )
 
   case .waterCausticV2(let colorBack, let colorHighlight, let highlights,
-                       let layering, let edges, let waves, let caustic,
+                       let edges, let waves, let caustic,
                        let patternSize, let speed, let scale):
     let maxDimension = max(size.width, size.height)
     let maxOffset = CGFloat((waves * 0.04 + edges * 0.02 + caustic * 0.03) * Double(maxDimension))
@@ -529,7 +529,6 @@ private func applyEffect<V: VisualEffect>(
         .float4(colorBack.x, colorBack.y, colorBack.z, colorBack.w),
         .float4(colorHighlight.x, colorHighlight.y, colorHighlight.z, colorHighlight.w),
         .float(highlights),
-        .float(layering),
         .float(edges),
         .float(waves),
         .float(caustic),

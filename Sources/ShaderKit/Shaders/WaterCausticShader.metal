@@ -62,47 +62,35 @@ static float simplexNoise2D(float2 v) {
 }
 
 // =============================================================================
-// MARK: - Caustic Pattern (Shadertoy-style)
+// MARK: - Caustic Pattern (Twigl GLSL inspired)
 // =============================================================================
 
-// Caustic pattern - Shadertoy-style algorithm for visible caustic lines
-// Returns both caustic value (x) and glow magnitude (y)
-static float2 causticPattern(float2 p, float time, float patternSize, float speed) {
-  float result = 0.0;
-  float scale = 9.0;
+static float2x2 rotation2D(float angle) {
+  float s = sin(angle);
+  float c = cos(angle);
+  return float2x2(c, -s, s, c);
+}
+
+// Returns x: caustic value, y/z: N vector for distortion
+static float3 causticFieldV2(float2 p, float time, float patternSize) {
+  float S = 9.0 / max(patternSize, 0.01);
+  float a = 0.0;
   float2 n = float2(0.0);
   float2 N = float2(0.0);
+  float2x2 m = rotation2D(5.0);
 
-  // Rotation matrix at angle 5 radians (~286 degrees)
-  float angle = 5.0;
-  float2x2 m = float2x2(cos(angle), -sin(angle), sin(angle), cos(angle));
-
-  // Scale input position
-  p = p * patternSize;
-
-  // 30 iterations for dramatic caustic pattern
   for (int i = 0; i < 30; i++) {
-    // Rotate coordinates each iteration
     p = m * p;
     n = m * n;
-
-    // Query position with time animation
-    float2 q = p * scale + float(i) + n + time * speed;
-
-    // Accumulate caustic pattern: (cos(q.x) + cos(q.y)) / scale
-    result += (cos(q.x) + cos(q.y)) / scale;
-
-    // Accumulate offset and glow
+    float2 q = p * S + float(i) + n + time;
+    a += (cos(q.x) + cos(q.y)) / S;
     q = sin(q);
     n += q;
-    N += q / (scale + 60.0);
-
-    // Increase scale
-    scale *= 1.2;
+    N += q / (S + 60.0);
+    S *= 1.2;
   }
 
-  // Return caustic value and glow magnitude
-  return float2(result, length(N));
+  return float3(a, N.x, N.y);
 }
 
 // =============================================================================
@@ -122,100 +110,100 @@ static float2 causticPattern(float2 p, float time, float patternSize, float spee
   float edges,
   float waves,
   float caustic,
-  float patternSize,
   float speed,
   float scale
 ) {
-  // Normalize coordinates
+  // Normalize coordinates and apply scale (zoom)
   float2 uv = position / size;
+  uv = (uv - 0.5) * scale + 0.5;
 
   // Apply tilt offset for parallax effect
   float2 tiltOffset = tilt * 0.08;
 
-  // === Calculate caustic pattern ===
-  float2 causticUV = uv * 2.5 + tiltOffset;
+  float t = time * speed;
 
-  // Get caustic value and glow from new algorithm
-  float2 causticResult1 = causticPattern(causticUV, time, patternSize, speed);
-  float2 causticResult2 = causticPattern(causticUV * 0.8 + 0.3, time + 1.5, patternSize * 1.1, speed * 0.8);
+  // === Flow field for fluid distortion ===
+  float2 flow1 = float2(
+    simplexNoise2D(uv * 2.6 + float2(0.0, t * 0.15)),
+    simplexNoise2D(uv * 2.6 + float2(5.2, t * 0.15))
+  );
+  float2 flow2 = float2(
+    simplexNoise2D(uv * 6.0 + float2(t * 0.3, 2.3)),
+    simplexNoise2D(uv * 6.0 + float2(1.7, t * 0.3))
+  );
+  float2 flow = flow1 + 0.5 * flow2;
 
-  // Primary caustic and glow
-  float caustic1 = causticResult1.x;
-  float glow1 = causticResult1.y;
+  float2 ripple = float2(
+    sin((uv.y + t * 0.05) * 12.0),
+    cos((uv.x - t * 0.05) * 12.0)
+  );
 
-  // Secondary layer
-  float caustic2 = causticResult2.x;
-  float glow2 = causticResult2.y;
+  // Base distortion in UV space
+  float2 distortion = (flow + ripple * 0.2) * (waves * 0.02);
 
-  // Combine caustic layers
-  float combinedCaustic = caustic1 + caustic2 * layering;
-  float combinedGlow = glow1 + glow2 * layering;
+  // Edge distortion to create subtle water-like wobble near edges
+  float edgeDist = min(min(uv.x, uv.y), min(1.0 - uv.x, 1.0 - uv.y));
+  float edgeMask = smoothstep(0.0, 0.12, edgeDist);
+  float edgeWarp = (1.0 - edgeMask) * edges;
+  distortion += flow2 * edgeWarp * 0.015;
+
+  // === Soft caustic modulation (subtle) ===
+  float2 causticUV = uv * 2.4 + tiltOffset + flow * 0.12;
+  float3 causticA = causticFieldV2(causticUV, t * 0.2, 1.0);
+  float3 causticB = causticFieldV2(causticUV * 1.1 + float2(0.7, 1.3), t * 0.23 + 1.5, 0.85);
+
+  float a = causticA.x + causticB.x * layering;
+  float2 N = float2(causticA.y, causticA.z) + float2(causticB.y, causticB.z) * layering;
+
+  float nLen = length(N);
+  float causticBase = (a + 0.5) * 0.1;
+  float causticGlow = 0.003 / max(nLen, 0.0004);
+  float causticField = max(0.0, causticBase + causticGlow);
+  float causticBoost = pow(causticField, 0.45) * caustic;
+
+  distortion += normalize(N + float2(0.0001, 0.0001)) * (causticBoost * 0.008);
 
   // === Create background caustic color ===
   half3 backColor = half3(colorBack.x, colorBack.y, colorBack.z);
   half3 highlightColor = half3(colorHighlight.x, colorHighlight.y, colorHighlight.z);
 
-  // === Shadertoy-style caustic processing ===
-  // Normalize caustic value
-  float causticNorm = (combinedCaustic + 0.5) * 0.1;
-
-  // Add glow contribution
-  causticNorm += 0.003 / max(combinedGlow, 0.001);
-
-  // Apply pow(0.45) for sharp contrast - this creates the bright network lines
-  float causticLines = pow(max(0.0, causticNorm), 0.45);
-
-  // Create caustic color with high contrast
-  half3 causticColor = backColor * half(causticLines * 6.0);
-
-  // Add highlight peaks
-  float highlightMask = smoothstep(0.5, 0.8, causticLines) * highlights;
-
-  // Tilt-reactive highlights
-  float tiltFactor = (tilt.x + tilt.y) * 0.3 + 0.5;
-  tiltFactor = clamp(tiltFactor, 0.3, 1.0);
-  highlightMask *= tiltFactor;
-
-  causticColor = mix(causticColor, highlightColor, half(highlightMask));
-
-  // Clamp to prevent blowout
-  causticColor = min(causticColor, half3(2.0));
-
   // === Sample the image WITH water distortion ===
-  // Use simplex noise for organic water ripple effect
-  float2 distortUV = uv * 3.0 + time * speed * 0.3;
-  float noiseX = simplexNoise2D(distortUV);
-  float noiseY = simplexNoise2D(distortUV + float2(100.0, 100.0));
-
-  // Apply distortion scaled by waves parameter
-  float2 distortion = float2(noiseX, noiseY) * waves * 15.0;
-  float2 samplePos = position + distortion;
+  float2 warpedUV = uv + distortion;
+  float2 samplePos = warpedUV * size;
   half4 sampledColor = layer.sample(samplePos);
 
-  // === Apply caustic as overlay on top ===
+  // === Apply subtle caustic light ===
   half3 result;
+  // Sun glints: derive a soft pseudo-normal from noise and add a specular highlight
+  float heightFreq = 4.0;
+  float2 heightOffset = float2(t * 0.08, t * 0.06);
+  float eps = 1.5 / max(size.x, size.y);
+  float heightBase = simplexNoise2D(uv * heightFreq + heightOffset);
+  float heightX = simplexNoise2D((uv + float2(eps, 0.0)) * heightFreq + heightOffset);
+  float heightY = simplexNoise2D((uv + float2(0.0, eps)) * heightFreq + heightOffset);
+  float2 grad = float2(heightX - heightBase, heightY - heightBase) / max(eps, 0.0002);
+  float3 normal = normalize(float3(-grad.x * 0.12, -grad.y * 0.12, 1.0));
+  float3 lightDir = normalize(float3(-0.2, -0.4, 1.0));
+  float3 viewDir = float3(0.0, 0.0, 1.0);
+  float3 halfDir = normalize(lightDir + viewDir);
+  float spec = pow(max(dot(normal, halfDir), 0.0), 28.0);
+
+  float2 sunPos = float2(0.75 + tilt.x * 0.08, 0.15 - tilt.y * 0.08);
+  float sunMask = smoothstep(0.85, 0.0, distance(uv, sunPos));
+  float sunGlow = smoothstep(1.05, 0.0, distance(uv, sunPos));
+  float glint = (spec * sunMask + sunGlow * 0.35) * highlights;
+
+  half3 causticLight = highlightColor * half(causticBoost * highlights * 1.4 + glint * 1.8);
 
   if (sampledColor.a < 0.1h) {
-    // Transparent - show caustic background
-    result = causticColor;
+    result = backColor;
+    result = half3(1.0) - (half3(1.0) - result) * (half3(1.0) - causticLight);
   } else {
-    // Opaque - add subtle caustic light network on top of image
     half3 base = sampledColor.rgb;
-
-    // Isolate the bright caustic peaks
-    float causticBase = 0.35;
-    float causticVariation = max(0.0, causticLines - causticBase);
-
-    // Scale for visibility
-    float causticIntensity = causticVariation * caustic * 3.0;
-
-    // Create caustic light
-    half3 causticLight = highlightColor * half(causticIntensity);
-
-    // Screen blend - gentler than additive, prevents harsh blowout
-    // Formula: 1 - (1 - base) * (1 - light)
+    // Apply backColor as color tint/wash
+    base = mix(base, base * backColor, half(0.2));
     result = half3(1.0) - (half3(1.0) - base) * (half3(1.0) - causticLight);
   }
 
-  return half4(result, max(sampledColor.a, half(causticLines > 0.1 ? 1.0 : 0.0)));
+  return half4(result, sampledColor.a);
 }

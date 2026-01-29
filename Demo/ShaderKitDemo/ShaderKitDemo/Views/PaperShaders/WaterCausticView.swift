@@ -1,8 +1,8 @@
 //
-//  WaterCausticV2View.swift
+//  WaterCausticView.swift
 //  ShaderKitDemo
 //
-//  Water caustic v2 shader demo based on Twigl GLSL reference
+//  Water caustic shader demo with realistic light refraction
 //
 
 import SwiftUI
@@ -14,16 +14,16 @@ import UIKit
 import AppKit
 #endif
 
-struct WaterCausticV2View: View {
+struct WaterCausticView: View {
   @State private var colorBack = Color(red: 0.56, green: 0.56, blue: 0.56)
   @State private var colorHighlight = Color.white
-  @State private var highlights = 0.07
-  @State private var edges = 0.8
-  @State private var waves = 0.3
-  @State private var caustic = 0.1
-  @State private var size = 1.0
-  @State private var speed = 1.0
-  @State private var scale = 0.8
+  @State private var highlights = 0.12
+  @State private var layering = 0.35
+  @State private var edges = 0.55
+  @State private var waves = 0.7
+  @State private var caustic = 0.2
+  @State private var speed = 0.8
+  @State private var scale = 0.9
 
   private enum Preset {
     case `default`, slowMo, abstract, streaming
@@ -35,42 +35,42 @@ struct WaterCausticV2View: View {
       case .default:
         colorBack = Color(red: 0.56, green: 0.56, blue: 0.56)
         colorHighlight = .white
-        highlights = 0.07
-        edges = 0.8
-        waves = 0.3
-        caustic = 0.1
-        size = 1.0
-        speed = 1.0
-        scale = 0.8
-      case .slowMo:
-        colorBack = Color(red: 0.45, green: 0.5, blue: 0.55)
-        colorHighlight = .white
-        highlights = 0.05
-        edges = 0.5
-        waves = 0.2
-        caustic = 0.07
-        size = 1.2
-        speed = 0.25
+        highlights = 0.12
+        layering = 0.35
+        edges = 0.55
+        waves = 0.7
+        caustic = 0.2
+        speed = 0.8
         scale = 0.9
+      case .slowMo:
+        colorBack = Color(red: 0.4, green: 0.5, blue: 0.6)
+        colorHighlight = .white
+        highlights = 0.08
+        layering = 0.2
+        edges = 0.3
+        waves = 0.4
+        caustic = 0.15
+        speed = 0.2
+        scale = 0.95
       case .abstract:
-        colorBack = Color(red: 0.2, green: 0.2, blue: 0.35)
-        colorHighlight = Color(red: 1.0, green: 0.7, blue: 0.9)
-        highlights = 0.35
-        edges = 1.0
-        waves = 0.9
-        caustic = 0.5
-        size = 0.6
-        speed = 1.4
+        colorBack = Color(red: 0.3, green: 0.2, blue: 0.5)
+        colorHighlight = Color(red: 1.0, green: 0.8, blue: 0.9)
+        highlights = 0.25
+        layering = 0.8
+        edges = 0.9
+        waves = 1.2
+        caustic = 0.6
+        speed = 1.0
         scale = 0.7
       case .streaming:
-        colorBack = Color(red: 0.2, green: 0.35, blue: 0.4)
+        colorBack = Color(red: 0.2, green: 0.3, blue: 0.4)
         colorHighlight = .white
         highlights = 0.15
-        edges = 0.7
-        waves = 0.6
-        caustic = 0.2
-        size = 1.3
-        speed = 1.6
+        layering = 0.5
+        edges = 0.4
+        waves = 1.0
+        caustic = 0.3
+        speed = 1.5
         scale = 0.85
       }
     }
@@ -89,14 +89,14 @@ struct WaterCausticV2View: View {
           Image("fish")
             .resizable()
             .aspectRatio(contentMode: .fill)
-            .waterCausticV2(
+            .waterCaustic(
               colorBack: colorBack.simdRGBA,
               colorHighlight: colorHighlight.simdRGBA,
               highlights: highlights,
+              layering: layering,
               edges: edges,
               waves: waves,
               caustic: caustic,
-              size: size,
               speed: speed,
               scale: scale
             )
@@ -145,13 +145,13 @@ struct WaterCausticV2View: View {
                 .labelsHidden()
             }
 
-            SliderRow(title: "highlights", value: $highlights, range: 0...1)
+            SliderRow(title: "highlights", value: $highlights, range: 0...0.3)
+            SliderRow(title: "layering", value: $layering, range: 0...1)
             SliderRow(title: "edges", value: $edges, range: 0...1)
-            SliderRow(title: "waves", value: $waves, range: 0...1)
+            SliderRow(title: "waves", value: $waves, range: 0...1.5)
             SliderRow(title: "caustic", value: $caustic, range: 0...1)
-            SliderRow(title: "size", value: $size, range: 0.01...7)
-            SliderRow(title: "speed", value: $speed, range: 0...2.5)
-            SliderRow(title: "scale", value: $scale, range: 0.01...4)
+            SliderRow(title: "speed", value: $speed, range: 0...3.0)
+            SliderRow(title: "scale", value: $scale, range: 0.4...1.2)
           }
           .padding(16)
           .background(Color.white.opacity(0.08))
@@ -161,7 +161,7 @@ struct WaterCausticV2View: View {
       }
       .padding(.top, 16)
     }
-    .navigationTitle("Water Caustic V2")
+    .navigationTitle("Water Caustic")
 #if os(iOS)
     .navigationBarTitleDisplayMode(.inline)
 #endif
@@ -210,6 +210,6 @@ private struct SliderRow: View {
 
 #Preview {
   NavigationStack {
-    WaterCausticV2View()
+    WaterCausticView()
   }
 }
