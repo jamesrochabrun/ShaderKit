@@ -41,9 +41,8 @@ enum ShaderType: String, CaseIterable, Identifiable {
   case maskedFoil = "Masked Foil"
   case glassEnclosure = "Glass Enclosure"
 
-  // Paper Shaders (2 items)
-  case waterCaustic = "Water Caustic"
-  case waterCausticV2 = "Water Caustic V2"
+  // Paper Shaders (1 item)
+  case water = "Water"
 
   // Experimental Shaders (1 item)
   case liquidTech = "Liquid Tech [234]"
@@ -60,7 +59,7 @@ enum ShaderType: String, CaseIterable, Identifiable {
     case .foilGlitterSweep, .gradientFoil, .psychicHolo,
         .starburstRadial, .layeredHolo, .maskedFoil, .glassEnclosure:
       return .composable
-    case .waterCaustic, .waterCausticV2:
+    case .water:
       return .paper
     case .liquidTech:
       return .experimental
@@ -115,10 +114,8 @@ enum ShaderType: String, CaseIterable, Identifiable {
       return "Reverse holo with masked foil areas"
     case .glassEnclosure:
       return "Card behind curved reflective glass"
-    case .waterCaustic:
+    case .water:
       return "Water surface caustic light refraction"
-    case .waterCausticV2:
-      return "Sharper caustic lines with layered motion"
     case .liquidTech:
       return "Liquid tech procedural highlights"
     }
@@ -131,7 +128,6 @@ enum ShaderType: String, CaseIterable, Identifiable {
     case .verticalBeams: return "rainbow"
     case .reverseHolo: return "rectangle.on.rectangle.angled"
     case .cosmosHolo: return "sparkles"
-    case .liquidTech: return "waveform.path.ecg"
     case .rainbowRare: return "star.fill"
     case .shinyRare: return "diamond.fill"
     case .diagonalHolo: return "line.diagonal"
@@ -152,8 +148,7 @@ enum ShaderType: String, CaseIterable, Identifiable {
     case .maskedFoil: return "theatermask.and.paintbrush.fill"
     case .glassEnclosure: return "rectangle.inset.filled.and.cursorarrow"
     // Paper Shaders
-    case .waterCaustic: return "drop.fill"
-    case .waterCausticV2: return "drop.circle.fill"
+    case .water: return "drop.fill"
     // Experimental Shaders
     case .liquidTech: return "waveform.path.ecg"
     }
@@ -171,8 +166,6 @@ enum ShaderType: String, CaseIterable, Identifiable {
       ReverseHoloView()
     case .cosmosHolo:
       CosmosHoloView()
-    case .liquidTech:
-      LiquidTechView()
     case .rainbowRare:
       RainbowRareView()
     case .shinyRare:
@@ -211,10 +204,8 @@ enum ShaderType: String, CaseIterable, Identifiable {
     case .glassEnclosure:
       GlassEnclosureView()
     // Paper Shaders
-    case .waterCaustic:
-      WaterCausticView()
-    case .waterCausticV2:
-      WaterCausticV2View()
+    case .water:
+      WaterView()
     // Experimental Shaders
     case .liquidTech:
       LiquidTechView()

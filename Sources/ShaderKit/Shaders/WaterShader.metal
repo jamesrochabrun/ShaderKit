@@ -1,8 +1,8 @@
 //
-//  WaterCausticV2Shader.metal
+//  WaterShader.metal
 //  ShaderKit
 //
-//  Water caustic effect v2 based on Twigl GLSL reference
+//  Water caustic effect based on Twigl GLSL reference
 //  https://twigl.app/?ol=true&ss=-NOAlYulOVLklxMdxBDx
 //
 
@@ -48,7 +48,7 @@ static float3 causticFieldV2(float2 p, float time, float patternSize) {
 // MARK: - Main Water Caustic V2 Shader
 // =============================================================================
 
-[[stitchable]] half4 waterCausticV2(
+[[stitchable]] half4 water(
   float2 position,
   SwiftUI::Layer layer,
   float2 size,

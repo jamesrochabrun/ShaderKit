@@ -1,8 +1,8 @@
 //
-//  WaterCausticV2View.swift
+//  WaterView.swift
 //  ShaderKitDemo
 //
-//  Water caustic v2 shader demo based on Twigl GLSL reference
+//  Water shader demo based on Twigl GLSL reference
 //
 
 import SwiftUI
@@ -14,7 +14,7 @@ import UIKit
 import AppKit
 #endif
 
-struct WaterCausticV2View: View {
+struct WaterView: View {
   @State private var colorBack = Color(red: 0.56, green: 0.56, blue: 0.56)
   @State private var colorHighlight = Color.white
   @State private var highlights = 0.07
@@ -89,7 +89,7 @@ struct WaterCausticV2View: View {
           Image("fish")
             .resizable()
             .aspectRatio(contentMode: .fill)
-            .waterCausticV2(
+            .water(
               colorBack: colorBack.simdRGBA,
               colorHighlight: colorHighlight.simdRGBA,
               highlights: highlights,
@@ -161,7 +161,7 @@ struct WaterCausticV2View: View {
       }
       .padding(.top, 16)
     }
-    .navigationTitle("Water Caustic V2")
+    .navigationTitle("Water")
 #if os(iOS)
     .navigationBarTitleDisplayMode(.inline)
 #endif
@@ -210,6 +210,6 @@ private struct SliderRow: View {
 
 #Preview {
   NavigationStack {
-    WaterCausticV2View()
+    WaterView()
   }
 }

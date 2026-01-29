@@ -187,23 +187,9 @@ public enum ShaderEffect: Equatable, Sendable {
 
   // MARK: - Paper Effects
 
-  /// Water caustic effect with realistic light refraction patterns
-  /// Inspired by Paper Design water shader
-  case waterCaustic(
-    colorBack: SIMD4<Float> = SIMD4<Float>(0.56, 0.56, 0.56, 1.0),
-    colorHighlight: SIMD4<Float> = SIMD4<Float>(1.0, 1.0, 1.0, 1.0),
-    highlights: Double = 0.12,
-    layering: Double = 0.35,
-    edges: Double = 0.55,
-    waves: Double = 0.7,
-    caustic: Double = 0.2,
-    speed: Double = 0.8,
-    scale: Double = 0.9
-  )
-
-  /// Water caustic effect v2 based on Twigl GLSL reference
+  /// Water caustic effect based on Twigl GLSL reference
   /// Emphasizes sharper caustic lines with dynamic motion
-  case waterCausticV2(
+  case water(
     colorBack: SIMD4<Float> = SIMD4<Float>(0.56, 0.56, 0.56, 1.0),
     colorHighlight: SIMD4<Float> = SIMD4<Float>(1.0, 1.0, 1.0, 1.0),
     highlights: Double = 0.07,
