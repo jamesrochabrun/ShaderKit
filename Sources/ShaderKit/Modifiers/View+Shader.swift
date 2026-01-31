@@ -309,4 +309,36 @@ public extension View {
       scale: scale
     ))
   }
+
+  // MARK: - 3D Effects
+
+  /// Apply 3D ray-marched jelly switch effect.
+  /// An interactive toggle switch with a squishy translucent jelly that slides on a rail.
+  /// - Parameters:
+  ///   - progress: Toggle position from 0 (left) to 1 (right)
+  ///   - squashX: Horizontal compression spring value
+  ///   - squashZ: Depth compression spring value
+  ///   - wiggleX: Rotation angle spring value
+  ///   - jellyColor: Base color of the jelly (RGBA, default orange)
+  ///   - lightDirection: Normalized light direction vector
+  ///   - darkMode: Whether to use dark mode ground/background
+  func jellySwitch(
+    progress: Float = 0.0,
+    squashX: Float = 0.0,
+    squashZ: Float = 0.0,
+    wiggleX: Float = 0.0,
+    jellyColor: SIMD4<Float> = SIMD4<Float>(1.0, 0.45, 0.075, 1.0),
+    lightDirection: SIMD3<Float> = SIMD3<Float>(0.19, -0.24, 0.75),
+    darkMode: Bool = false
+  ) -> some View {
+    shader(.jellySwitch(
+      progress: progress,
+      squashX: squashX,
+      squashZ: squashZ,
+      wiggleX: wiggleX,
+      jellyColor: jellyColor,
+      lightDirection: lightDirection,
+      darkMode: darkMode
+    ))
+  }
 }

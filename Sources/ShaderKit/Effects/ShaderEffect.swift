@@ -200,4 +200,26 @@ public enum ShaderEffect: Equatable, Sendable {
     speed: Double = 1.0,
     scale: Double = 0.8
   )
+
+  // MARK: - 3D Effects
+
+  /// Interactive 3D jelly switch with ray-marched rendering.
+  /// A translucent jelly slides on a rail when toggled.
+  /// - Parameters:
+  ///   - progress: Toggle position from 0 (left) to 1 (right)
+  ///   - squashX: Horizontal compression spring value
+  ///   - squashZ: Depth compression spring value
+  ///   - wiggleX: Rotation angle spring value
+  ///   - jellyColor: Base color of the jelly (RGBA)
+  ///   - lightDirection: Normalized light direction vector
+  ///   - darkMode: Whether to use dark mode ground/background
+  case jellySwitch(
+    progress: Float = 0.0,
+    squashX: Float = 0.0,
+    squashZ: Float = 0.0,
+    wiggleX: Float = 0.0,
+    jellyColor: SIMD4<Float> = SIMD4<Float>(1.0, 0.45, 0.075, 1.0),
+    lightDirection: SIMD3<Float> = SIMD3<Float>(0.19, -0.24, 0.75),
+    darkMode: Bool = false
+  )
 }

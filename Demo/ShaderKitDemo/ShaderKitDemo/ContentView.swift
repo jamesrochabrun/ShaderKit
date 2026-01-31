@@ -44,8 +44,9 @@ enum ShaderType: String, CaseIterable, Identifiable {
   // Paper Shaders (1 item)
   case water = "Water"
 
-  // Experimental Shaders (1 item)
+  // Experimental Shaders (2 items)
   case liquidTech = "Liquid Tech [234]"
+  case jellySwitch = "Jelly Switch"
 
   var id: String { rawValue }
 
@@ -61,7 +62,7 @@ enum ShaderType: String, CaseIterable, Identifiable {
       return .composable
     case .water:
       return .paper
-    case .liquidTech:
+    case .liquidTech, .jellySwitch:
       return .experimental
     }
   }
@@ -118,6 +119,8 @@ enum ShaderType: String, CaseIterable, Identifiable {
       return "Water surface caustic light refraction"
     case .liquidTech:
       return "Liquid tech procedural highlights"
+    case .jellySwitch:
+      return "3D ray-marched interactive toggle switch"
     }
   }
 
@@ -151,6 +154,7 @@ enum ShaderType: String, CaseIterable, Identifiable {
     case .water: return "drop.fill"
     // Experimental Shaders
     case .liquidTech: return "waveform.path.ecg"
+    case .jellySwitch: return "togglepower"
     }
   }
 
@@ -209,6 +213,8 @@ enum ShaderType: String, CaseIterable, Identifiable {
     // Experimental Shaders
     case .liquidTech:
       LiquidTechView()
+    case .jellySwitch:
+      JellySwitchView()
     }
   }
 }

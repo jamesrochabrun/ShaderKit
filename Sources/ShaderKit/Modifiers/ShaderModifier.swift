@@ -530,5 +530,25 @@ private func applyEffect<V: VisualEffect>(
       ),
       maxSampleOffset: CGSize(width: maxOffset, height: maxOffset)
     )
+
+    // MARK: - 3D Effects
+
+  case .jellySwitch(let progress, let squashX, let squashZ, let wiggleX,
+                    let jellyColor, let lightDirection, let darkMode):
+    return view.layerEffect(
+      shaders.jellySwitch(
+        .float2(size.width, size.height),
+        .float2(tilt.x, tilt.y),
+        .float(time),
+        .float(progress),
+        .float(squashX),
+        .float(squashZ),
+        .float(wiggleX),
+        .float4(jellyColor.x, jellyColor.y, jellyColor.z, jellyColor.w),
+        .float3(lightDirection.x, lightDirection.y, lightDirection.z),
+        .float(darkMode ? 1.0 : 0.0)
+      ),
+      maxSampleOffset: .zero
+    )
   }
 }
