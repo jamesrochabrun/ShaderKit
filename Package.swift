@@ -14,6 +14,10 @@ let package = Package(
             name: "ShaderKit",
             targets: ["ShaderKit"]
         ),
+        .library(
+            name: "ShaderKitUI",
+            targets: ["ShaderKitUI"]
+        ),
     ],
     targets: [
         .target(
@@ -21,6 +25,10 @@ let package = Package(
             resources: [
                 .process("Shaders")
             ]
+        ),
+        .target(
+            name: "ShaderKitUI",
+            dependencies: ["ShaderKit"]
         ),
         .testTarget(
             name: "ShaderKitTests",

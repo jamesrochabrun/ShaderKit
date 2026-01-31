@@ -259,6 +259,38 @@ CardContent()
     .foilTexture(imageWindow: imageWindow)
 ```
 
+## ShaderKitUI
+
+ShaderKitUI provides ready-to-use interactive UI components built with Metal shaders.
+
+### JellySwitch
+
+A 3D jelly toggle switch with spring physics and sound effects. Inspired by [TypeGPU's Jelly Switch](https://docs.swmansion.com/TypeGPU/examples/#example=rendering--jelly-switch).
+
+```swift
+import ShaderKitUI
+
+struct ContentView: View {
+  @State private var isOn = false
+
+  var body: some View {
+    JellySwitch(isOn: $isOn)
+      .ignoresSafeArea()
+  }
+}
+```
+
+Customization options:
+
+```swift
+JellySwitch(
+  isOn: $isOn,
+  jellyColor: .blue,    // Custom jelly color
+  darkMode: true,       // Dark ambient lighting
+  soundEnabled: false   // Disable toggle sounds
+)
+```
+
 ## Requirements
 
 - iOS 17.0+ / macOS 14.0+

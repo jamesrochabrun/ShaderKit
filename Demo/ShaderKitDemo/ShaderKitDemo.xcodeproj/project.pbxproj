@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		7B2F07272EF60C0F00643798 /* ShaderKit in Frameworks */ = {isa = PBXBuildFile; productRef = 7B2F07262EF60C0F00643798 /* ShaderKit */; };
+		7B2F07282EF60C0F00643798 /* ShaderKitUI in Frameworks */ = {isa = PBXBuildFile; productRef = 7B2F07292EF60C0F00643798 /* ShaderKitUI */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +58,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7B2F07272EF60C0F00643798 /* ShaderKit in Frameworks */,
+				7B2F07282EF60C0F00643798 /* ShaderKitUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -118,6 +120,7 @@
 			name = ShaderKitDemo;
 			packageProductDependencies = (
 				7B2F07262EF60C0F00643798 /* ShaderKit */,
+				7B2F07292EF60C0F00643798 /* ShaderKitUI */,
 			);
 			productName = ShaderKitDemo;
 			productReference = 7B411F5D2EF5F4200061FDC7 /* ShaderKitDemo.app */;
@@ -636,6 +639,10 @@
 		7B2F07262EF60C0F00643798 /* ShaderKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ShaderKit;
+		};
+		7B2F07292EF60C0F00643798 /* ShaderKitUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ShaderKitUI;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
