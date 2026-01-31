@@ -131,10 +131,10 @@ private final class JellyPhysicsState {
 struct JellySwitchView: View {
   @State private var physics = JellyPhysicsState()
 
-  // Appearance - default blue color from original TypeGPU: [0.08, 0.5, 1.0]
-  @State private var jellyHue: Double = 0.58
-  @State private var jellySaturation: Double = 0.92
-  @State private var jellyBrightness: Double = 1.0
+  // Appearance - purple jelly, brightness adapts to ambient light
+  @State private var jellyHue: Double = 0.78
+  @State private var jellySaturation: Double = 0.85
+  @State private var jellyBrightness: Double = 0.65
   @State private var darkMode = false
 
   private var jellyColor: SIMD4<Float> {
@@ -193,6 +193,17 @@ struct JellySwitchView: View {
     #if os(iOS)
     .navigationBarTitleDisplayMode(.inline)
     #endif
+    .onChange(of: darkMode) { _, isDark in
+      withAnimation(.easeInOut(duration: 0.4)) {
+        if isDark {
+          // Bright purple for dark mode
+          jellyBrightness = 1.0
+        } else {
+          // Softer purple for light mode
+          jellyBrightness = 0.65
+        }
+      }
+    }
   }
 
   private var controlsPanel: some View {

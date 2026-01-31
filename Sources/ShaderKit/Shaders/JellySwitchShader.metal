@@ -299,8 +299,8 @@ float3 rayMarchNoJelly(float3 rayOrigin, float3 rayDirection, float3 lightDir,
   float2 uv = position / size;
   float2 ndc = float2(uv.x * 2.0 - 1.0, -(uv.y * 2.0 - 1.0));
 
-  // Camera setup - from original TypeGPU: position(0.024, 2.7, 1.9) looking at origin
-  float3 ro = float3(0.024, 2.7, 1.9);
+  // Camera setup - moved back 20% from original TypeGPU position for smaller appearance
+  float3 ro = float3(0.024, 3.27, 2.3);
   float3 target = float3(0, 0, 0);
   float3 up = float3(0, 1, 0);
 
