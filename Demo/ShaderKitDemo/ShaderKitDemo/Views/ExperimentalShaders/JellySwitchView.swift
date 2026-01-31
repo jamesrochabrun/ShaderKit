@@ -155,15 +155,12 @@ struct JellySwitchView: View {
 
   var body: some View {
     ZStack {
-      (darkMode ? Color.black : Color(white: 0.95))
-        .ignoresSafeArea()
-
-      VStack(spacing: 24) {
-        // Shader view
-        TimelineView(.animation) { timeline in
+      // Full-screen shader (tappable to toggle switch)
+      TimelineView(.animation) { timeline in
+        GeometryReader { geometry in
           Rectangle()
             .fill(darkMode ? Color.black : Color(white: 0.95))
-            .frame(width: 300, height: 300)
+            .frame(width: geometry.size.width, height: geometry.size.height)
             .shaderContext(tilt: .zero, time: timeline.date.timeIntervalSince1970)
             .jellySwitch(
               progress: physics.progress,
@@ -174,80 +171,65 @@ struct JellySwitchView: View {
               lightDirection: lightDirection,
               darkMode: darkMode
             )
-            .clipShape(RoundedRectangle(cornerRadius: 16))
             .contentShape(Rectangle())
             .onTapGesture {
               physics.toggle()
             }
-            .onChange(of: timeline.date) { _, newDate in
-              physics.update(now: newDate)
-            }
         }
-
-        // Controls
-        ScrollView {
-          VStack(spacing: 16) {
-            // Toggle button
-            Button {
-              physics.toggle()
-            } label: {
-              Text(physics.toggled ? "ON" : "OFF")
-                .font(.headline)
-                .foregroundStyle(.white)
-                .frame(width: 80, height: 40)
-                .background(physics.toggled ? Color.green : Color.gray)
-                .clipShape(Capsule())
-            }
-
-            Divider()
-
-            // Color controls
-            VStack(spacing: 12) {
-              Text("Jelly Color")
-                .font(.subheadline.weight(.medium))
-                .frame(maxWidth: .infinity, alignment: .leading)
-
-              ColorSliderRow(title: "Hue", value: $jellyHue, range: 0...1)
-              ColorSliderRow(title: "Saturation", value: $jellySaturation, range: 0...1)
-              ColorSliderRow(title: "Brightness", value: $jellyBrightness, range: 0.3...1)
-            }
-
-            Divider()
-
-            // Dark mode toggle
-            Toggle("Dark Mode", isOn: $darkMode)
-          }
-          .padding(16)
-          .background(Color.white.opacity(darkMode ? 0.08 : 0.9))
-          .clipShape(RoundedRectangle(cornerRadius: 16))
-          .padding(.horizontal, 16)
+        .ignoresSafeArea()
+        .onChange(of: timeline.date) { _, newDate in
+          physics.update(now: newDate)
         }
       }
-      .padding(.top, 16)
+
+      // Floating glass controls at bottom
+      VStack {
+        Spacer()
+        controlsPanel
+          .padding(.bottom, 40)
+      }
     }
     .navigationTitle("Jelly Switch")
     #if os(iOS)
     .navigationBarTitleDisplayMode(.inline)
     #endif
   }
+
+  private var controlsPanel: some View {
+    HStack(spacing: 16) {
+      // Light toggle button (sun/moon icon)
+      Button {
+        darkMode.toggle()
+      } label: {
+        Image(systemName: darkMode ? "moon.fill" : "sun.max.fill")
+          .font(.title2)
+          .foregroundStyle(darkMode ? .yellow : .orange)
+          .frame(width: 44, height: 44)
+          .background(.ultraThinMaterial)
+          .clipShape(Circle())
+      }
+
+      // Compact color sliders
+      VStack(spacing: 4) {
+        CompactSlider(value: $jellyHue)
+        CompactSlider(value: $jellySaturation)
+        CompactSlider(value: $jellyBrightness)
+      }
+      .frame(width: 150)
+      .padding(8)
+      .background(.ultraThinMaterial)
+      .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+  }
 }
 
-private struct ColorSliderRow: View {
-  let title: String
+private struct CompactSlider: View {
   @Binding var value: Double
-  let range: ClosedRange<Double>
 
   var body: some View {
-    HStack(spacing: 12) {
-      Text(title)
-        .font(.caption)
-        .frame(width: 80, alignment: .leading)
-      Slider(value: $value, in: range)
-      Text(String(format: "%.2f", value))
-        .font(.caption)
-        .monospacedDigit()
-        .frame(width: 40, alignment: .trailing)
-    }
+    Slider(value: $value, in: 0...1)
+      .tint(.primary)
+      .frame(height: 16)
   }
 }
 
