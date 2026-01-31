@@ -9,84 +9,122 @@ import SwiftUI
 import ShaderKit
 import simd
 
+/// Spring physics matching TypeGPU Spring class exactly
+private struct Spring {
+  var value: Float = 0
+  var target: Float = 0
+  var velocity: Float = 0
+  let mass: Float
+  let stiffness: Float
+  let damping: Float
+
+  mutating func update(dt: Float) {
+    let F_spring = -stiffness * (value - target)
+    let F_damp = -damping * velocity
+    let a = (F_spring + F_damp) / mass
+    velocity = velocity + a * dt
+    value = value + velocity * dt
+  }
+}
+
+/// Switch behavior matching TypeGPU SwitchBehavior class exactly
 @Observable
 private final class JellyPhysicsState {
-  // Toggle state
+  // State
   var toggled = false
+  var pressed = false
 
-  // Physics values
-  var progress: Float = 0
-  var velocity: Float = 0
-  var squashXValue: Float = 0
-  var squashXVelocity: Float = 0
-  var squashZValue: Float = 0
-  var squashZVelocity: Float = 0
-  var wiggleXValue: Float = 0
-  var wiggleXVelocity: Float = 0
+  // Derived physical state
+  private var progress_: Float = 0
+  private var velocity_: Float = 0
+  private var squashXSpring = Spring(mass: 1, stiffness: 1000, damping: 10)
+  private var squashZSpring = Spring(mass: 1, stiffness: 900, damping: 12)
+  private var wiggleXSpring = Spring(mass: 1, stiffness: 1000, damping: 20)
 
-  // Spring parameters - from original TypeGPU implementation
-  private let squashXStiffness: Float = 1000
-  private let squashXDamping: Float = 10
-  private let squashZStiffness: Float = 900
-  private let squashZDamping: Float = 12
-  private let wiggleXStiffness: Float = 1000
-  private let wiggleXDamping: Float = 20
-
-  // Movement acceleration (from original: SWITCH_ACCELERATION = 100)
+  // SWITCH_ACCELERATION = 100
   private let switchAcceleration: Float = 100
+
+  // Exposed values for shader
+  var progress: Float { progress_ }
+  var squashXValue: Float { squashXSpring.value }
+  var squashZValue: Float { squashZSpring.value }
+  var wiggleXValue: Float { wiggleXSpring.value }
 
   // Timing
   private var lastUpdate: Date?
 
   func toggle() {
     toggled.toggle()
+    pressed = true
 
-    // Apply impulse to springs (from original TypeGPU switch.ts)
-    squashXVelocity = -2.0
-    squashZVelocity = 1.0
-    wiggleXVelocity = 1.0 * (progress > 0.5 ? 1.0 : -1.0)
+    // Schedule release after a short delay (simulating press-release)
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { [weak self] in
+      self?.pressed = false
+    }
   }
 
   func update(now: Date) {
     let dt: Float
     if let last = lastUpdate {
-      dt = min(Float(last.distance(to: now)), 0.05)
+      dt = Float(last.distance(to: now))
+      if dt <= 0 { return }
     } else {
       dt = 0.016
     }
     lastUpdate = now
 
-    // Update progress with acceleration (not spring) like original
-    let targetProgress: Float = toggled ? 1.0 : 0.0
-    let direction: Float = targetProgress > progress ? 1.0 : -1.0
-    velocity += direction * switchAcceleration * dt
-    velocity *= 0.9 // damping
-    progress += velocity * dt
-    progress = max(0, min(1, progress))
+    // Clamp dt to avoid instability
+    let clampedDt = min(dt, 0.05)
 
-    // Transfer momentum to wiggle when reaching bounds
-    if progress <= 0 || progress >= 1 {
-      wiggleXVelocity += velocity * 0.5
-      velocity = 0
+    var acc: Float = 0
+    if toggled && progress_ < 1 {
+      acc = switchAcceleration
+    }
+    if !toggled && progress_ > 0 {
+      acc = -switchAcceleration
     }
 
-    // Update squashX spring
-    let squashXForce = -squashXStiffness * squashXValue
-    let squashXDampingForce = -squashXDamping * squashXVelocity
-    squashXVelocity += (squashXForce + squashXDampingForce) * dt
-    squashXValue += squashXVelocity * dt
+    // Anticipating movement (when pressed)
+    if pressed {
+      squashXSpring.velocity = -2
+      squashZSpring.velocity = 1
+      wiggleXSpring.velocity = 1 * (progress_ > 0.5 ? 1.0 : -1.0)
+    }
 
-    // Update squashZ spring
-    let squashZForce = -squashZStiffness * squashZValue
-    let squashZDampingForce = -squashZDamping * squashZVelocity
-    squashZVelocity += (squashZForce + squashZDampingForce) * dt
-    squashZValue += squashZVelocity * dt
+    velocity_ = velocity_ + acc * clampedDt
 
-    // Update wiggleX spring
-    let wiggleXForce = -wiggleXStiffness * wiggleXValue
-    let wiggleXDampingForce = -wiggleXDamping * wiggleXVelocity
-    wiggleXVelocity += (wiggleXForce + wiggleXDampingForce) * dt
-    wiggleXValue += wiggleXVelocity * dt
+    // Transfer velocity to wiggle while moving
+    if progress_ > 0 && progress_ < 1 {
+      wiggleXSpring.velocity = velocity_
+    }
+
+    progress_ = progress_ + velocity_ * clampedDt
+
+    // Overshoot handling
+    if progress_ > 1 {
+      progress_ = 1
+      // Converting leftover velocity to compression
+      velocity_ = 0
+      squashXSpring.velocity = -5
+      squashZSpring.velocity = 5
+      wiggleXSpring.velocity = -10
+    }
+    if progress_ < 0 {
+      progress_ = 0
+      // Converting leftover velocity to compression
+      velocity_ = 0
+      squashXSpring.velocity = -5
+      squashZSpring.velocity = 5
+      wiggleXSpring.velocity = 10
+    }
+
+    // Clamp progress (saturate)
+    progress_ = max(0, min(1, progress_))
+
+    // Spring dynamics
+    squashXSpring.update(dt: clampedDt)
+    squashZSpring.update(dt: clampedDt)
+    wiggleXSpring.update(dt: clampedDt)
   }
 }
 
