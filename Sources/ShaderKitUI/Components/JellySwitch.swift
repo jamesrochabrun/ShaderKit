@@ -45,6 +45,7 @@ public struct JellySwitch: View {
 
   @State private var physics = JellyPhysicsState()
   @State private var toneGenerator = ToneGenerator()
+  @State private var isDragging = false
 
   /// Creates a jelly switch.
   ///
@@ -81,7 +82,7 @@ public struct JellySwitch: View {
 
   public var body: some View {
     TimelineView(.animation) { timeline in
-      GeometryReader { _ in
+      GeometryReader { geometry in
         Rectangle()
           .fill(darkMode ? Color.black : Color(white: 0.95))
           .shaderContext(tilt: .zero, time: timeline.date.timeIntervalSince1970)
@@ -95,17 +96,15 @@ public struct JellySwitch: View {
             darkMode: darkMode
           )
           .contentShape(Rectangle())
-          .onTapGesture {
-            physics.toggle()
-            isOn = physics.toggled
-            if soundEnabled {
-              if physics.toggled {
-                toneGenerator.playOn()
-              } else {
-                toneGenerator.playOff()
+          .gesture(
+            DragGesture(minimumDistance: 0)
+              .onChanged { value in
+                handleDragChanged(value, in: geometry.size)
               }
-            }
-          }
+              .onEnded { value in
+                handleDragEnded(value, in: geometry.size)
+              }
+          )
       }
       .onChange(of: timeline.date) { _, newDate in
         physics.update(now: newDate)
@@ -119,6 +118,67 @@ public struct JellySwitch: View {
       if physics.toggled != newValue {
         physics.toggle()
       }
+    }
+  }
+
+  private func handleDragChanged(_ value: DragGesture.Value, in size: CGSize) {
+    if !isDragging {
+      // Start drag only if horizontal movement exceeds threshold
+      if abs(value.translation.width) > 8 {
+        isDragging = true
+        physics.startDrag()
+      }
+    }
+
+    if isDragging {
+      let dragDistance: CGFloat = 100
+      let normalizedDelta = Float(value.translation.width / dragDistance)
+      physics.updateDrag(normalizedDelta: normalizedDelta)
+    }
+  }
+
+  private func handleDragEnded(_ value: DragGesture.Value, in size: CGSize) {
+    if isDragging {
+      let dragDistance: CGFloat = 100
+      let normalizedVelocity = Float(value.velocity.width / dragDistance)
+      physics.endDrag(normalizedVelocity: normalizedVelocity)
+      isOn = physics.toggled
+      playToggleSound()
+    } else {
+      // It was a tap - check if within switch bounds
+      if isLocationWithinSwitch(value.location, size: size) {
+        physics.toggle()
+        isOn = physics.toggled
+        playToggleSound()
+      }
+    }
+    isDragging = false
+  }
+
+  private func isLocationWithinSwitch(_ location: CGPoint, size: CGSize) -> Bool {
+    let bounds = switchBounds(in: size)
+    return bounds.contains(location)
+  }
+
+  private func switchBounds(in size: CGSize) -> CGRect {
+    let centerX = size.width * 0.5
+    let centerY = size.height * 0.42
+    let width = size.width * 0.28
+    let height = size.height * 0.22
+    return CGRect(
+      x: centerX - width / 2,
+      y: centerY - height / 2,
+      width: width,
+      height: height
+    )
+  }
+
+  private func playToggleSound() {
+    guard soundEnabled else { return }
+    if physics.toggled {
+      toneGenerator.playOn()
+    } else {
+      toneGenerator.playOff()
     }
   }
 }
@@ -138,6 +198,9 @@ final class JellyPhysicsState {
   private let switchAcceleration: Float = 100
   private var lastUpdate: Date?
 
+  private var isDragging = false
+  private var dragStartProgress: Float = 0
+
   var progress: Float { progress_ }
   var squashXValue: Float { squashXSpring.value }
   var squashZValue: Float { squashZSpring.value }
@@ -156,6 +219,32 @@ final class JellyPhysicsState {
     progress_ = on ? 1 : 0
   }
 
+  func startDrag() {
+    isDragging = true
+    dragStartProgress = progress_
+    velocity_ = 0  // Stop any existing motion
+  }
+
+  func updateDrag(normalizedDelta: Float) {
+    progress_ = max(0, min(1, dragStartProgress + normalizedDelta))
+  }
+
+  func endDrag(normalizedVelocity: Float) {
+    isDragging = false
+
+    // Predict final position with velocity (150ms lookahead)
+    let predictedProgress = progress_ + normalizedVelocity * 0.15
+    toggled = predictedProgress > 0.5
+
+    // Transfer drag velocity to physics velocity
+    velocity_ = normalizedVelocity * 50
+
+    // Trigger squash effects on release
+    squashXSpring.velocity = -3
+    squashZSpring.velocity = 2
+    wiggleXSpring.velocity = normalizedVelocity * 5
+  }
+
   func update(now: Date) {
     let dt: Float
     if let last = lastUpdate {
@@ -168,12 +257,15 @@ final class JellyPhysicsState {
 
     let clampedDt = min(dt, 0.05)
 
+    // Only apply automatic acceleration when NOT dragging
     var acc: Float = 0
-    if toggled && progress_ < 1 {
-      acc = switchAcceleration
-    }
-    if !toggled && progress_ > 0 {
-      acc = -switchAcceleration
+    if !isDragging {
+      if toggled && progress_ < 1 {
+        acc = switchAcceleration
+      }
+      if !toggled && progress_ > 0 {
+        acc = -switchAcceleration
+      }
     }
 
     if pressed {
