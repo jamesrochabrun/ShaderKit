@@ -550,5 +550,22 @@ private func applyEffect<V: VisualEffect>(
       ),
       maxSampleOffset: .zero
     )
+
+  case .jellyButton(let squashY, let squashX, let wiggle,
+                    let jellyColor, let lightDirection, let darkMode):
+    return view.layerEffect(
+      shaders.jellyButton(
+        .float2(size.width, size.height),
+        .float2(tilt.x, tilt.y),
+        .float(time),
+        .float(squashY),
+        .float(squashX),
+        .float(wiggle),
+        .float4(jellyColor.x, jellyColor.y, jellyColor.z, jellyColor.w),
+        .float3(lightDirection.x, lightDirection.y, lightDirection.z),
+        .float(darkMode ? 1.0 : 0.0)
+      ),
+      maxSampleOffset: .zero
+    )
   }
 }

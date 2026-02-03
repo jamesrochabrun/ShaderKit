@@ -341,4 +341,32 @@ public extension View {
       darkMode: darkMode
     ))
   }
+
+  /// Apply 3D ray-marched jelly button effect.
+  /// An interactive button with a squishy translucent jelly sphere that squishes on tap
+  /// and wiggles during long press.
+  /// - Parameters:
+  ///   - squashY: Vertical compression spring value (press down)
+  ///   - squashX: Horizontal expansion spring value (bulge when pressed)
+  ///   - wiggle: Rotation wobble spring value around Y axis
+  ///   - jellyColor: Base color of the jelly (RGBA, default pink)
+  ///   - lightDirection: Normalized light direction vector
+  ///   - darkMode: Whether to use dark mode ground/background
+  func jellyButton(
+    squashY: Float = 0.0,
+    squashX: Float = 0.0,
+    wiggle: Float = 0.0,
+    jellyColor: SIMD4<Float> = SIMD4<Float>(0.85, 0.2, 0.4, 1.0),
+    lightDirection: SIMD3<Float> = SIMD3<Float>(0.19, -0.24, 0.75),
+    darkMode: Bool = false
+  ) -> some View {
+    shader(.jellyButton(
+      squashY: squashY,
+      squashX: squashX,
+      wiggle: wiggle,
+      jellyColor: jellyColor,
+      lightDirection: lightDirection,
+      darkMode: darkMode
+    ))
+  }
 }

@@ -291,6 +291,34 @@ JellySwitch(
 )
 ```
 
+### JellyButton
+
+A 3D jelly button with spring physics that squishes on tap and jiggles on long press.
+
+```swift
+import ShaderKitUI
+
+struct ContentView: View {
+  var body: some View {
+    JellyButton {
+      print("Tapped!")
+    }
+    .ignoresSafeArea()
+  }
+}
+```
+
+Customization options:
+
+```swift
+JellyButton(
+  action: { doSomething() },
+  jellyColor: .blue,    // Custom jelly color
+  darkMode: true,       // Dark ambient lighting
+  soundEnabled: false   // Disable press/release sounds
+)
+```
+
 ## Requirements
 
 - iOS 17.0+ / macOS 14.0+
