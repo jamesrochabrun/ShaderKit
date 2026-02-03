@@ -222,4 +222,22 @@ public enum ShaderEffect: Equatable, Sendable {
     lightDirection: SIMD3<Float> = SIMD3<Float>(0.19, -0.24, 0.75),
     darkMode: Bool = false
   )
+
+  /// Interactive 3D jelly button with ray-marched rendering.
+  /// A translucent jelly sphere that squishes on press and wiggles on long press.
+  /// - Parameters:
+  ///   - squashY: Vertical compression spring value (press down)
+  ///   - squashX: Horizontal expansion spring value (bulge when pressed)
+  ///   - wiggle: Rotation wobble spring value around Y axis
+  ///   - jellyColor: Base color of the jelly (RGBA)
+  ///   - lightDirection: Normalized light direction vector
+  ///   - darkMode: Whether to use dark mode ground/background
+  case jellyButton(
+    squashY: Float = 0.0,
+    squashX: Float = 0.0,
+    wiggle: Float = 0.0,
+    jellyColor: SIMD4<Float> = SIMD4<Float>(0.85, 0.2, 0.4, 1.0),
+    lightDirection: SIMD3<Float> = SIMD3<Float>(0.19, -0.24, 0.75),
+    darkMode: Bool = false
+  )
 }
