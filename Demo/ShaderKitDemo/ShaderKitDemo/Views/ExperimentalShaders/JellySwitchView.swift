@@ -17,6 +17,8 @@ struct JellySwitchView: View {
   @State private var jellySaturation: Double = 0.85
   @State private var jellyBrightness: Double = 0.65
 
+  private let toneGenerator = ToneGenerator()
+
   private var jellyColor: Color {
     Color(hue: jellyHue, saturation: jellySaturation, brightness: jellyBrightness)
   }
@@ -52,6 +54,7 @@ struct JellySwitchView: View {
     HStack(spacing: 16) {
       // Light toggle button
       Button {
+        toneGenerator.playClick(ascending: !darkMode)
         darkMode.toggle()
       } label: {
         Image(systemName: darkMode ? "moon.fill" : "sun.max.fill")
