@@ -9,12 +9,12 @@ import AVFoundation
 
 /// Generates jelly-like wobble tones for UI feedback sounds.
 @Observable
-final class ToneGenerator {
+public final class ToneGenerator {
   private let engine = AVAudioEngine()
   private let playerNode = AVAudioPlayerNode()
   private let format: AVAudioFormat
 
-  init() {
+  public init() {
     format = AVAudioFormat(standardFormatWithSampleRate: 44100, channels: 1)!
     engine.attach(playerNode)
     engine.connect(playerNode, to: engine.mainMixerNode, format: format)
@@ -28,7 +28,7 @@ final class ToneGenerator {
   ///   - pitchDrop: How much the frequency drops over time (Hz)
   ///   - wobbleRate: Vibrato rate in Hz
   ///   - wobbleDepth: Vibrato depth in Hz
-  func playJellyTone(
+  public func playJellyTone(
     baseFrequency: Double,
     duration: Double,
     pitchDrop: Double,
@@ -72,7 +72,7 @@ final class ToneGenerator {
   }
 
   /// Play a quick whip/squash sound with upward pitch sweep.
-  func playWhipTone(
+  public func playWhipTone(
     startFrequency: Double,
     endFrequency: Double,
     duration: Double
@@ -111,7 +111,7 @@ final class ToneGenerator {
   }
 
   /// Play the "on" sound - quick upward whip/squash.
-  func playOn() {
+  public func playOn() {
     playWhipTone(
       startFrequency: 150,
       endFrequency: 600,
@@ -120,7 +120,7 @@ final class ToneGenerator {
   }
 
   /// Play the "off" sound - lower, softer wobble.
-  func playOff() {
+  public func playOff() {
     playJellyTone(
       baseFrequency: 180,
       duration: 0.12,
@@ -128,5 +128,43 @@ final class ToneGenerator {
       wobbleRate: 20,
       wobbleDepth: 20
     )
+  }
+
+  /// Play a mechanical click sound like a light switch.
+  /// - Parameter ascending: If true, plays a slightly brighter click; if false, plays a duller click.
+  public func playClick(ascending: Bool = true) {
+    let sampleRate = format.sampleRate
+    let duration = 0.015  // 15ms - very short
+    let frameCount = AVAudioFrameCount(sampleRate * duration)
+
+    guard let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: frameCount) else { return }
+    buffer.frameLength = frameCount
+
+    let data = buffer.floatChannelData![0]
+
+    // Base frequency for the click body
+    let baseFreq = ascending ? 2200.0 : 1800.0
+
+    for i in 0..<Int(frameCount) {
+      let t = Double(i) / sampleRate
+      let progress = t / duration
+
+      // Very sharp attack (1ms), instant decay
+      let attack = min(t / 0.001, 1.0)
+      let decay = pow(1.0 - progress, 4.0)  // Steep quartic decay
+      let envelope = attack * decay
+
+      // Mix of frequencies for a more mechanical sound
+      let click = sin(2.0 * .pi * baseFreq * t)
+        + 0.5 * sin(2.0 * .pi * baseFreq * 2.3 * t)  // Inharmonic overtone
+        + 0.3 * sin(2.0 * .pi * baseFreq * 3.7 * t)  // Another inharmonic
+
+      data[i] = Float(click * envelope * 0.25)
+    }
+
+    playerNode.scheduleBuffer(buffer, at: nil)
+    if !playerNode.isPlaying {
+      playerNode.play()
+    }
   }
 }
