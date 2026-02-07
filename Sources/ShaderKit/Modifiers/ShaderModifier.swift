@@ -478,6 +478,21 @@ private func applyEffect<V: VisualEffect>(
       maxSampleOffset: .zero
     )
 
+    // MARK: - Halftone Effects
+
+  case .halftonePastel(let intensity, let dotDensity, let waveSpeed):
+    return view.layerEffect(
+      shaders.halftonePastel(
+        .float2(size.width, size.height),
+        .float2(tilt.x, tilt.y),
+        .float(time),
+        .float(intensity),
+        .float(dotDensity),
+        .float(waveSpeed)
+      ),
+      maxSampleOffset: .zero
+    )
+
     // MARK: - Metallic Effects
 
   case .polishedAluminum(let intensity):
