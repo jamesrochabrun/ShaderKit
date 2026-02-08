@@ -204,6 +204,25 @@ public extension View {
     shader(.metallicCrosshatch(intensity: intensity))
   }
 
+  // MARK: - Halftone Effects
+
+  /// Apply halftone dot pattern with pastel holographic iridescent colors.
+  /// - Parameters:
+  ///   - intensity: Effect strength (default 0.8)
+  ///   - dotDensity: Number of dots across the surface (default 30)
+  ///   - waveSpeed: Speed of wave animation (default 1.0)
+  func halftonePastel(
+    intensity: Double = 0.8,
+    dotDensity: Double = 30,
+    waveSpeed: Double = 1.0
+  ) -> some View {
+    shader(.halftonePastel(
+      intensity: intensity,
+      dotDensity: dotDensity,
+      waveSpeed: waveSpeed
+    ))
+  }
+
   // MARK: - Seasonal Effects
 
   /// Apply snowfall effect with falling snowflakes, twinkling stars,

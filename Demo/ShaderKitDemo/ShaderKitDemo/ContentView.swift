@@ -15,7 +15,7 @@ enum ShaderSection: String, CaseIterable {
 }
 
 enum ShaderType: String, CaseIterable, Identifiable {
-  // Basic Shaders (14 items)
+  // Basic Shaders (16 items)
   case basicGlare = "Basic Glare"
   case verticalBeams = "Vertical Beams"
   case reverseHolo = "Reverse Holo"
@@ -31,6 +31,7 @@ enum ShaderType: String, CaseIterable, Identifiable {
   case snowfall = "Snowfall"
   case frozen = "Frozen"
   case polishedAluminum = "Polished Aluminum"
+  case halftonePastel = "Halftone Pastel"
 
   // Composable Shaders (7 items)
   case foilGlitterSweep = "Foil + Glitter + Sweep"
@@ -56,7 +57,7 @@ enum ShaderType: String, CaseIterable, Identifiable {
     case .basicGlare, .verticalBeams, .reverseHolo, .cosmosHolo,
         .rainbowRare, .shinyRare, .diagonalHolo, .vMax, .vStar,
         .radiantHolo, .amazingRare, .spiralRings, .snowfall, .frozen,
-        .polishedAluminum:
+        .polishedAluminum, .halftonePastel:
       return .basic
     case .foilGlitterSweep, .gradientFoil, .psychicHolo,
         .starburstRadial, .layeredHolo, .maskedFoil, .glassEnclosure:
@@ -101,6 +102,8 @@ enum ShaderType: String, CaseIterable, Identifiable {
       return "Icy silver shimmer with floating blue stars"
     case .polishedAluminum:
       return "Brushed aluminum with diagonal rainbow reflection"
+    case .halftonePastel:
+      return "Halftone dots with pastel holographic iridescence"
     // Composable Shaders
     case .foilGlitterSweep:
       return "Combined foil, glitter, and light sweep"
@@ -145,6 +148,7 @@ enum ShaderType: String, CaseIterable, Identifiable {
     case .snowfall: return "snowflake"
     case .frozen: return "sparkle"
     case .polishedAluminum: return "rectangle.fill"
+    case .halftonePastel: return "circle.grid.3x3.fill"
     // Composable Shaders
     case .foilGlitterSweep: return "wand.and.sparkles"
     case .gradientFoil: return "paintpalette.fill"
@@ -196,6 +200,8 @@ enum ShaderType: String, CaseIterable, Identifiable {
       FrozenView()
     case .polishedAluminum:
       PolishedAluminumView()
+    case .halftonePastel:
+      HalftonePastelView()
     // Composable Shaders
     case .foilGlitterSweep:
       FoilGlitterSweepView()

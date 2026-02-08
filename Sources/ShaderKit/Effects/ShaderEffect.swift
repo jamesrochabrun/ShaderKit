@@ -173,6 +173,13 @@ public enum ShaderEffect: Equatable, Sendable {
 
   // MARK: - Metallic Effects
 
+  /// Halftone dot pattern with pastel holographic iridescent colors
+  case halftonePastel(
+    intensity: Double = 0.8,
+    dotDensity: Double = 30,
+    waveSpeed: Double = 1.0
+  )
+
   /// Polished aluminum with diagonal rainbow holographic reflection
   case polishedAluminum(intensity: Double = 0.85)
 
