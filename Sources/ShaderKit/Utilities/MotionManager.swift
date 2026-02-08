@@ -43,10 +43,10 @@ public final class MotionManager {
         let pitch = motion.attitude.pitch // Forward/backward tilt
         let roll = motion.attitude.roll   // Left/right tilt
         
-        // Normalize to -1 to 1 range, clamped
+        // Normalize to -1 to 1 range over ±30° of tilt (practical handheld range)
         self?.tilt = CGPoint(
-          x: max(-1, min(1, roll / .pi * 2)),
-          y: max(-1, min(1, pitch / .pi * 2))
+          x: max(-1, min(1, roll / (.pi / 6))),
+          y: max(-1, min(1, pitch / (.pi / 6)))
         )
       }
     }

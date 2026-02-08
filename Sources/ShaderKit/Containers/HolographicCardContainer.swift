@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import QuartzCore
 
 /// A container that provides tilt-based motion and shader context for holographic effects.
 ///
@@ -68,10 +69,13 @@ public struct HolographicCardContainer<Content: View>: View {
   public var body: some View {
     TimelineView(.animation) { timeline in
       let elapsedTime = startTime.distance(to: timeline.date)
+      let halfW = max(width * 0.5, 1)
+      let halfH = max(height * 0.5, 1)
       let effectiveTilt = CGPoint(
-        x: motionManager.tilt.x + dragOffset.width / 100,
-        y: motionManager.tilt.y + dragOffset.height / 100
+        x: motionManager.tilt.x + dragOffset.width / halfW,
+        y: motionManager.tilt.y + dragOffset.height / halfH
       )
+      let shadowScale = min(width, height) * 0.04
 
       content()
         .shaderContext(tilt: effectiveTilt, time: elapsedTime, touchPosition: touchPosition)
@@ -80,21 +84,15 @@ public struct HolographicCardContainer<Content: View>: View {
           height: height > 0 && height.isFinite ? height : 1
         )
         .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
-        .rotation3DEffect(
-          .degrees(effectiveTilt.x * rotationMultiplier),
-          axis: (x: 0, y: 1, z: 0),
-          perspective: 0.5
-        )
-        .rotation3DEffect(
-          .degrees(-effectiveTilt.y * rotationMultiplier),
-          axis: (x: 1, y: 0, z: 0),
-          perspective: 0.5
-        )
+        .modifier(CardTransformEffect(
+          tiltX: -effectiveTilt.y * rotationMultiplier,
+          tiltY: effectiveTilt.x * rotationMultiplier
+        ))
         .shadow(
           color: shadowColor.opacity(0.5),
-          radius: 20,
-          x: CGFloat(effectiveTilt.x * 10),
-          y: CGFloat(effectiveTilt.y * 10)
+          radius: shadowScale * 1.5,
+          x: effectiveTilt.x * shadowScale,
+          y: effectiveTilt.y * shadowScale
         )
         .gesture(
           DragGesture(minimumDistance: 0)
@@ -109,7 +107,7 @@ public struct HolographicCardContainer<Content: View>: View {
               )
             }
             .onEnded { _ in
-              withAnimation(.spring(response: 0.5, dampingFraction: 0.6)) {
+              withAnimation(.easeOut(duration: 0.2)) {
                 dragOffset = .zero
               }
               touchPosition = nil
@@ -118,5 +116,29 @@ public struct HolographicCardContainer<Content: View>: View {
     }
     .onAppear { motionManager.start() }
     .onDisappear { motionManager.stop() }
+  }
+
+}
+
+private struct CardTransformEffect: GeometryEffect {
+  var tiltX: Double
+  var tiltY: Double
+
+  var animatableData: AnimatablePair<Double, Double> {
+    get { AnimatablePair(tiltX, tiltY) }
+    set {
+      tiltX = newValue.first
+      tiltY = newValue.second
+    }
+  }
+
+  func effectValue(size: CGSize) -> ProjectionTransform {
+    var t = CATransform3DIdentity
+    t.m34 = -1.0 / 1000.0
+    t = CATransform3DTranslate(t, size.width / 2, size.height / 2, 0)
+    t = CATransform3DRotate(t, tiltX * .pi / 180, 1, 0, 0)
+    t = CATransform3DRotate(t, tiltY * .pi / 180, 0, 1, 0)
+    t = CATransform3DTranslate(t, -size.width / 2, -size.height / 2, 0)
+    return ProjectionTransform(t)
   }
 }
