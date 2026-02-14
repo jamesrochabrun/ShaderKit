@@ -312,20 +312,50 @@ struct CardLayerExplodeView: View {
   }
 
   private static let availableShaderOptions: [ShaderOption] = [
+    // Foil Effects
     ShaderOption(id: "foil", title: "Foil", effect: .foil(intensity: 1.0)),
+    ShaderOption(id: "invertedFoil", title: "Inverted Foil", effect: .invertedFoil(intensity: 0.7)),
+    // Glitter & Sparkle Effects
     ShaderOption(id: "glitter", title: "Glitter", effect: .glitter(density: 75)),
-    ShaderOption(id: "lightSweep", title: "Light Sweep", effect: .lightSweep),
-    ShaderOption(id: "radialSweep", title: "Radial Sweep", effect: .radialSweep),
+    ShaderOption(id: "multiGlitter", title: "Multi Glitter", effect: .multiGlitter(density: 80)),
     ShaderOption(id: "sparkles", title: "Sparkles", effect: .sparkles),
     ShaderOption(id: "rainbowGlitter", title: "Rainbow Glitter", effect: .rainbowGlitter(intensity: 0.7)),
     ShaderOption(id: "shimmer", title: "Shimmer", effect: .shimmer(intensity: 0.7)),
+    // Light Effects
+    ShaderOption(id: "lightSweep", title: "Light Sweep", effect: .lightSweep),
+    ShaderOption(id: "radialSweep", title: "Radial Sweep", effect: .radialSweep),
+    ShaderOption(id: "angledSweep", title: "Angled Sweep", effect: .angledSweep),
+    ShaderOption(id: "glare", title: "Glare", effect: .glare(intensity: 1.0)),
+    ShaderOption(id: "simpleGlare", title: "Simple Glare", effect: .simpleGlare(intensity: 0.7)),
     ShaderOption(id: "edgeShine", title: "Edge Shine", effect: .edgeShine),
+    // Holographic Patterns
     ShaderOption(id: "diamondGrid", title: "Diamond Grid", effect: .diamondGrid(intensity: 1.0)),
+    ShaderOption(id: "intenseBling", title: "Intense Bling", effect: .intenseBling),
+    ShaderOption(id: "starburst", title: "Starburst", effect: .starburst(intensity: 1.0)),
     ShaderOption(id: "blendedHolo", title: "Blended Holo", effect: .blendedHolo(intensity: 0.7, saturation: 0.75)),
     ShaderOption(id: "verticalBeams", title: "Vertical Beams", effect: .verticalBeams(intensity: 0.7)),
     ShaderOption(id: "diagonalHolo", title: "Diagonal Holo", effect: .diagonalHolo(intensity: 0.7)),
+    ShaderOption(id: "crisscrossHolo", title: "Crisscross Holo", effect: .crisscrossHolo(intensity: 0.7)),
     ShaderOption(id: "galaxyHolo", title: "Galaxy Holo", effect: .galaxyHolo(intensity: 0.7)),
-    ShaderOption(id: "subtleGradient", title: "Subtle Gradient", effect: .subtleGradient(intensity: 0.7))
+    ShaderOption(id: "radialStar", title: "Radial Star", effect: .radialStar(intensity: 0.7)),
+    ShaderOption(id: "subtleGradient", title: "Subtle Gradient", effect: .subtleGradient(intensity: 0.7)),
+    ShaderOption(id: "metallicCrosshatch", title: "Metallic Crosshatch", effect: .metallicCrosshatch(intensity: 0.7)),
+    ShaderOption(id: "spiralRings", title: "Spiral Rings", effect: .spiralRings()),
+    // Glass Effects
+    ShaderOption(id: "glassEnclosure", title: "Glass Enclosure", effect: .glassEnclosure()),
+    ShaderOption(id: "glassSheen", title: "Glass Sheen", effect: .glassSheen()),
+    ShaderOption(id: "glassBevel", title: "Glass Bevel", effect: .glassBevel()),
+    ShaderOption(id: "chromaticGlass", title: "Chromatic Glass", effect: .chromaticGlass()),
+    // Seasonal Effects
+    ShaderOption(id: "snowfall", title: "Snowfall", effect: .snowfall()),
+    ShaderOption(id: "frozen", title: "Frozen", effect: .frozen()),
+    // Metallic Effects
+    ShaderOption(id: "halftonePastel", title: "Halftone Pastel", effect: .halftonePastel()),
+    ShaderOption(id: "polishedAluminum", title: "Polished Aluminum", effect: .polishedAluminum()),
+    // Tech Effects
+    ShaderOption(id: "liquidTech", title: "Liquid Tech", effect: .liquidTech()),
+    // Paper Effects
+    ShaderOption(id: "water", title: "Water", effect: .water()),
   ]
 
   private static func colorStops(from colors: [Color]?, fallback: [Color]) -> [Color] {
