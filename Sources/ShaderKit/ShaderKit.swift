@@ -67,6 +67,7 @@ import SwiftUI
 /// ## Main Components
 ///
 /// - `HolographicCardContainer` - Container with motion/tilt support
+/// - `CardLayerExplodeContainer` - Layered card explosion with animated 3D depth
 /// - `ShaderEffect` - Enum of all available effects
 /// - `ShaderContext` - Environment value for tilt/time
 /// - `MotionManager` - Gyroscope-based device motion

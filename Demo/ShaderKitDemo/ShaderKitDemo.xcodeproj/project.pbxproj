@@ -631,7 +631,7 @@
 /* Begin XCLocalSwiftPackageReference section */
 		7B2F07252EF60C0F00643798 /* XCLocalSwiftPackageReference "../../../ShaderKit" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = ../../../ShaderKit;
+			relativePath = ../..;
 		};
 /* End XCLocalSwiftPackageReference section */
 
