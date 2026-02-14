@@ -26,99 +26,110 @@ struct ExplodableCardDemo: View {
           ExplodableHolographicCard(
             width: cardWidth,
             height: cardHeight,
-            cornerRadius: 16,
-            shadowColor: .purple,
+            cornerRadius: 20,
+            shadowColor: .orange,
             rotationMultiplier: 12,
             layerSpacing: 60,
             showLabels: true,
             showControls: true
           ) {
-            // Layer 0: Base card frame/background
+            // Layer 0: Gradient background
             CardLayer {
               ZStack {
-                RoundedRectangle(cornerRadius: 16)
+                RoundedRectangle(cornerRadius: 20)
                   .fill(
                     LinearGradient(
-                      colors: [
-                        Color(red: 0.12, green: 0.08, blue: 0.22),
-                        Color(red: 0.18, green: 0.1, blue: 0.28),
-                        Color(red: 0.1, green: 0.06, blue: 0.18)
-                      ],
+                      colors: [.pink, .purple, .blue, .orange],
                       startPoint: .topLeading,
                       endPoint: .bottomTrailing
                     )
                   )
 
-                // Card frame border
-                RoundedRectangle(cornerRadius: 16)
+                RoundedRectangle(cornerRadius: 20)
                   .strokeBorder(
                     LinearGradient(
-                      colors: [
-                        Color.white.opacity(0.3),
-                        Color.purple.opacity(0.2),
-                        Color.white.opacity(0.1)
-                      ],
+                      colors: [.orange, .yellow, .red],
                       startPoint: .topLeading,
                       endPoint: .bottomTrailing
                     ),
-                    lineWidth: 2
+                    lineWidth: 3
                   )
               }
             }
-            .label("Base Frame")
+            .label("Gradient Background")
             .zIndex(0)
 
-            // Layer 1: Card artwork
+            // Layer 1: Artwork & text
             CardLayer {
               ZStack {
                 Color.clear
 
-                VStack(spacing: 16) {
-                  // Main artwork icon
-                  Image(systemName: "flame.fill")
-                    .font(.system(size: 72, weight: .regular))
-                    .foregroundStyle(
-                      LinearGradient(
-                        colors: [.orange, .red, .purple],
-                        startPoint: .top,
-                        endPoint: .bottom
-                      )
-                    )
-                    .shadow(color: .orange.opacity(0.5), radius: 20, y: 5)
+                Image("unicorn")
+                  .resizable()
+                  .aspectRatio(contentMode: .fill)
+                  .frame(width: cardWidth, height: cardHeight)
+                  .clipped()
 
-                  VStack(spacing: 6) {
-                    Text("PHOENIX")
-                      .font(.system(size: 24, weight: .black, design: .rounded))
+                VStack(spacing: 12) {
+                  HStack {
+                    Text("Gradient Foil")
+                      .font(.headline)
+                      .fontWeight(.heavy)
                       .foregroundStyle(.white)
-
-                    Text("Legendary Card")
-                      .font(.system(size: 12, weight: .medium))
-                      .foregroundStyle(.white.opacity(0.6))
-                      .textCase(.uppercase)
-                      .tracking(2)
+                    Spacer()
+                    Text("LV 200")
+                      .font(.subheadline)
+                      .fontWeight(.bold)
+                      .foregroundStyle(.orange)
                   }
+                  .padding(.horizontal, 20)
+                  .padding(.top, 16)
+
+                  Spacer()
+
+                  VStack(spacing: 8) {
+                    HStack {
+                      Image(systemName: "paintpalette.fill")
+                        .foregroundStyle(.red)
+                      Text("Rainbow Gradient")
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.white)
+                      Spacer()
+                      Text("150")
+                        .font(.title3)
+                        .fontWeight(.black)
+                        .foregroundStyle(.orange)
+                    }
+
+                    Text("Multi-Color Holographic Effect")
+                      .font(.caption2)
+                      .foregroundStyle(.yellow.opacity(0.8))
+                  }
+                  .padding(.horizontal, 20)
+                  .padding(.bottom, 16)
                 }
               }
             }
-            .label("Artwork")
+            .label("Artwork & Text")
             .zIndex(1)
 
-            // Layer 2: Holographic/foil overlay effect
+            // Layer 2: Foil & glitter overlay
             CardLayer {
-              RoundedRectangle(cornerRadius: 16)
+              RoundedRectangle(cornerRadius: 20)
                 .fill(Color.white.opacity(0.05))
             }
-            .effects([.foil(intensity: 0.7), .diamondGrid(intensity: 0.4)])
-            .label("Holographic Foil")
+            .effects([.foil(), .glitter()])
+            .label("Foil & Glitter")
             .zIndex(2)
 
-            // Layer 3: Specular reflection/shine layer
+            // Layer 3: Light sweep overlay
             CardLayer {
-              RoundedRectangle(cornerRadius: 16)
+              RoundedRectangle(cornerRadius: 20)
                 .fill(Color.clear)
             }
-            .effects([.glassSheen(intensity: 0.6, spread: 0.5), .simpleGlare(intensity: 0.5)])
-            .label("Specular Shine")
+            .effects([.lightSweep])
+            .label("Light Sweep")
             .zIndex(3)
           }
 
