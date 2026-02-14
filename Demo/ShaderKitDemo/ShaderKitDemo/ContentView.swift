@@ -33,8 +33,9 @@ enum ShaderType: String, CaseIterable, Identifiable {
   case polishedAluminum = "Polished Aluminum"
   case halftonePastel = "Halftone Pastel"
 
-  // Composable Shaders (7 items)
+  // Composable Shaders (8 items)
   case foilGlitterSweep = "Foil + Glitter + Sweep"
+  case cardLayerExplode = "Card Layer Explode"
   case gradientFoil = "Gradient Foil"
   case psychicHolo = "Psychic Holo"
   case starburstRadial = "Starburst Radial"
@@ -59,7 +60,7 @@ enum ShaderType: String, CaseIterable, Identifiable {
         .radiantHolo, .amazingRare, .spiralRings, .snowfall, .frozen,
         .polishedAluminum, .halftonePastel:
       return .basic
-    case .foilGlitterSweep, .gradientFoil, .psychicHolo,
+    case .foilGlitterSweep, .cardLayerExplode, .gradientFoil, .psychicHolo,
         .starburstRadial, .layeredHolo, .maskedFoil, .glassEnclosure:
       return .composable
     case .water:
@@ -107,6 +108,8 @@ enum ShaderType: String, CaseIterable, Identifiable {
     // Composable Shaders
     case .foilGlitterSweep:
       return "Combined foil, glitter, and light sweep"
+    case .cardLayerExplode:
+      return "Exploded card composition with 3D layer controls"
     case .gradientFoil:
       return "Multi-color gradient with foil effects"
     case .psychicHolo:
@@ -151,6 +154,7 @@ enum ShaderType: String, CaseIterable, Identifiable {
     case .halftonePastel: return "circle.grid.3x3.fill"
     // Composable Shaders
     case .foilGlitterSweep: return "wand.and.sparkles"
+    case .cardLayerExplode: return "slider.horizontal.3"
     case .gradientFoil: return "paintpalette.fill"
     case .psychicHolo: return "eye.fill"
     case .starburstRadial: return "sun.max.trianglebadge.exclamationmark.fill"
@@ -205,6 +209,8 @@ enum ShaderType: String, CaseIterable, Identifiable {
     // Composable Shaders
     case .foilGlitterSweep:
       FoilGlitterSweepView()
+    case .cardLayerExplode:
+      CardLayerExplodeView()
     case .gradientFoil:
       GradientFoilView()
     case .psychicHolo:
