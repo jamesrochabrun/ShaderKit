@@ -1,5 +1,10 @@
 # ShaderKit
 
+<a href="https://buymeacoffee.com/jamesrochabrun">
+  <img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" 
+       alt="Buy Me A Coffee" width="200">
+</a>
+
 A Swift package for composable Metal shaders and holographic UI effects in SwiftUI.
 
 [![Swift 5.9+](https://img.shields.io/badge/Swift-5.9+-orange.svg)](https://swift.org)
