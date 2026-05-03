@@ -13,6 +13,18 @@ struct CodexLogoDemoTests {
     #expect(ShaderType.codexLogo.description == "Pulsing AI-brain logo with orientation-reactive gradient light")
   }
 
+  @Test("Codex Logo draws into a centered square render rect")
+  func codexLogoRenderRectStaysSquareInsideRectangularSnapshots() {
+    let renderRect = CodexLogoBlobGeometry.squareRenderRect(
+      in: CGRect(x: 0, y: 0, width: 806, height: 846)
+    )
+
+    #expect(renderRect.width == renderRect.height)
+    #expect(renderRect.width == 806)
+    #expect(renderRect.minX == 0)
+    #expect(renderRect.minY == 20)
+  }
+
   @Test("Codex Logo motion response clamps source tilt and applies strength")
   func codexLogoMotionResponseClampsTiltAndAppliesStrength() {
     let deviceTilt = CodexLogoMotionResponse.effectiveTilt(
