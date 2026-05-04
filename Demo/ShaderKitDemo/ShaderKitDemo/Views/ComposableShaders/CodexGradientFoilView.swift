@@ -18,17 +18,22 @@ private enum CodexGradientPalette {
 
 struct CodexGradientFoilView: View {
   var body: some View {
-    HolographicCardContainer(
-      width: 280,
-      height: 400,
-      cornerRadius: 20,
-      shadowColor: CodexGradientPalette.mid
-    ) {
-      CodexGradientFoilContent()
-        .foil()
-        .glitter()
-        .lightSweep()
+    ZStack {
+      Color.black.ignoresSafeArea()
+
+      HolographicCardContainer(
+        width: 280,
+        height: 400,
+        cornerRadius: 20,
+        shadowColor: CodexGradientPalette.mid
+      ) {
+        CodexGradientFoilContent()
+          .foil()
+          .glitter()
+          .lightSweep()
+      }
     }
+    .preferredColorScheme(.dark)
   }
 }
 
@@ -56,15 +61,17 @@ private struct CodexGradientFoilContent: View {
 
       VStack(spacing: 12) {
         HStack {
-          Text("Gradient Foil")
+          Text("Codex")
             .font(.headline)
             .fontWeight(.heavy)
             .foregroundStyle(.white)
+            .codexCardTextShadow()
           Spacer()
-          Text("LV 200")
+          Text("GPT 5.5")
             .font(.subheadline)
             .fontWeight(.bold)
             .foregroundStyle(CodexGradientPalette.light)
+            .codexCardTextShadow()
         }
         .padding(.horizontal, 20)
         .padding(.top, 16)
@@ -73,22 +80,31 @@ private struct CodexGradientFoilContent: View {
 
         VStack(spacing: 8) {
           HStack {
-            Image(systemName: "paintpalette.fill")
+            Image(systemName: "bolt.fill")
               .foregroundStyle(CodexGradientPalette.light)
-            Text("Rainbow Gradient")
+            Text("Power")
               .font(.subheadline)
               .fontWeight(.semibold)
               .foregroundStyle(.white)
+              .codexCardTextShadow()
             Spacer()
-            Text("150")
-              .font(.title3)
-              .fontWeight(.black)
-              .foregroundStyle(CodexGradientPalette.light)
+            HStack(spacing: 4) {
+              Text("100M+")
+                .font(.title3)
+                .fontWeight(.black)
+                .codexCardTextShadow()
+              Image(systemName: "star.fill")
+                .font(.caption)
+            }
+            .foregroundStyle(CodexGradientPalette.light)
           }
 
-          Text("Multi-Color Holographic Effect")
+          Text("A coding agent that helps you build and ship with AI—powered by ChatGPT.")
             .font(.caption2)
             .foregroundStyle(CodexGradientPalette.light.opacity(0.85))
+            .multilineTextAlignment(.leading)
+            .fixedSize(horizontal: false, vertical: true)
+            .codexCardTextShadow()
         }
         .padding(.horizontal, 20)
         .padding(.bottom, 16)
@@ -104,6 +120,12 @@ private struct CodexGradientFoilContent: View {
           lineWidth: 3
         )
     }
+  }
+}
+
+private extension View {
+  func codexCardTextShadow() -> some View {
+    shadow(color: .black.opacity(0.65), radius: 2, x: 0, y: 1)
   }
 }
 
