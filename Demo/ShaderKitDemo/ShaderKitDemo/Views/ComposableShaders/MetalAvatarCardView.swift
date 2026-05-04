@@ -9,7 +9,7 @@ import SwiftUI
 import ShaderKit
 
 struct MetalAvatarCardView: View {
-  private let cardWidth: CGFloat = 290
+  private let cardWidth: CGFloat = 260
   private var cardHeight: CGFloat { cardWidth * 1.30 }
 
   var body: some View {
@@ -51,10 +51,10 @@ private struct MetalAvatarBadgeCard: View {
       GeometryReader { geometry in
         let width = geometry.size.width
         let height = geometry.size.height
-        let inset = width * 0.045
-        let innerWidth = width - inset * 2.0
-        let artHeight = height * 0.68
-        let plateHeight = height * 0.23
+        let horizontalInset = width * 0.045
+        let innerWidth = width - horizontalInset * 2.0
+        let artHeight = height * 0.73
+        let plateHeight = height - artHeight
 
         ZStack {
           MetalAvatarCardShape()
@@ -72,11 +72,11 @@ private struct MetalAvatarBadgeCard: View {
             )
             .shader(.polishedAluminum(intensity: 0.92))
 
-          VStack(spacing: height * 0.025) {
+          VStack(spacing: 0) {
             avatarWindow(width: innerWidth, height: artHeight, time: time)
             identityPlate(width: innerWidth, height: plateHeight)
           }
-          .padding(inset)
+          .padding(.horizontal, horizontalInset)
 
           MetalAvatarCardShape()
             .strokeBorder(
@@ -132,7 +132,7 @@ private struct MetalAvatarBadgeCard: View {
         .frame(width: width, height: height)
         .shader(
           .cosmicAura(
-            intensity: 0.56,
+            intensity: 0.62,
             avatarRadius: 0.0,
             auraRadius: 0.72
           ),
@@ -152,7 +152,7 @@ private struct MetalAvatarBadgeCard: View {
       )
       .blendMode(.screen)
 
-      RoundedRectangle(cornerRadius: width * 0.055)
+      Rectangle()
         .stroke(
           LinearGradient(
             colors: [
@@ -168,15 +168,16 @@ private struct MetalAvatarBadgeCard: View {
         .shader(.lightSweep)
 
       levelBadge(width: width * 0.23)
-        .padding(width * 0.045)
+        .padding(.top, width * 0.070)
+        .padding(.leading, width * 0.025)
     }
     .frame(width: width, height: height)
-    .clipShape(RoundedRectangle(cornerRadius: width * 0.060))
+    .clipped()
   }
 
   private func identityPlate(width: CGFloat, height: CGFloat) -> some View {
     VStack(spacing: height * 0.08) {
-      Text("James Rochabrun")
+      Text("nic")
         .font(.system(size: width * 0.128, weight: .semibold, design: .rounded))
         .lineLimit(1)
         .minimumScaleFactor(0.78)
