@@ -344,6 +344,19 @@ private func applyEffect<V: VisualEffect>(
       ),
       maxSampleOffset: .zero
     )
+
+  case .cosmicAura(let intensity, let avatarRadius, let auraRadius):
+    return view.layerEffect(
+      shaders.cosmicAura(
+        .float2(size.width, size.height),
+        .float2(tilt.x, tilt.y),
+        .float(time),
+        .float(intensity),
+        .float(avatarRadius),
+        .float(auraRadius)
+      ),
+      maxSampleOffset: .zero
+    )
     
   case .radialStar(let intensity):
     return view.layerEffect(

@@ -99,6 +99,14 @@ public enum ShaderEffect: Equatable, Sendable {
   
   /// Galaxy/cosmos with rainbow overlay
   case galaxyHolo(intensity: Double = 0.7)
+
+  /// Transparent iridescent cosmic aura/nebula overlay for avatar compositing.
+  /// Use avatarRadius 0 for a full-image overlay without a circular cutout.
+  case cosmicAura(
+    intensity: Double = 0.85,
+    avatarRadius: Double = 0.29,
+    auraRadius: Double = 0.50
+  )
   
   /// Star pattern with radial mask fade
   case radialStar(intensity: Double = 0.7)

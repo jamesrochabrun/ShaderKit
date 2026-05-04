@@ -33,9 +33,10 @@ enum ShaderType: String, CaseIterable, Identifiable {
   case polishedAluminum = "Polished Aluminum"
   case halftonePastel = "Halftone Pastel"
 
-  // Composable Shaders (9 items)
+  // Composable Shaders (10 items)
   case foilGlitterSweep = "Foil + Glitter + Sweep"
   case cardLayerExplode = "Card Layer Explode"
+  case metalAvatarCard = "Metal Avatar Card"
   case codexGradientFoil = "Codex Gradient Foil"
   case gradientFoil = "Gradient Foil"
   case psychicHolo = "Psychic Holo"
@@ -62,8 +63,9 @@ enum ShaderType: String, CaseIterable, Identifiable {
         .radiantHolo, .amazingRare, .spiralRings, .snowfall, .frozen,
         .polishedAluminum, .halftonePastel:
       return .basic
-    case .foilGlitterSweep, .cardLayerExplode, .codexGradientFoil, .gradientFoil,
-        .psychicHolo, .starburstRadial, .layeredHolo, .maskedFoil, .glassEnclosure:
+    case .foilGlitterSweep, .cardLayerExplode, .metalAvatarCard, .codexGradientFoil,
+        .gradientFoil, .psychicHolo, .starburstRadial, .layeredHolo, .maskedFoil,
+        .glassEnclosure:
       return .composable
     case .water:
       return .paper
@@ -112,6 +114,8 @@ enum ShaderType: String, CaseIterable, Identifiable {
       return "Combined foil, glitter, and light sweep"
     case .cardLayerExplode:
       return "Exploded card composition with 3D layer controls"
+    case .metalAvatarCard:
+      return "Premium avatar badge with polished metal, shine, and laser accents"
     case .codexGradientFoil:
       return "Codex artwork with gradient foil effects"
     case .gradientFoil:
@@ -161,6 +165,7 @@ enum ShaderType: String, CaseIterable, Identifiable {
     // Composable Shaders
     case .foilGlitterSweep: return "wand.and.sparkles"
     case .cardLayerExplode: return "slider.horizontal.3"
+    case .metalAvatarCard: return "person.crop.square.filled.and.at.rectangle"
     case .codexGradientFoil: return "terminal.fill"
     case .gradientFoil: return "paintpalette.fill"
     case .psychicHolo: return "eye.fill"
@@ -219,6 +224,8 @@ enum ShaderType: String, CaseIterable, Identifiable {
       FoilGlitterSweepView()
     case .cardLayerExplode:
       CardLayerExplodeView()
+    case .metalAvatarCard:
+      MetalAvatarCardView()
     case .codexGradientFoil:
       CodexGradientFoilView()
     case .gradientFoil:

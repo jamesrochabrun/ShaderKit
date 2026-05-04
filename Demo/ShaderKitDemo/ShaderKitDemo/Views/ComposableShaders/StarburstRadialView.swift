@@ -15,6 +15,9 @@ private struct StarburstRadialContent: View {
     GeometryReader { geometry in
       let cardWidth = geometry.size.width
       let cardHeight = geometry.size.height
+      let contentInset = cardWidth * 0.0275
+      let innerWidth = cardWidth - contentInset * 2
+      let innerHeight = cardHeight - contentInset * 2
 
       ZStack {
         // Card background gradient with starburst
@@ -30,46 +33,37 @@ private struct StarburstRadialContent: View {
         .starburst()
 
         // Background artwork
-        Image("unicorn")
+        Image("ray")
           .resizable()
           .aspectRatio(contentMode: .fill)
-          .frame(width: cardWidth, height: cardHeight * 0.7)
+          .frame(width: innerWidth, height: innerHeight * 0.7)
           .clipped()
-          .offset(y: -cardHeight * 0.05)
+          .offset(y: -innerHeight * 0.05)
 
         // Content overlay
         VStack(spacing: 0) {
           // Header
           HStack(alignment: .top) {
-            HStack(spacing: 6) {
-              Text("RADIAL")
-                .font(.system(size: cardWidth * 0.03, weight: .bold))
-                .foregroundStyle(.white)
-                .padding(.horizontal, 6)
-                .padding(.vertical, 3)
-                .background(
-                  Capsule()
-                    .fill(.black.opacity(0.6))
-                )
+            Text("RAY FERNANDO")
+              .font(.system(size: cardWidth * 0.085, weight: .heavy))
+              .lineLimit(1)
+              .minimumScaleFactor(0.55)
+              .foregroundStyle(.black)
+              .shadow(color: .white.opacity(0.5), radius: 1, x: 0, y: 1)
 
-              Text("Starburst")
-                .font(.system(size: cardWidth * 0.085, weight: .heavy))
-                .foregroundStyle(.black)
-                .shadow(color: .white.opacity(0.5), radius: 1, x: 0, y: 1)
-            }
-
-            Spacer()
+            Spacer(minLength: 6)
 
             HStack(spacing: 4) {
-              Text("LV")
+              Text("HP")
                 .font(.system(size: cardWidth * 0.04, weight: .medium))
-              Text("70")
+              Text("1337")
                 .font(.system(size: cardWidth * 0.085, weight: .bold))
               Image(systemName: "bolt.fill")
                 .font(.system(size: cardWidth * 0.07))
                 .foregroundStyle(.orange)
             }
             .foregroundStyle(.black)
+            .layoutPriority(1)
           }
           .padding(.horizontal, cardWidth * 0.04)
           .padding(.top, cardHeight * 0.025)
@@ -80,26 +74,16 @@ private struct StarburstRadialContent: View {
           VStack(spacing: 0) {
             // Effect section
             HStack(alignment: .top, spacing: 8) {
-              // Cost icons
-              HStack(spacing: 3) {
-                ForEach(0..<3, id: \.self) { index in
-                  ZStack {
-                    Circle()
-                      .fill(index < 2 ? Color.yellow : Color.gray.opacity(0.5))
-                      .frame(width: cardWidth * 0.065, height: cardWidth * 0.065)
-                    Image(systemName: index < 2 ? "bolt.fill" : "star.fill")
-                      .font(.system(size: cardWidth * 0.035))
-                      .foregroundStyle(.white)
-                  }
-                }
-              }
+              Text("◆")
+                .font(.system(size: cardWidth * 0.052, weight: .bold))
+                .foregroundStyle(.black)
 
               VStack(alignment: .leading, spacing: 2) {
-                Text("Radial Sweep")
+                Text("VIBE CODE OG")
                   .font(.system(size: cardWidth * 0.055, weight: .bold))
                   .foregroundStyle(.black)
 
-                Text("Sweeping light effect emanating from center")
+                Text("Ships production code on livestream.\nBugs included. Audience: 30,000+")
                   .font(.system(size: cardWidth * 0.03))
                   .foregroundStyle(.black.opacity(0.8))
                   .lineLimit(2)
@@ -107,17 +91,12 @@ private struct StarburstRadialContent: View {
 
               Spacer()
 
-              Text("90")
+              Text("30+")
                 .font(.system(size: cardWidth * 0.085, weight: .bold))
                 .foregroundStyle(.black)
             }
             .padding(.horizontal, cardWidth * 0.04)
             .padding(.vertical, cardHeight * 0.02)
-            .background(
-              RoundedRectangle(cornerRadius: 8)
-                .fill(.white.opacity(0.85))
-            )
-            .padding(.horizontal, cardWidth * 0.03)
 
             // Divider
             Rectangle()
@@ -126,55 +105,34 @@ private struct StarburstRadialContent: View {
               .padding(.horizontal, cardWidth * 0.04)
               .padding(.vertical, cardHeight * 0.015)
 
-            // Stats
-            HStack {
-              HStack(spacing: 4) {
-                Text("intensity")
-                  .font(.system(size: cardWidth * 0.028))
-                  .foregroundStyle(.black.opacity(0.7))
+            // Second effect section
+            HStack(alignment: .top, spacing: 8) {
+              Text("◆◆")
+                .font(.system(size: cardWidth * 0.052, weight: .bold))
+                .foregroundStyle(.black)
 
-                ZStack {
-                  Circle()
-                    .fill(.red)
-                    .frame(width: cardWidth * 0.05, height: cardWidth * 0.05)
-                  Image(systemName: "wand.and.stars")
-                    .font(.system(size: cardWidth * 0.025))
-                    .foregroundStyle(.white)
-                }
-
-                Text("x2")
-                  .font(.system(size: cardWidth * 0.035, weight: .bold))
+              VStack(alignment: .leading, spacing: 2) {
+                Text("SHIP IT")
+                  .font(.system(size: cardWidth * 0.055, weight: .bold))
                   .foregroundStyle(.black)
+
+                Text("Pushes to main on a Friday. Survives.")
+                  .font(.system(size: cardWidth * 0.03))
+                  .foregroundStyle(.black.opacity(0.8))
+                  .lineLimit(2)
               }
 
               Spacer()
 
-              HStack(spacing: 4) {
-                Text("blend")
-                  .font(.system(size: cardWidth * 0.028))
-                  .foregroundStyle(.black.opacity(0.7))
-                Text("-")
-                  .font(.system(size: cardWidth * 0.035))
-                  .foregroundStyle(.black.opacity(0.5))
-              }
-
-              Spacer()
-
-              HStack(spacing: 4) {
-                Text("layers")
-                  .font(.system(size: cardWidth * 0.028))
-                  .foregroundStyle(.black.opacity(0.7))
-
-                Circle()
-                  .fill(.white)
-                  .stroke(.black.opacity(0.3), lineWidth: 1)
-                  .frame(width: cardWidth * 0.04, height: cardWidth * 0.04)
-              }
+              Text("∞")
+                .font(.system(size: cardWidth * 0.085, weight: .bold))
+                .foregroundStyle(.black)
             }
             .padding(.horizontal, cardWidth * 0.04)
+            .padding(.vertical, cardHeight * 0.014)
 
             // Description
-            Text("Radial starburst patterns create dynamic iridescent effects that shift as the card tilts.")
+            Text("Drafted to the GPT-5.5 class of 5/5/26.\nAcceptance rate: 1.2%. Compaction works in mysterious ways.")
               .font(.system(size: cardWidth * 0.028).italic())
               .foregroundStyle(.black.opacity(0.7))
               .multilineTextAlignment(.center)
@@ -184,30 +142,27 @@ private struct StarburstRadialContent: View {
 
             // Footer
             HStack {
-              Text("ShaderKit Demo")
+              Text("Illus. OpenAI")
                 .font(.system(size: cardWidth * 0.025))
 
               Spacer()
 
-              Text("001/100")
+              Text("5/55  ★  HOLO RARE")
                 .font(.system(size: cardWidth * 0.025, weight: .bold))
             }
             .foregroundStyle(.black.opacity(0.6))
             .padding(.horizontal, cardWidth * 0.04)
             .padding(.top, cardHeight * 0.01)
-            .padding(.bottom, cardHeight * 0.02)
+            .padding(.bottom, cardHeight * 0.012)
           }
+          .frame(maxWidth: .infinity)
           .background(
-            LinearGradient(
-              colors: [
-                Color(red: 1.0, green: 0.85, blue: 0.2).opacity(0.95),
-                Color(red: 1.0, green: 0.85, blue: 0.2)
-              ],
-              startPoint: .top,
-              endPoint: .bottom
-            )
+            polishedContentSectionBackground()
           )
+          .offset(y: cardHeight * 0.014)
         }
+        .frame(width: innerWidth, height: innerHeight)
+        .clipShape(RoundedRectangle(cornerRadius: 10))
 
         // Card border
         RoundedRectangle(cornerRadius: 16)
@@ -225,9 +180,40 @@ private struct StarburstRadialContent: View {
             ),
             lineWidth: 5
           )
+
+        RoundedRectangle(cornerRadius: 12)
+          .strokeBorder(
+            LinearGradient(
+              colors: [
+                Color(red: 0.02, green: 0.20, blue: 0.46),
+                Color(red: 0.05, green: 0.34, blue: 0.76),
+                Color(red: 0.01, green: 0.15, blue: 0.36)
+              ],
+              startPoint: .topLeading,
+              endPoint: .bottomTrailing
+            ),
+            lineWidth: 4
+          )
+          .frame(width: innerWidth, height: innerHeight)
       }
       .clipShape(RoundedRectangle(cornerRadius: 16))
     }
+  }
+
+  private func polishedContentSectionBackground() -> some View {
+    RoundedRectangle(cornerRadius: 8)
+      .fill(
+        LinearGradient(
+          colors: [
+            Color(red: 0.94, green: 0.95, blue: 0.96),
+            Color(red: 0.78, green: 0.80, blue: 0.84),
+            Color(red: 0.90, green: 0.91, blue: 0.94)
+          ],
+          startPoint: .topLeading,
+          endPoint: .bottomTrailing
+        )
+      )
+      .shader(.polishedAluminum(intensity: 0.72))
   }
 }
 
