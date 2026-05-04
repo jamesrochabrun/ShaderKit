@@ -172,12 +172,6 @@ private struct MetalAvatarBadgeCard: View {
     }
     .frame(width: width, height: height)
     .clipShape(RoundedRectangle(cornerRadius: width * 0.060))
-    .overlay(alignment: .bottom) {
-      Rectangle()
-        .fill(Color.white.opacity(0.55))
-        .frame(height: max(1.0, width * 0.008))
-        .blendMode(.screen)
-    }
   }
 
   private func identityPlate(width: CGFloat, height: CGFloat) -> some View {
@@ -224,13 +218,6 @@ private struct MetalAvatarBadgeCard: View {
           ),
           lineWidth: width * 0.012
         )
-    }
-    .overlay(alignment: .top) {
-      Rectangle()
-        .fill(Color(red: 0.34, green: 0.49, blue: 0.78).opacity(0.50))
-        .frame(height: max(1.0, width * 0.005))
-        .padding(.horizontal, width * 0.035)
-        .blendMode(.multiply)
     }
     .shader(.lightSweep)
   }
@@ -291,23 +278,14 @@ private struct MetalAvatarInnerFrameShape: Shape {
 private struct MetalAvatarIdentityPlateShape: Shape {
   func path(in rect: CGRect) -> Path {
     let cut = min(rect.width, rect.height) * 0.18
-    let topRadius = min(rect.width, rect.height) * 0.08
     var path = Path()
 
-    path.move(to: CGPoint(x: rect.minX + topRadius, y: rect.minY))
-    path.addQuadCurve(
-      to: CGPoint(x: rect.minX, y: rect.minY + topRadius),
-      control: CGPoint(x: rect.minX, y: rect.minY)
-    )
-    path.addLine(to: CGPoint(x: rect.minX, y: rect.maxY - cut))
-    path.addLine(to: CGPoint(x: rect.minX + cut, y: rect.maxY))
-    path.addLine(to: CGPoint(x: rect.maxX - cut, y: rect.maxY))
+    path.move(to: CGPoint(x: rect.minX, y: rect.minY))
+    path.addLine(to: CGPoint(x: rect.maxX, y: rect.minY))
     path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY - cut))
-    path.addLine(to: CGPoint(x: rect.maxX, y: rect.minY + topRadius))
-    path.addQuadCurve(
-      to: CGPoint(x: rect.maxX - topRadius, y: rect.minY),
-      control: CGPoint(x: rect.maxX, y: rect.minY)
-    )
+    path.addLine(to: CGPoint(x: rect.maxX - cut, y: rect.maxY))
+    path.addLine(to: CGPoint(x: rect.minX + cut, y: rect.maxY))
+    path.addLine(to: CGPoint(x: rect.minX, y: rect.maxY - cut))
     path.closeSubpath()
 
     return path
