@@ -205,7 +205,7 @@
 			mainGroup = 7B411F542EF5F4200061FDC7;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				7B2F07252EF60C0F00643798 /* XCLocalSwiftPackageReference "../../../ShaderKit" */,
+				7B2F07252EF60C0F00643798 /* XCLocalSwiftPackageReference "../.." */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 7B411F5E2EF5F4200061FDC7 /* Products */;
@@ -629,7 +629,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		7B2F07252EF60C0F00643798 /* XCLocalSwiftPackageReference "../../../ShaderKit" */ = {
+		7B2F07252EF60C0F00643798 /* XCLocalSwiftPackageReference "../.." */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../..;
 		};
