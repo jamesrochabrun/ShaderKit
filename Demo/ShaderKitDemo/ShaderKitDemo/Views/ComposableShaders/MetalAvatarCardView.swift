@@ -323,13 +323,13 @@ private struct MetalAvatarBadgeCard: View {
 
   private func identityPlate(width: CGFloat, height: CGFloat) -> some View {
     VStack(spacing: height * 0.08) {
-      Text("nic")
+      Text("unicorn")
         .font(.system(size: width * 0.128, weight: .semibold, design: .rounded))
         .lineLimit(1)
         .minimumScaleFactor(0.78)
         .foregroundStyle(Color(red: 0.04, green: 0.13, blue: 0.44))
 
-      Text("TOP 1%  •  ATTENDEE")
+      Text("ATTENDEE")
         .font(.system(size: width * 0.056, weight: .heavy, design: .rounded))
         .lineLimit(1)
         .foregroundStyle(Color(red: 0.17, green: 0.28, blue: 0.62).opacity(0.86))
@@ -434,7 +434,7 @@ private struct MetalAvatarQRBackCard: View {
           VStack(spacing: height * 0.045) {
             Spacer(minLength: height * 0.045)
 
-            Text("nic")
+            Text("unicorn")
               .font(.system(size: width * 0.15, weight: .semibold, design: .rounded))
               .lineLimit(1)
               .minimumScaleFactor(0.80)
@@ -442,7 +442,7 @@ private struct MetalAvatarQRBackCard: View {
 
             MetalAvatarShaderQRCode(qrImage: qrImage, size: qrSize)
 
-            Text("TOP 1%  •  ATTENDEE")
+            Text("ATTENDEE")
               .font(.system(size: width * 0.052, weight: .heavy, design: .rounded))
               .lineLimit(1)
               .foregroundStyle(Color(red: 0.16, green: 0.27, blue: 0.62).opacity(0.90))
