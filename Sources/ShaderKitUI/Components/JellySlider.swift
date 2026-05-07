@@ -141,6 +141,10 @@ public struct JellySlider: View {
     let targetX = dragTargetX(for: gesture.location, in: size)
 
     if !physics.isDragging {
+      guard sliderInteractionRect(in: size).contains(gesture.location) else {
+        return
+      }
+
       physics.startDrag(at: targetX)
       dragStartProgress = physics.normalizedProgress
     } else {
@@ -149,12 +153,27 @@ public struct JellySlider: View {
   }
 
   private func handleDragEnded(_: DragGesture.Value, in _: CGSize) {
+    guard physics.isDragging else {
+      return
+    }
+
     physics.endDrag()
     setValueFromNormalized(physics.normalizedProgress)
 
     if soundEnabled {
       toneGenerator.playClick(ascending: physics.normalizedProgress >= dragStartProgress)
     }
+  }
+
+  private func sliderInteractionRect(in size: CGSize) -> CGRect {
+    let width = size.width * 0.92
+    let height = min(size.height * 0.34, size.width * 0.20)
+    return CGRect(
+      x: (size.width - width) * 0.5,
+      y: size.height * 0.52 - height * 0.5,
+      width: width,
+      height: height
+    )
   }
 
   private func dragTargetX(for location: CGPoint, in size: CGSize) -> Float {
