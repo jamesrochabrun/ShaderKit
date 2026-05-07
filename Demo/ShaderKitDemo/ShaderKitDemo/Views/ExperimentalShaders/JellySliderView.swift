@@ -12,6 +12,7 @@ struct JellySliderView: View {
   @State private var value = 1.0
   @State private var darkMode = false
   @State private var soundEnabled = false
+  @State private var showsColorControls = true
 
   @State private var jellyHue: Double = 0.06
   @State private var jellySaturation: Double = 0.92
@@ -50,7 +51,7 @@ struct JellySliderView: View {
           .frame(maxWidth: 640)
 
           controlsPanel
-            .frame(maxWidth: 640)
+            .frame(maxWidth: 380)
         }
         .padding()
       }
@@ -72,58 +73,81 @@ struct JellySliderView: View {
   }
 
   private var controlsPanel: some View {
-    VStack(alignment: .leading, spacing: 18) {
-      Text("Example controls")
-        .font(.title2.weight(.semibold))
-        .foregroundStyle(controlsForeground)
+    VStack(alignment: .leading, spacing: 12) {
+      HStack(spacing: 12) {
+        Text("Mode")
+          .font(.callout.weight(.semibold))
 
-      Grid(alignment: .leading, horizontalSpacing: 18, verticalSpacing: 14) {
-        GridRow {
-          Text("Mode")
-          modeControls
-        }
+        Spacer(minLength: 12)
 
-        GridRow {
+        modeControls
+      }
+
+      if showsColorControls {
+        Divider()
+          .overlay(controlsForeground.opacity(0.12))
+
+        HStack(alignment: .top, spacing: 12) {
           Text("Jelly Color")
-          VStack(spacing: 8) {
+            .font(.callout.weight(.semibold))
+            .frame(width: 76, alignment: .leading)
+
+          VStack(spacing: 6) {
             JellySliderColorSlider(value: $jellyHue)
             JellySliderColorSlider(value: $jellySaturation)
             JellySliderColorSlider(value: $jellyBrightness)
           }
         }
       }
-      .font(.body)
-      .foregroundStyle(controlsForeground)
     }
-    .padding(24)
+    .font(.callout)
+    .foregroundStyle(controlsForeground)
+    .padding(14)
     .background(controlsBackground)
-    .clipShape(RoundedRectangle(cornerRadius: 12))
+    .clipShape(RoundedRectangle(cornerRadius: 10))
   }
 
   private var modeControls: some View {
-    HStack(spacing: 10) {
+    HStack(spacing: 8) {
       Button {
         darkMode.toggle()
       } label: {
-        Image(systemName: darkMode ? "moon.fill" : "sun.max.fill")
-          .font(.title3)
-          .foregroundStyle(darkMode ? .yellow : .orange)
-          .frame(width: 40, height: 40)
+        controlIcon(darkMode ? "moon.fill" : "sun.max.fill")
       }
-      .buttonStyle(.borderedProminent)
-      .controlSize(.regular)
+      .buttonStyle(.bordered)
+      .controlSize(.small)
+      .tint(controlsForeground)
+      .accessibilityLabel(darkMode ? "Use light mode" : "Use dark mode")
 
       Button {
         soundEnabled.toggle()
       } label: {
-        Image(systemName: soundEnabled ? "speaker.wave.2.fill" : "speaker.slash.fill")
-          .font(.title3)
-          .foregroundStyle(soundEnabled ? .blue : .gray)
-          .frame(width: 40, height: 40)
+        controlIcon(soundEnabled ? "speaker.wave.2.fill" : "speaker.slash.fill")
       }
       .buttonStyle(.bordered)
-      .controlSize(.regular)
+      .controlSize(.small)
+      .tint(controlsForeground)
+      .accessibilityLabel(soundEnabled ? "Disable sound" : "Enable sound")
+
+      Button {
+        withAnimation(.easeInOut(duration: 0.2)) {
+          showsColorControls.toggle()
+        }
+      } label: {
+        controlIcon(showsColorControls ? "paintpalette.fill" : "paintpalette")
+      }
+      .buttonStyle(.bordered)
+      .controlSize(.small)
+      .tint(controlsForeground)
+      .accessibilityLabel(showsColorControls ? "Hide jelly color controls" : "Show jelly color controls")
     }
+  }
+
+  private func controlIcon(_ systemName: String) -> some View {
+    Image(systemName: systemName)
+      .font(.body.weight(.semibold))
+      .foregroundStyle(controlsForeground)
+      .frame(width: 28, height: 28)
   }
 }
 
@@ -133,7 +157,7 @@ private struct JellySliderColorSlider: View {
   var body: some View {
     Slider(value: $value, in: 0...1)
       .tint(.orange)
-      .frame(minWidth: 180)
+      .frame(minWidth: 150)
   }
 }
 
