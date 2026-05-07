@@ -59,7 +59,7 @@ dependencies: [
 
 ## Available Shaders
 
-ShaderKit provides 37 composable shader effects across 9 categories.
+ShaderKit provides 38 composable shader effects across 9 categories.
 
 ### Foil Effects
 
@@ -104,6 +104,7 @@ ShaderKit provides 37 composable shader effects across 9 categories.
 | `.diagonalHolo()` | Diagonal lines with 3D depth | `intensity: Double = 0.7` |
 | `.crisscrossHolo()` | Criss-cross diamond pattern | `intensity: Double = 0.7` |
 | `.galaxyHolo()` | Galaxy/cosmos with rainbow overlay | `intensity: Double = 0.7` |
+| `.cosmicAura()` | Transparent iridescent aura/nebula overlay for avatar compositing | `intensity: Double = 0.85, avatarRadius: Double = 0.29, auraRadius: Double = 0.50` |
 | `.radialStar()` | Star pattern with radial fade | `intensity: Double = 0.7` |
 | `.subtleGradient()` | Large-scale subtle gradient | `intensity: Double = 0.7` |
 | `.metallicCrosshatch()` | Metallic sun-pillar with crosshatch | `intensity: Double = 0.7` |
@@ -219,6 +220,18 @@ HolographicCardContainer(width: 260, height: 380, shadowColor: .gray) {
     CardContent()
         .polishedAluminum()
 }
+
+// Avatar with transparent cosmic aura overlay
+Image("avatar")
+    .resizable()
+    .scaledToFill()
+    .shaderContext(tilt: .zero, time: elapsedTime)
+    .cosmicAura(
+        intensity: 0.62,
+        avatarRadius: 0.0, // 0 applies the aura across the full image
+        auraRadius: 0.72
+    )
+    .blendMode(.plusLighter)
 ```
 
 ## Custom Tilt Source
