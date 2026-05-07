@@ -9,6 +9,9 @@ import ShaderKitUI
 import SwiftUI
 
 struct JellySliderView: View {
+  private let contentHorizontalPadding: CGFloat = 16
+  private let sliderMaxLength: CGFloat = 640
+
   @State private var value = 1.0
   @State private var darkMode = false
   @State private var soundEnabled = false
@@ -39,21 +42,29 @@ struct JellySliderView: View {
       screenBackground
         .ignoresSafeArea()
 
-      ScrollView {
-        VStack(spacing: 18) {
-          JellySlider(
-            value: $value,
-            jellyColor: jellyColor,
-            darkMode: darkMode,
-            soundEnabled: soundEnabled
-          )
-          .aspectRatio(1, contentMode: .fit)
-          .frame(maxWidth: 640)
+      GeometryReader { proxy in
+        ScrollView {
+          VStack(spacing: 18) {
+            JellySlider(
+              value: $value,
+              jellyColor: jellyColor,
+              darkMode: darkMode,
+              soundEnabled: soundEnabled
+            )
+            .frame(
+              width: sliderLength(in: proxy.size),
+              height: sliderLength(in: proxy.size)
+            )
 
-          controlsPanel
-            .frame(maxWidth: 380)
+            controlsPanel
+              .frame(maxWidth: 380)
+          }
+          .frame(maxWidth: .infinity)
+          .padding(.horizontal, contentHorizontalPadding)
+          .padding(.top, sliderTopPadding(in: proxy.size))
+          .padding(.bottom, 24)
+          .animation(.easeInOut(duration: 0.24), value: showsColorControls)
         }
-        .padding()
       }
     }
     .background(screenBackground)
@@ -70,6 +81,21 @@ struct JellySliderView: View {
         jellyBrightness = isDark ? 1.0 : 0.95
       }
     }
+  }
+
+  private func sliderLength(in size: CGSize) -> CGFloat {
+    min(sliderMaxLength, max(1, size.width - contentHorizontalPadding * 2))
+  }
+
+  private func sliderTopPadding(in size: CGSize) -> CGFloat {
+    let centeredTopPadding = max(16, (size.height - sliderLength(in: size)) / 2)
+
+    guard showsColorControls else {
+      return centeredTopPadding
+    }
+
+    let lift = min(88, max(48, size.height * 0.11))
+    return max(16, centeredTopPadding - lift)
   }
 
   private var controlsPanel: some View {
