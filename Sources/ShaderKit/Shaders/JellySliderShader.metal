@@ -23,7 +23,7 @@ using namespace metal;
 #define JS_LINE_HALF_THICK 0.17
 #define JS_JELLY_IOR 1.42
 #define JS_JELLY_SCATTER_STRENGTH 3.0
-#define JS_TARGET_MIN_X -0.33
+#define JS_TARGET_MIN_X -0.228
 #define JS_TARGET_MAX_X 0.95
 
 #define JS_BBOX_LEFT -1.019
@@ -540,7 +540,7 @@ static float4 jsRenderBackground(float3 rayOrigin, float3 rayDirection, float ba
   float3 hitPosition = rayOrigin + rayDirection * backgroundHitDist;
   float3 normal = jsGetNormalMain(hitPosition);
   float endX = jsPoint(packs, JS_POINT_COUNT - 2).x;
-  float textProgress = saturate((endX + 0.43) / 1.19);
+  float textProgress = saturate(progress);
 
   float sqDist = dot(hitPosition - float3(endX, 0.0, 0.0), hitPosition - float3(endX, 0.0, 0.0));
   float3 bounceLight = jellyColor.xyz * (1.0 / (sqDist * 15.0 + 1.0) * 0.4);

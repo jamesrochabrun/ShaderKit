@@ -187,7 +187,7 @@ final class JellySliderPhysicsState {
   private static let sourceTargetMinX: Float = -0.7
   private static let sourceTargetMaxX: Float = 1.0
   private static let targetOffsetX: Float = -0.5
-  private static let targetMinX: Float = -0.33
+  private static let targetMinX: Float = -0.228
   private static let targetMaxX: Float = 0.95
 
   private let anchor = SIMD2<Float>(-1.0, 0.0)
