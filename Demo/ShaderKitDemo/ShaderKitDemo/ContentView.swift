@@ -48,10 +48,11 @@ enum ShaderType: String, CaseIterable, Identifiable {
   // Paper Shaders (1 item)
   case water = "Water"
 
-  // Experimental Shaders (4 items)
+  // Experimental Shaders (5 items)
   case liquidTech = "Liquid Tech [234]"
   case codexLogo = "Codex Logo"
   case jellySwitch = "Jelly Switch"
+  case jellySlider = "Jelly Slider"
   case jellyButton = "Jelly Button"
 
   var id: String { rawValue }
@@ -69,7 +70,7 @@ enum ShaderType: String, CaseIterable, Identifiable {
       return .composable
     case .water:
       return .paper
-    case .liquidTech, .codexLogo, .jellySwitch, .jellyButton:
+    case .liquidTech, .codexLogo, .jellySwitch, .jellySlider, .jellyButton:
       return .experimental
     }
   }
@@ -138,6 +139,8 @@ enum ShaderType: String, CaseIterable, Identifiable {
       return "Pulsing AI-brain logo with orientation-reactive gradient light"
     case .jellySwitch:
       return "3D ray-marched interactive toggle switch"
+    case .jellySlider:
+      return "3D ray-marched interactive jelly slider"
     case .jellyButton:
       return "3D ray-marched squishy button"
     }
@@ -179,6 +182,7 @@ enum ShaderType: String, CaseIterable, Identifiable {
     case .liquidTech: return "waveform.path.ecg"
     case .codexLogo: return "terminal.fill"
     case .jellySwitch: return "togglepower"
+    case .jellySlider: return "slider.horizontal.3"
     case .jellyButton: return "button.programmable"
     }
   }
@@ -250,6 +254,8 @@ enum ShaderType: String, CaseIterable, Identifiable {
       CodexLogoView()
     case .jellySwitch:
       JellySwitchView()
+    case .jellySlider:
+      JellySliderView()
     case .jellyButton:
       JellyButtonView()
     }
