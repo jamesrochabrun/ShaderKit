@@ -555,7 +555,7 @@ static float4 jsRenderBackground(float3 rayOrigin, float3 rayDirection, float ba
   backgroundColor += bounceLight + sideBounceLight;
 
   float textMask = jsRenderPercentageOnGround(hitPosition, textProgress);
-  float3 textColor = saturate(backgroundColor * mix(0.42, 1.35, darkMode));
+  float3 textColor = mix(saturate(backgroundColor * 0.42), float3(1.0), darkMode);
   return float4(mix(backgroundColor, textColor, textMask) * (1.0 + highlight), 1.0);
 }
 
