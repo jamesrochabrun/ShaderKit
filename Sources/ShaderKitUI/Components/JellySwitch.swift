@@ -7,6 +7,7 @@
 //  https://docs.swmansion.com/TypeGPU/examples/#example=rendering--jelly-switch
 //
 
+import ShaderKit
 import SwiftUI
 import simd
 
@@ -39,9 +40,12 @@ import simd
 /// ```
 public struct JellySwitch: View {
   @Binding private var isOn: Bool
-  private let jellyColor: Color
+  private let jellyColorComponents: SIMD4<Float>
   private let darkMode: Bool
   private let soundEnabled: Bool
+
+  private static let frameInterval: TimeInterval = 1.0 / 60.0
+  private static let lightDirection = normalize(SIMD3<Float>(0.19, -0.24, 0.75))
 
   @State private var physics = JellyPhysicsState()
   @State private var toneGenerator = ToneGenerator()
@@ -61,39 +65,45 @@ public struct JellySwitch: View {
     soundEnabled: Bool = true
   ) {
     self._isOn = isOn
-    self.jellyColor = jellyColor
+    self.jellyColorComponents = Self.colorComponents(for: jellyColor)
     self.darkMode = darkMode
     self.soundEnabled = soundEnabled
   }
 
-  private var jellyColorSIMD: SIMD4<Float> {
+  private static func colorComponents(for color: Color) -> SIMD4<Float> {
     var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
     #if os(iOS)
-    UIColor(jellyColor).getRed(&r, green: &g, blue: &b, alpha: &a)
+    UIColor(color).getRed(&r, green: &g, blue: &b, alpha: &a)
     #else
-    NSColor(jellyColor).getRed(&r, green: &g, blue: &b, alpha: &a)
+    NSColor(color).getRed(&r, green: &g, blue: &b, alpha: &a)
     #endif
     return SIMD4<Float>(Float(r), Float(g), Float(b), Float(a))
   }
 
-  private var lightDirection: SIMD3<Float> {
-    normalize(SIMD3<Float>(0.19, -0.24, 0.75))
-  }
-
   public var body: some View {
-    TimelineView(.animation) { timeline in
+    TimelineView(.animation(minimumInterval: Self.frameInterval, paused: physics.isAtRest)) { timeline in
       GeometryReader { geometry in
         Rectangle()
           .fill(darkMode ? Color.black : Color(white: 0.95))
-          .shaderContext(tilt: .zero, time: timeline.date.timeIntervalSince1970)
-          .jellySwitch(
-            progress: physics.progress,
-            squashX: physics.squashXValue,
-            squashZ: physics.squashZValue,
-            wiggleX: physics.wiggleXValue,
-            jellyColor: jellyColorSIMD,
-            lightDirection: lightDirection,
-            darkMode: darkMode
+          .layerEffect(
+            ShaderKit.shaders.jellySwitch(
+              .float2(geometry.size.width, geometry.size.height),
+              .float2(0, 0),
+              .float(0),
+              .float(physics.progress),
+              .float(physics.squashXValue),
+              .float(physics.squashZValue),
+              .float(physics.wiggleXValue),
+              .float4(
+                jellyColorComponents.x,
+                jellyColorComponents.y,
+                jellyColorComponents.z,
+                jellyColorComponents.w
+              ),
+              .float3(Self.lightDirection.x, Self.lightDirection.y, Self.lightDirection.z),
+              .float(darkMode ? 1.0 : 0.0)
+            ),
+            maxSampleOffset: .zero
           )
           .contentShape(Rectangle())
           .gesture(
@@ -189,6 +199,10 @@ final class JellyPhysicsState {
   var toggled = false
   var pressed = false
 
+  private static let restProgressEpsilon: Float = 0.0001
+  private static let restValueEpsilon: Float = 0.0005
+  private static let restVelocityEpsilon: Float = 0.01
+
   private var progress_: Float = 0
   private var velocity_: Float = 0
   private var squashXSpring = Spring(mass: 1, stiffness: 1000, damping: 10)
@@ -196,6 +210,7 @@ final class JellyPhysicsState {
   private var wiggleXSpring = Spring(mass: 1, stiffness: 1000, damping: 20)
 
   private let switchAcceleration: Float = 100
+  @ObservationIgnored
   private var lastUpdate: Date?
 
   private var isDragging = false
@@ -205,10 +220,20 @@ final class JellyPhysicsState {
   var squashXValue: Float { squashXSpring.value }
   var squashZValue: Float { squashZSpring.value }
   var wiggleXValue: Float { wiggleXSpring.value }
+  var isAtRest: Bool {
+    !pressed
+      && !isDragging
+      && abs(progress_ - targetProgress) <= Self.restProgressEpsilon
+      && abs(velocity_) <= Self.restVelocityEpsilon
+      && isSpringAtRest(squashXSpring)
+      && isSpringAtRest(squashZSpring)
+      && isSpringAtRest(wiggleXSpring)
+  }
 
   func toggle() {
     toggled.toggle()
     pressed = true
+    lastUpdate = nil
 
     DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { [weak self] in
       self?.pressed = false
@@ -217,12 +242,21 @@ final class JellyPhysicsState {
 
   func syncProgress(to on: Bool) {
     progress_ = on ? 1 : 0
+    velocity_ = 0
+    squashXSpring.value = 0
+    squashXSpring.velocity = 0
+    squashZSpring.value = 0
+    squashZSpring.velocity = 0
+    wiggleXSpring.value = 0
+    wiggleXSpring.velocity = 0
+    lastUpdate = nil
   }
 
   func startDrag() {
     isDragging = true
     dragStartProgress = progress_
     velocity_ = 0  // Stop any existing motion
+    lastUpdate = nil
   }
 
   func updateDrag(normalizedDelta: Float) {
@@ -302,5 +336,41 @@ final class JellyPhysicsState {
     squashXSpring.update(dt: clampedDt)
     squashZSpring.update(dt: clampedDt)
     wiggleXSpring.update(dt: clampedDt)
+
+    settleIfNeeded()
+  }
+
+  private var targetProgress: Float {
+    toggled ? 1 : 0
+  }
+
+  private func isSpringAtRest(_ spring: Spring) -> Bool {
+    abs(spring.value) <= Self.restValueEpsilon
+      && abs(spring.velocity) <= Self.restVelocityEpsilon
+  }
+
+  private func settleIfNeeded() {
+    guard !isDragging else {
+      return
+    }
+
+    if abs(progress_ - targetProgress) <= Self.restProgressEpsilon
+      && abs(velocity_) <= Self.restVelocityEpsilon {
+      progress_ = targetProgress
+      velocity_ = 0
+    }
+
+    settle(&squashXSpring)
+    settle(&squashZSpring)
+    settle(&wiggleXSpring)
+  }
+
+  private func settle(_ spring: inout Spring) {
+    guard isSpringAtRest(spring) else {
+      return
+    }
+
+    spring.value = 0
+    spring.velocity = 0
   }
 }

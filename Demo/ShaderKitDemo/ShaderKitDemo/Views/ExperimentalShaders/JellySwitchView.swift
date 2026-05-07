@@ -23,8 +23,15 @@ struct JellySwitchView: View {
     Color(hue: jellyHue, saturation: jellySaturation, brightness: jellyBrightness)
   }
 
+  private var screenBackground: Color {
+    darkMode ? .black : Color(white: 0.95)
+  }
+
   var body: some View {
     ZStack {
+      screenBackground
+        .ignoresSafeArea()
+
       JellySwitch(isOn: $isOn, jellyColor: jellyColor, darkMode: darkMode)
         .ignoresSafeArea()
 
@@ -38,7 +45,11 @@ struct JellySwitchView: View {
     .navigationTitle("Jelly Switch")
     #if os(iOS)
     .navigationBarTitleDisplayMode(.inline)
+    .toolbarBackground(screenBackground, for: .navigationBar)
+    .toolbarBackground(.visible, for: .navigationBar)
+    .toolbarColorScheme(darkMode ? .dark : .light, for: .navigationBar)
     #endif
+    .preferredColorScheme(darkMode ? .dark : .light)
     .onChange(of: darkMode) { _, isDark in
       withAnimation(.easeInOut(duration: 0.4)) {
         if isDark {

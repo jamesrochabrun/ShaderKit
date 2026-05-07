@@ -33,9 +33,10 @@ enum ShaderType: String, CaseIterable, Identifiable {
   case polishedAluminum = "Polished Aluminum"
   case halftonePastel = "Halftone Pastel"
 
-  // Composable Shaders (9 items)
+  // Composable Shaders (10 items)
   case foilGlitterSweep = "Foil + Glitter + Sweep"
   case cardLayerExplode = "Card Layer Explode"
+  case metalAvatarCard = "Metal Avatar Card"
   case codexGradientFoil = "Codex Gradient Foil"
   case gradientFoil = "Gradient Foil"
   case psychicHolo = "Psychic Holo"
@@ -47,10 +48,11 @@ enum ShaderType: String, CaseIterable, Identifiable {
   // Paper Shaders (1 item)
   case water = "Water"
 
-  // Experimental Shaders (4 items)
+  // Experimental Shaders (5 items)
   case liquidTech = "Liquid Tech [234]"
   case codexLogo = "Codex Logo"
   case jellySwitch = "Jelly Switch"
+  case jellySlider = "Jelly Slider"
   case jellyButton = "Jelly Button"
 
   var id: String { rawValue }
@@ -62,12 +64,13 @@ enum ShaderType: String, CaseIterable, Identifiable {
         .radiantHolo, .amazingRare, .spiralRings, .snowfall, .frozen,
         .polishedAluminum, .halftonePastel:
       return .basic
-    case .foilGlitterSweep, .cardLayerExplode, .codexGradientFoil, .gradientFoil,
-        .psychicHolo, .starburstRadial, .layeredHolo, .maskedFoil, .glassEnclosure:
+    case .foilGlitterSweep, .cardLayerExplode, .metalAvatarCard, .codexGradientFoil,
+        .gradientFoil, .psychicHolo, .starburstRadial, .layeredHolo, .maskedFoil,
+        .glassEnclosure:
       return .composable
     case .water:
       return .paper
-    case .liquidTech, .codexLogo, .jellySwitch, .jellyButton:
+    case .liquidTech, .codexLogo, .jellySwitch, .jellySlider, .jellyButton:
       return .experimental
     }
   }
@@ -112,6 +115,8 @@ enum ShaderType: String, CaseIterable, Identifiable {
       return "Combined foil, glitter, and light sweep"
     case .cardLayerExplode:
       return "Exploded card composition with 3D layer controls"
+    case .metalAvatarCard:
+      return "Premium avatar badge with polished metal, shine, and laser accents"
     case .codexGradientFoil:
       return "Codex artwork with gradient foil effects"
     case .gradientFoil:
@@ -134,6 +139,8 @@ enum ShaderType: String, CaseIterable, Identifiable {
       return "Pulsing AI-brain logo with orientation-reactive gradient light"
     case .jellySwitch:
       return "3D ray-marched interactive toggle switch"
+    case .jellySlider:
+      return "3D ray-marched interactive jelly slider"
     case .jellyButton:
       return "3D ray-marched squishy button"
     }
@@ -161,6 +168,7 @@ enum ShaderType: String, CaseIterable, Identifiable {
     // Composable Shaders
     case .foilGlitterSweep: return "wand.and.sparkles"
     case .cardLayerExplode: return "slider.horizontal.3"
+    case .metalAvatarCard: return "person.crop.square.filled.and.at.rectangle"
     case .codexGradientFoil: return "terminal.fill"
     case .gradientFoil: return "paintpalette.fill"
     case .psychicHolo: return "eye.fill"
@@ -174,6 +182,7 @@ enum ShaderType: String, CaseIterable, Identifiable {
     case .liquidTech: return "waveform.path.ecg"
     case .codexLogo: return "terminal.fill"
     case .jellySwitch: return "togglepower"
+    case .jellySlider: return "slider.horizontal.3"
     case .jellyButton: return "button.programmable"
     }
   }
@@ -219,6 +228,8 @@ enum ShaderType: String, CaseIterable, Identifiable {
       FoilGlitterSweepView()
     case .cardLayerExplode:
       CardLayerExplodeView()
+    case .metalAvatarCard:
+      MetalAvatarCardView()
     case .codexGradientFoil:
       CodexGradientFoilView()
     case .gradientFoil:
@@ -243,6 +254,8 @@ enum ShaderType: String, CaseIterable, Identifiable {
       CodexLogoView()
     case .jellySwitch:
       JellySwitchView()
+    case .jellySlider:
+      JellySliderView()
     case .jellyButton:
       JellyButtonView()
     }

@@ -9,6 +9,7 @@
 ///
 /// Components:
 /// - ``JellySwitch``: An interactive 3D jelly toggle switch with spring physics
+/// - ``JellySlider``: An interactive 3D jelly slider with rope-style spring physics
 public enum ShaderKitUI {}
 
 // Re-export ShaderKit for convenience

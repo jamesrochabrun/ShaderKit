@@ -185,6 +185,23 @@ public extension View {
   func galaxyHolo(intensity: Double = 0.7) -> some View {
     shader(.galaxyHolo(intensity: intensity))
   }
+
+  /// Apply a transparent iridescent cosmic aura or nebula overlay.
+  /// - Parameters:
+  ///   - intensity: Effect strength (default 0.85)
+  ///   - avatarRadius: Clear circular center radius, or 0 for a full-image overlay
+  ///   - auraRadius: Outer aura radius in normalized aura coordinates
+  func cosmicAura(
+    intensity: Double = 0.85,
+    avatarRadius: Double = 0.29,
+    auraRadius: Double = 0.50
+  ) -> some View {
+    shader(.cosmicAura(
+      intensity: intensity,
+      avatarRadius: avatarRadius,
+      auraRadius: auraRadius
+    ))
+  }
   
   /// Apply star pattern with radial mask fade.
   /// - Parameter intensity: Effect strength (default 0.7)
