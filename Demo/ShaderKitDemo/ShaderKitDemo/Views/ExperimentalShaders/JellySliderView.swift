@@ -21,28 +21,49 @@ struct JellySliderView: View {
     Color(hue: jellyHue, saturation: jellySaturation, brightness: jellyBrightness)
   }
 
-  var body: some View {
-    ScrollView {
-      VStack(spacing: 18) {
-        JellySlider(
-          value: $value,
-          jellyColor: jellyColor,
-          darkMode: darkMode,
-          soundEnabled: soundEnabled
-        )
-        .aspectRatio(1, contentMode: .fit)
-        .frame(maxWidth: 640)
+  private var screenBackground: Color {
+    darkMode ? .black : Color(red: 0.95, green: 0.94, blue: 0.99)
+  }
 
-        controlsPanel
+  private var controlsBackground: Color {
+    darkMode ? Color.white.opacity(0.08) : .white
+  }
+
+  private var controlsForeground: Color {
+    darkMode ? .white : .black
+  }
+
+  var body: some View {
+    ZStack {
+      screenBackground
+        .ignoresSafeArea()
+
+      ScrollView {
+        VStack(spacing: 18) {
+          JellySlider(
+            value: $value,
+            jellyColor: jellyColor,
+            darkMode: darkMode,
+            soundEnabled: soundEnabled
+          )
+          .aspectRatio(1, contentMode: .fit)
           .frame(maxWidth: 640)
+
+          controlsPanel
+            .frame(maxWidth: 640)
+        }
+        .padding()
       }
-      .padding()
     }
-    .background(Color(red: 0.95, green: 0.94, blue: 0.99))
+    .background(screenBackground)
     .navigationTitle("Jelly Slider")
     #if os(iOS)
     .navigationBarTitleDisplayMode(.inline)
+    .toolbarBackground(screenBackground, for: .navigationBar)
+    .toolbarBackground(.visible, for: .navigationBar)
+    .toolbarColorScheme(darkMode ? .dark : .light, for: .navigationBar)
     #endif
+    .preferredColorScheme(darkMode ? .dark : .light)
     .onChange(of: darkMode) { _, isDark in
       withAnimation(.easeInOut(duration: 0.4)) {
         jellyBrightness = isDark ? 1.0 : 0.95
@@ -54,7 +75,7 @@ struct JellySliderView: View {
     VStack(alignment: .leading, spacing: 18) {
       Text("Example controls")
         .font(.title2.weight(.semibold))
-        .foregroundStyle(.black)
+        .foregroundStyle(controlsForeground)
 
       Grid(alignment: .leading, horizontalSpacing: 18, verticalSpacing: 14) {
         GridRow {
@@ -72,10 +93,10 @@ struct JellySliderView: View {
         }
       }
       .font(.body)
-      .foregroundStyle(.black)
+      .foregroundStyle(controlsForeground)
     }
     .padding(24)
-    .background(Color.white)
+    .background(controlsBackground)
     .clipShape(RoundedRectangle(cornerRadius: 12))
   }
 
