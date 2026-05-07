@@ -24,7 +24,7 @@ using namespace metal;
 #define JS_JELLY_IOR 1.42
 #define JS_JELLY_SCATTER_STRENGTH 3.0
 #define JS_TARGET_MIN_X -0.33
-#define JS_TARGET_MAX_X 0.9
+#define JS_TARGET_MAX_X 0.95
 
 #define JS_BBOX_LEFT -1.019
 #define JS_BBOX_RIGHT 1.09

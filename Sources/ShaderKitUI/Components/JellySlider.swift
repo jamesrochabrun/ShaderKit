@@ -188,13 +188,14 @@ final class JellySliderPhysicsState {
   private static let sourceTargetMaxX: Float = 1.0
   private static let targetOffsetX: Float = -0.5
   private static let targetMinX: Float = -0.33
-  private static let targetMaxX: Float = 0.9
+  private static let targetMaxX: Float = 0.95
 
   private let anchor = SIMD2<Float>(-1.0, 0.0)
   private let baseY: Float = 0.0
   private let yOffset: Float = -0.03
-  private let totalLength: Float = 1.9
+  private let totalLength: Float = 1.95
   private let restLength: Float
+  private var trackY: Float { baseY + yOffset }
 
   @ObservationIgnored private var positions: [SIMD2<Float>]
   @ObservationIgnored private var normals: [SIMD2<Float>]
@@ -269,7 +270,7 @@ final class JellySliderPhysicsState {
     for index in 0..<Self.pointCount {
       let t = Float(index) / Float(Self.pointCount - 1)
       let x = anchor.x * (1 - t) + Self.targetMaxX * t
-      let y = anchor.y + yOffset
+      let y = trackY * (1 - t) + endY(for: Self.targetMaxX) * t
       let position = SIMD2<Float>(x, y)
       positions[index] = position
       previousPositions[index] = position
@@ -340,7 +341,7 @@ final class JellySliderPhysicsState {
     for index in 0..<Self.pointCount {
       let t = Float(index) / Float(Self.pointCount - 1)
       let x = anchor.x * (1 - t) + targetX * t
-      let y = anchor.y + yOffset
+      let y = trackY * (1 - t) + endY(for: targetX) * t
       let position = SIMD2<Float>(x, y)
       positions[index] = position
       previousPositions[index] = position
@@ -353,6 +354,10 @@ final class JellySliderPhysicsState {
   private func xPosition(for normalized: Float) -> Float {
     let clamped = min(1, max(0, normalized))
     return Self.targetMinX + (Self.targetMaxX - Self.targetMinX) * clamped
+  }
+
+  private func endY(for targetX: Float) -> Float {
+    trackY
   }
 
   func dragTargetX(for pointerX: Float) -> Float {
@@ -368,14 +373,14 @@ final class JellySliderPhysicsState {
       let point = positions[index]
 
       if index == 0 {
-        let pinned = SIMD2<Float>(anchor.x, anchor.y + yOffset)
+        let pinned = SIMD2<Float>(anchor.x, trackY)
         positions[index] = pinned
         previousPositions[index] = pinned
         continue
       }
 
       if index == Self.pointCount - 1 {
-        let pinned = SIMD2<Float>(targetX, 0.08 + yOffset)
+        let pinned = SIMD2<Float>(targetX, endY(for: targetX))
         positions[index] = pinned
         previousPositions[index] = pinned
         continue
@@ -398,7 +403,7 @@ final class JellySliderPhysicsState {
         point.y + velocity.y + accelerationY * h * h
       )
 
-      let floorY = baseY + yOffset
+      let floorY = trackY
       if positions[index].y < floorY {
         positions[index].y = floorY
       }
@@ -422,15 +427,19 @@ final class JellySliderPhysicsState {
       if endFlatCount > 0 {
         let count = min(endFlatCount, Self.pointCount - 2)
         for index in 1...count {
-          projectLineY(index, targetY: baseY + yOffset, strength: endFlatStiffness)
+          projectLineY(index, targetY: trackY, strength: endFlatStiffness)
         }
         for index in (Self.pointCount - 1 - count)..<(Self.pointCount - 1) {
-          projectLineY(index, targetY: baseY + yOffset, strength: endFlatStiffness)
+          projectLineY(index, targetY: trackY, strength: endFlatStiffness)
         }
       }
 
-      positions[0] = SIMD2<Float>(anchor.x, anchor.y + yOffset)
-      positions[Self.pointCount - 1] = SIMD2<Float>(targetX, 0.08 + yOffset)
+      for index in (Self.pointCount - 4)..<Self.pointCount {
+        projectLineY(index, targetY: trackY, strength: 0.75)
+      }
+
+      positions[0] = SIMD2<Float>(anchor.x, trackY)
+      positions[Self.pointCount - 1] = SIMD2<Float>(targetX, endY(for: targetX))
     }
   }
 
