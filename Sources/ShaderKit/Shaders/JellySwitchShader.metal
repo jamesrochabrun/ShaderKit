@@ -36,6 +36,9 @@ using namespace metal;
 #define GROUND_THICKNESS 0.03
 #define GROUND_RADIUS 0.05
 #define GROUND_ROUNDNESS 0.02
+#define GROUND_PLANE_Y -0.06
+#define FLAT_GROUND_MARGIN 0.14
+#define JELLY_BOUNDING_RADIUS 0.68
 
 #define OBJ_NONE 0
 #define OBJ_BACKGROUND 1
@@ -64,6 +67,14 @@ float opExtrudeY(float3 p, float d2d, float h) {
 }
 
 // MARK: - Jelly Deformation
+
+float3 getJellyOrigin(float progress, float squashX) {
+  return float3(
+    (progress - 0.5) * SWITCH_RAIL_LENGTH - squashX * (progress - 0.5) * 0.2,
+    JELLY_HALFSIZE.y * 0.5,
+    0.0
+  );
+}
 
 // Cheap bend - bends XY based on X position
 float3 opCheapBend(float3 p, float k) {
@@ -102,12 +113,7 @@ float getMainSceneDist(float3 position) {
 
 // Jelly SDF with deformations
 float getJellyDist(float3 position, float progress, float squashX, float squashZ, float wiggleX) {
-  // Jelly origin moves along rail based on progress
-  float3 jellyOrigin = float3(
-    (progress - 0.5) * SWITCH_RAIL_LENGTH - squashX * (progress - 0.5) * 0.2,
-    JELLY_HALFSIZE.y * 0.5,
-    0.0
-  );
+  float3 jellyOrigin = getJellyOrigin(progress, squashX);
 
   // Scale for squash deformation
   float3 jellyInvScale = float3(1.0 - squashX, 1.0, 1.0 - squashZ);
@@ -130,6 +136,11 @@ float getJellyDist(float3 position, float progress, float squashX, float squashZ
 struct HitInfo {
   float distance;
   int objectType;
+};
+
+struct BackgroundHit {
+  float distance;
+  int isFlatGround;
 };
 
 HitInfo getSceneDist(float3 position, float progress, float squashX, float squashZ, float wiggleX) {
@@ -235,14 +246,58 @@ float3 beerLambert(float3 sigma, float dist) {
 
 // MARK: - Rendering
 
-float4 renderBackground(float3 rayOrigin, float3 rayDirection, float backgroundHitDist,
-                        float3 lightDir, float progress, float squashX, float squashZ, float wiggleX,
-                        float4 jellyColor, float darkMode) {
-  float3 hitPosition = rayOrigin + rayDirection * backgroundHitDist;
-  float3 normal = getNormal(hitPosition, progress, squashX, squashZ, wiggleX);
+BackgroundHit getBackgroundHit(float3 rayOrigin, float3 rayDirection, int maxSteps, float surfaceDistance) {
+  BackgroundHit result;
+  result.distance = MAX_DIST;
+  result.isFlatGround = 0;
 
+  // Most pixels hit the uninterrupted ground plane. Intersect those analytically
+  // and keep the SDF march for the rail/cutout area where rounded geometry matters.
+  if (abs(rayDirection.y) > 0.0001) {
+    float planeDistance = (GROUND_PLANE_Y - rayOrigin.y) / rayDirection.y;
+    if (planeDistance > 0.0 && planeDistance < MAX_DIST) {
+      float3 planeHit = rayOrigin + rayDirection * planeDistance;
+      if (rectangleCutoutDist(planeHit.xz) > FLAT_GROUND_MARGIN) {
+        result.distance = planeDistance;
+        result.isFlatGround = 1;
+        return result;
+      }
+    }
+  }
+
+  float distanceFromOrigin = 0.0;
+  for (int i = 0; i < maxSteps; i++) {
+    float3 p = rayOrigin + rayDirection * distanceFromOrigin;
+    float hit = getMainSceneDist(p);
+    distanceFromOrigin += hit;
+    if (distanceFromOrigin > MAX_DIST || hit < surfaceDistance) break;
+  }
+
+  result.distance = distanceFromOrigin;
+  return result;
+}
+
+bool rayIntersectsSphere(float3 rayOrigin, float3 rayDirection, float3 center, float radius, float maxDistance) {
+  float3 oc = rayOrigin - center;
+  float b = dot(oc, rayDirection);
+  float c = dot(oc, oc) - radius * radius;
+  float discriminant = b * b - c;
+
+  if (discriminant < 0.0) {
+    return false;
+  }
+
+  float root = sqrt(discriminant);
+  float nearDistance = -b - root;
+  float farDistance = -b + root;
+  return farDistance >= 0.0 && nearDistance <= maxDistance;
+}
+
+float4 shadeBackground(float3 hitPosition, float3 normal, float ao,
+                       float3 rayOrigin, float3 lightDir, float progress,
+                       float4 jellyColor, float darkMode) {
   // Calculate fake bounce lighting from jelly
-  float switchX = (progress - 0.5) * SWITCH_RAIL_LENGTH;
+  float switchX = getJellyOrigin(progress, 0.0).x;
   float3 toJelly = hitPosition - float3(switchX, 0, 0);
   float sqDist = dot(toJelly, toJelly);
   float3 bounceLight = jellyColor.xyz * (1.0 / (sqDist * 15.0 + 1.0) * 0.4);
@@ -251,7 +306,6 @@ float4 renderBackground(float3 rayOrigin, float3 rayDirection, float backgroundH
 
   float3 litColor = calculateLighting(hitPosition, normal, rayOrigin, lightDir);
   float3 groundAlbedo = mix(LIGHT_GROUND_ALBEDO, DARK_GROUND_ALBEDO, darkMode);
-  float ao = calculateAO(hitPosition, normal, progress, squashX, squashZ, wiggleX);
 
   float3 backgroundColor = groundAlbedo * litColor * ao;
   backgroundColor += bounceLight * emission + sideBounceLight * emission;
@@ -259,22 +313,34 @@ float4 renderBackground(float3 rayOrigin, float3 rayDirection, float backgroundH
   return float4(backgroundColor, 1.0);
 }
 
+float4 renderBackground(float3 rayOrigin, float3 rayDirection, float backgroundHitDist,
+                        float3 lightDir, float progress, float squashX, float squashZ, float wiggleX,
+                        float4 jellyColor, float darkMode) {
+  float3 hitPosition = rayOrigin + rayDirection * backgroundHitDist;
+  float3 normal = getNormal(hitPosition, progress, squashX, squashZ, wiggleX);
+  float ao = calculateAO(hitPosition, normal, progress, squashX, squashZ, wiggleX);
+
+  return shadeBackground(hitPosition, normal, ao, rayOrigin, lightDir, progress, jellyColor, darkMode);
+}
+
+float4 renderFlatBackground(float3 rayOrigin, float3 rayDirection, float backgroundHitDist,
+                            float3 lightDir, float progress, float4 jellyColor, float darkMode) {
+  float3 hitPosition = rayOrigin + rayDirection * backgroundHitDist;
+  return shadeBackground(hitPosition, float3(0, 1, 0), 1.0, rayOrigin, lightDir, progress, jellyColor, darkMode);
+}
+
 float3 rayMarchNoJelly(float3 rayOrigin, float3 rayDirection, float3 lightDir,
                        float progress, float squashX, float squashZ, float wiggleX,
                        float4 jellyColor, float darkMode) {
-  float distanceFromOrigin = 0.0;
+  BackgroundHit backgroundHit = getBackgroundHit(rayOrigin, rayDirection, 6, SURF_DIST * 10.0);
 
-  for (int i = 0; i < 6; i++) {
-    float3 p = rayOrigin + rayDirection * distanceFromOrigin;
-    float hit = getMainSceneDist(p);
-    distanceFromOrigin += hit;
-    if (distanceFromOrigin > MAX_DIST || hit < SURF_DIST * 10.0) break;
-  }
-
-  if (distanceFromOrigin < MAX_DIST) {
-    return renderBackground(rayOrigin, rayDirection, distanceFromOrigin,
-                            lightDir, progress, squashX, squashZ, wiggleX,
-                            jellyColor, darkMode).xyz;
+  if (backgroundHit.distance < MAX_DIST) {
+    if (backgroundHit.isFlatGround == 1) {
+      return renderFlatBackground(rayOrigin, rayDirection, backgroundHit.distance,
+                                  lightDir, progress, jellyColor, darkMode).xyz;
+    }
+    return renderBackground(rayOrigin, rayDirection, backgroundHit.distance,
+                            lightDir, progress, squashX, squashZ, wiggleX, jellyColor, darkMode).xyz;
   }
   return float3(0.0);
 }
@@ -323,15 +389,19 @@ float3 rayMarchNoJelly(float3 rayOrigin, float3 rayDirection, float3 lightDir,
   // Normalize light direction
   float3 ld = normalize(lightDir);
 
-  // First pass: march to background
-  float backgroundDist = 0.0;
-  for (int i = 0; i < MAX_STEPS; i++) {
-    float3 p = ro + rd * backgroundDist;
-    float hit = getMainSceneDist(p);
-    backgroundDist += hit;
-    if (hit < SURF_DIST) break;
+  BackgroundHit backgroundHit = getBackgroundHit(ro, rd, MAX_STEPS, SURF_DIST);
+  float backgroundDist = backgroundHit.distance;
+  float4 background = backgroundHit.isFlatGround == 1
+    ? renderFlatBackground(ro, rd, backgroundDist, ld, progress, jellyColor, darkMode)
+    : renderBackground(ro, rd, backgroundDist, ld, progress, squashX, squashZ, wiggleX, jellyColor, darkMode);
+
+  // Most rays never enter the jelly volume. Skip the scene march when a
+  // conservative bound proves the jelly cannot contribute to this pixel.
+  if (!rayIntersectsSphere(ro, rd, getJellyOrigin(progress, squashX), JELLY_BOUNDING_RADIUS, backgroundDist)) {
+    float exposure = mix(1.5, 2.0, darkMode);
+    float3 col = tanh(background.xyz * exposure);
+    return half4(half3(col), 1.0h);
   }
-  float4 background = renderBackground(ro, rd, backgroundDist, ld, progress, squashX, squashZ, wiggleX, jellyColor, darkMode);
 
   // Second pass: check jelly intersection
   float distanceFromOrigin = 0.0;
