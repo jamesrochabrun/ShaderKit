@@ -44,7 +44,7 @@ private struct StarburstRadialContent: View {
         VStack(spacing: 0) {
           // Header
           HStack(alignment: .top) {
-            Text("RAY FERNANDO")
+            Text("PIKACHU")
               .font(.system(size: cardWidth * 0.085, weight: .heavy))
               .lineLimit(1)
               .minimumScaleFactor(0.55)
@@ -56,7 +56,7 @@ private struct StarburstRadialContent: View {
             HStack(spacing: 4) {
               Text("HP")
                 .font(.system(size: cardWidth * 0.04, weight: .medium))
-              Text("1337")
+              Text("60")
                 .font(.system(size: cardWidth * 0.085, weight: .bold))
               Image(systemName: "bolt.fill")
                 .font(.system(size: cardWidth * 0.07))
@@ -79,11 +79,11 @@ private struct StarburstRadialContent: View {
                 .foregroundStyle(.black)
 
               VStack(alignment: .leading, spacing: 2) {
-                Text("VIBE CODE OG")
+                Text("THUNDER SPARK")
                   .font(.system(size: cardWidth * 0.055, weight: .bold))
                   .foregroundStyle(.black)
 
-                Text("Ships production code on livestream.\nBugs included. Audience: 30,000+")
+                Text("Electric cheeks crackle with quick flashes.\nThis attack zaps the opposing card.")
                   .font(.system(size: cardWidth * 0.03))
                   .foregroundStyle(.black.opacity(0.8))
                   .lineLimit(2)
@@ -91,7 +91,7 @@ private struct StarburstRadialContent: View {
 
               Spacer()
 
-              Text("30+")
+              Text("30")
                 .font(.system(size: cardWidth * 0.085, weight: .bold))
                 .foregroundStyle(.black)
             }
@@ -112,11 +112,11 @@ private struct StarburstRadialContent: View {
                 .foregroundStyle(.black)
 
               VStack(alignment: .leading, spacing: 2) {
-                Text("SHIP IT")
+                Text("QUICK DASH")
                   .font(.system(size: cardWidth * 0.055, weight: .bold))
                   .foregroundStyle(.black)
 
-                Text("Pushes to main on a Friday. Survives.")
+                Text("A bright yellow blur slips past the next attack.")
                   .font(.system(size: cardWidth * 0.03))
                   .foregroundStyle(.black.opacity(0.8))
                   .lineLimit(2)
@@ -124,7 +124,7 @@ private struct StarburstRadialContent: View {
 
               Spacer()
 
-              Text("∞")
+              Text("20+")
                 .font(.system(size: cardWidth * 0.085, weight: .bold))
                 .foregroundStyle(.black)
             }
@@ -132,7 +132,7 @@ private struct StarburstRadialContent: View {
             .padding(.vertical, cardHeight * 0.014)
 
             // Description
-            Text("Drafted to the GPT-5.5 class of 5/5/26.\nAcceptance rate: 1.2%. Compaction works in mysterious ways.")
+            Text("Mouse Pokemon. Height: 1'04\". Weight: 13.2 lbs.\nStores electricity in its red cheek pouches.")
               .font(.system(size: cardWidth * 0.028).italic())
               .foregroundStyle(.black.opacity(0.7))
               .multilineTextAlignment(.center)
@@ -142,12 +142,12 @@ private struct StarburstRadialContent: View {
 
             // Footer
             HStack {
-              Text("Illus. OpenAI")
+              Text("Illus. ShaderKit")
                 .font(.system(size: cardWidth * 0.025))
 
               Spacer()
 
-              Text("5/55  ★  HOLO RARE")
+              Text("025/151  ★  HOLO RARE")
                 .font(.system(size: cardWidth * 0.025, weight: .bold))
             }
             .foregroundStyle(.black.opacity(0.6))
