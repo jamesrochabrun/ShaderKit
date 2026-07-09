@@ -378,6 +378,18 @@ private func applyEffect<V: VisualEffect>(
       maxSampleOffset: .zero
     )
 
+  case .etchedFoil(let intensity, let density):
+    return view.layerEffect(
+      shaders.etchedFoil(
+        .float2(size.width, size.height),
+        .float2(tilt.x, tilt.y),
+        .float(time),
+        .float(intensity),
+        .float(density)
+      ),
+      maxSampleOffset: .zero
+    )
+
   case .spiralRings(let intensity, let ringCount, let spiralTwist, let baseColor):
     return view.layerEffect(
       shaders.spiralRings(

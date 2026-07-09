@@ -109,6 +109,14 @@ public enum ShaderEffect: Equatable, Sendable {
   /// Metallic sun-pillar with crosshatch texture
   case metallicCrosshatch(intensity: Double = 0.7)
 
+  /// Etched textured foil: fine engraved diagonal lines carrying
+  /// counter-panned rainbow interference — the textured full-art
+  /// trading-card treatment.
+  /// - Parameters:
+  ///   - intensity: Effect strength (default 0.7)
+  ///   - density: Engraved line frequency across the surface (default 80)
+  case etchedFoil(intensity: Double = 0.7, density: Double = 80)
+
   /// Concentric spiral rings with metallic golden effect
   case spiralRings(
     intensity: Double = 0.8,

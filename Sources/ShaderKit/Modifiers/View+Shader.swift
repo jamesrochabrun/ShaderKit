@@ -204,6 +204,15 @@ public extension View {
     shader(.metallicCrosshatch(intensity: intensity))
   }
 
+  /// Apply etched textured foil: engraved diagonal lines carrying
+  /// counter-panned rainbow interference.
+  /// - Parameters:
+  ///   - intensity: Effect strength (default 0.7)
+  ///   - density: Engraved line frequency (default 80)
+  func etchedFoil(intensity: Double = 0.7, density: Double = 80) -> some View {
+    shader(.etchedFoil(intensity: intensity, density: density))
+  }
+
   // MARK: - Halftone Effects
 
   /// Apply halftone dot pattern with pastel holographic iridescent colors.
