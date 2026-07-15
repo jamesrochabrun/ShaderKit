@@ -64,6 +64,25 @@ import SwiftUI
 /// - `.subtleGradient()` - Subtle gradient movement
 /// - `.metallicCrosshatch()` - Metallic crosshatch
 ///
+/// ### Premium Materials
+/// - `.brushedTitanium()` - Satin directional titanium
+/// - `.blackChrome()` - Mirror-black chrome
+/// - `.roseGold()` - Warm brushed rose gold
+/// - `.liquidMercury()` - Flowing mirror-silver folds
+/// - `.anodizedTitanium()` - Heat-treated spectral titanium
+/// - `.damascusSteel()` - Wavy forged-steel strata
+/// - `.forgedCarbon()` - Chopped carbon composite
+/// - `.copperPatina()` - Weathered copper and verdigris
+/// - `.pearlCeramic()` - Opaque pearlescent ceramic
+/// - `.oilSlick()` - Dark thin-film interference
+///
+/// ### Complete Trading-Card Catalog
+/// - `.tradingCardHolo(.regularHolo)` - Art-window rainbow scanlines
+/// - `.tradingCardHolo(.cosmosHolo)` - Layered cosmos stars
+/// - `.tradingCardHolo(.vMax)` - Textured VMAX interference
+/// - `.tradingCardHolo(.secretRareGold)` - Geometric gold foil
+/// - `TradingCardHoloStyle.allCases` - All 21 physical foil families
+///
 /// ## Main Components
 ///
 /// - `HolographicCardContainer` - Container with motion/tilt support

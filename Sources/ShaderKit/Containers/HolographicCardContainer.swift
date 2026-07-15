@@ -32,11 +32,13 @@ public struct HolographicCardContainer<Content: View>: View {
   let cornerRadius: CGFloat
   let shadowColor: Color
   let rotationMultiplier: Double
-  @ViewBuilder let content: () -> Content
+  let interactionMode: HolographicInteractionMode
+  @ViewBuilder let content: Content
   
   @State private var startTime = Date.now
   @State private var dragOffset: CGSize = .zero
   @State private var touchPosition: CGPoint? = nil
+  @Environment(\.accessibilityReduceMotion) private var reduceMotion
   
   /// Creates a holographic card container.
   ///
@@ -46,6 +48,7 @@ public struct HolographicCardContainer<Content: View>: View {
   ///   - cornerRadius: Corner radius for clipping (default 16)
   ///   - shadowColor: Shadow color (default black)
   ///   - rotationMultiplier: 3D rotation intensity (default 15)
+  ///   - interactionMode: How gestures map to tilt and rotation
   ///   - content: Content builder - shader effects will automatically receive tilt and time
   public init(
     width: CGFloat,
@@ -53,28 +56,34 @@ public struct HolographicCardContainer<Content: View>: View {
     cornerRadius: CGFloat = 16,
     shadowColor: Color = .black,
     rotationMultiplier: Double = 15,
-    @ViewBuilder content: @escaping () -> Content
+    interactionMode: HolographicInteractionMode = .dragTranslation,
+    @ViewBuilder content: () -> Content
   ) {
     self.width = width
     self.height = height
     self.cornerRadius = cornerRadius
     self.shadowColor = shadowColor
     self.rotationMultiplier = rotationMultiplier
-    self.content = content
+    self.interactionMode = interactionMode
+    self.content = content()
   }
   
   public var body: some View {
-    TimelineView(.animation) { timeline in
-      let elapsedTime = startTime.distance(to: timeline.date)
-      let halfW = max(width * 0.5, 1)
-      let halfH = max(height * 0.5, 1)
-      let effectiveTilt = CGPoint(
-        x: dragOffset.width / halfW,
-        y: dragOffset.height / halfH
+    TimelineView(.animation(paused: reduceMotion)) { timeline in
+      let elapsedTime = reduceMotion ? 0 : startTime.distance(to: timeline.date)
+      let effectiveTilt = interactionMode.normalizedTilt(
+        translation: dragOffset,
+        pointer: touchPosition,
+        size: CGSize(width: width, height: height)
       )
+      let rotation = interactionMode.rotation(
+        for: effectiveTilt,
+        multiplier: rotationMultiplier
+      )
+      let shadowTilt = reduceMotion ? CGPoint.zero : effectiveTilt
       let shadowScale = min(width, height) * 0.04
 
-      content()
+      content
         .shaderContext(tilt: effectiveTilt, time: elapsedTime, touchPosition: touchPosition)
         .frame(
           width: width > 0 && width.isFinite ? width : 1,
@@ -82,35 +91,39 @@ public struct HolographicCardContainer<Content: View>: View {
         )
         .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
         .modifier(CardTransformEffect(
-          tiltX: -effectiveTilt.y * rotationMultiplier,
-          tiltY: effectiveTilt.x * rotationMultiplier
+          tiltX: reduceMotion ? 0 : rotation.x,
+          tiltY: reduceMotion ? 0 : rotation.y
         ))
         .shadow(
           color: shadowColor.opacity(0.5),
           radius: shadowScale * 1.5,
-          x: effectiveTilt.x * shadowScale,
-          y: effectiveTilt.y * shadowScale
+          x: shadowTilt.x * shadowScale,
+          y: shadowTilt.y * shadowScale
         )
         .gesture(
           DragGesture(minimumDistance: 0)
             .onChanged { value in
-              withAnimation(.interactiveSpring) {
+              withAnimation(reduceMotion ? nil : .interactiveSpring) {
                 dragOffset = value.translation
+                touchPosition = CGPoint(
+                  x: normalized(value.location.x, dimension: width),
+                  y: normalized(value.location.y, dimension: height)
+                )
               }
-              // Track touch position normalized to 0-1
-              touchPosition = CGPoint(
-                x: width > 0 ? value.location.x / width : 0,
-                y: height > 0 ? value.location.y / height : 0
-              )
             }
             .onEnded { _ in
-              withAnimation(.easeOut(duration: 0.2)) {
+              withAnimation(reduceMotion ? nil : .easeOut(duration: 0.2)) {
                 dragOffset = .zero
               }
               touchPosition = nil
             }
         )
     }
+  }
+
+  private func normalized(_ coordinate: CGFloat, dimension: CGFloat) -> CGFloat {
+    guard dimension > 0, dimension.isFinite else { return 0.5 }
+    return min(max(coordinate / dimension, 0), 1)
   }
 
 }

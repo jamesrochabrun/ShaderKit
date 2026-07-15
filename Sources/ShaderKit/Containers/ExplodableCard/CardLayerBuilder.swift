@@ -30,23 +30,31 @@ import SwiftUI
 /// ```
 @resultBuilder
 public struct CardLayerBuilder {
-  public static func buildBlock(_ components: CardLayer...) -> [CardLayer] {
-    components
+  public static func buildExpression(_ expression: CardLayer) -> [CardLayer] {
+    [expression]
+  }
+
+  public static func buildExpression(_ expression: [CardLayer]) -> [CardLayer] {
+    expression
+  }
+
+  public static func buildBlock(_ components: [CardLayer]...) -> [CardLayer] {
+    components.flatMap { $0 }
   }
 
   public static func buildArray(_ components: [[CardLayer]]) -> [CardLayer] {
     components.flatMap { $0 }
   }
 
-  public static func buildOptional(_ component: CardLayer?) -> [CardLayer] {
-    component.map { [$0] } ?? []
+  public static func buildOptional(_ component: [CardLayer]?) -> [CardLayer] {
+    component ?? []
   }
 
-  public static func buildEither(first component: CardLayer) -> CardLayer {
+  public static func buildEither(first component: [CardLayer]) -> [CardLayer] {
     component
   }
 
-  public static func buildEither(second component: CardLayer) -> CardLayer {
+  public static func buildEither(second component: [CardLayer]) -> [CardLayer] {
     component
   }
 }

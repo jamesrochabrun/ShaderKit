@@ -109,6 +109,14 @@ public enum ShaderEffect: Equatable, Sendable {
   /// Metallic sun-pillar with crosshatch texture
   case metallicCrosshatch(intensity: Double = 0.7)
 
+  /// Etched textured foil: fine engraved diagonal lines carrying
+  /// counter-panned rainbow interference — the textured full-art
+  /// trading-card treatment.
+  /// - Parameters:
+  ///   - intensity: Effect strength (default 0.7)
+  ///   - density: Engraved line frequency across the surface (default 80)
+  case etchedFoil(intensity: Double = 0.7, density: Double = 80)
+
   /// Concentric spiral rings with metallic golden effect
   case spiralRings(
     intensity: Double = 0.8,
@@ -182,6 +190,50 @@ public enum ShaderEffect: Equatable, Sendable {
 
   /// Polished aluminum with diagonal rainbow holographic reflection
   case polishedAluminum(intensity: Double = 0.85)
+
+  // MARK: - Premium Material Effects
+
+  /// Satin silver titanium with fine directional brushing and a broad,
+  /// tilt-reactive studio reflection.
+  case brushedTitanium(intensity: Double = 0.85)
+
+  /// Deep mirror-black chrome with sharp silver reflections and subtle
+  /// spectral color along the edges.
+  case blackChrome(intensity: Double = 0.88)
+
+  /// Warm rose-gold plating with vertical brushing and a soft specular sweep.
+  case roseGold(intensity: Double = 0.82)
+
+  /// Flowing mirror-silver folds inspired by liquid mercury.
+  case liquidMercury(intensity: Double = 0.84)
+
+  /// Oxidized titanium whose blue, violet, and gold interference colors
+  /// shift with the viewing angle.
+  case anodizedTitanium(intensity: Double = 0.84)
+
+  /// Layered, wavy steel grain inspired by forged Damascus patterns.
+  case damascusSteel(intensity: Double = 0.86)
+
+  /// Dark chopped-carbon composite with individually light-reactive flakes.
+  case forgedCarbon(intensity: Double = 0.88)
+
+  /// Aged copper plating with procedural turquoise verdigris islands.
+  case copperPatina(intensity: Double = 0.82)
+
+  /// Opaque milky ceramic with a curved pearlescent glaze.
+  case pearlCeramic(intensity: Double = 0.80)
+
+  /// Dark chrome carrying fluid thin-film rainbow interference bands.
+  case oilSlick(intensity: Double = 0.84)
+
+  // MARK: - Trading Card Holo Catalog
+
+  /// A complete modern trading-card foil construction. The selected style
+  /// controls its procedural texture, color separation, glare, and blend recipe.
+  case tradingCardHolo(
+    style: TradingCardHoloStyle,
+    intensity: Double = 0.85
+  )
 
   // MARK: - Tech Effects
 

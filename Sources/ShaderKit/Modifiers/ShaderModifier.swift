@@ -378,6 +378,18 @@ private func applyEffect<V: VisualEffect>(
       maxSampleOffset: .zero
     )
 
+  case .etchedFoil(let intensity, let density):
+    return view.layerEffect(
+      shaders.etchedFoil(
+        .float2(size.width, size.height),
+        .float2(tilt.x, tilt.y),
+        .float(time),
+        .float(intensity),
+        .float(density)
+      ),
+      maxSampleOffset: .zero
+    )
+
   case .spiralRings(let intensity, let ringCount, let spiralTwist, let baseColor):
     return view.layerEffect(
       shaders.spiralRings(
@@ -502,6 +514,134 @@ private func applyEffect<V: VisualEffect>(
         .float2(tilt.x, tilt.y),
         .float(time),
         .float(intensity)
+      ),
+      maxSampleOffset: .zero
+    )
+
+    // MARK: - Premium Material Effects
+
+  case .brushedTitanium(let intensity):
+    return view.layerEffect(
+      shaders.brushedTitanium(
+        .float2(size.width, size.height),
+        .float2(tilt.x, tilt.y),
+        .float(time),
+        .float(intensity)
+      ),
+      maxSampleOffset: .zero
+    )
+
+  case .blackChrome(let intensity):
+    return view.layerEffect(
+      shaders.blackChrome(
+        .float2(size.width, size.height),
+        .float2(tilt.x, tilt.y),
+        .float(time),
+        .float(intensity)
+      ),
+      maxSampleOffset: .zero
+    )
+
+  case .roseGold(let intensity):
+    return view.layerEffect(
+      shaders.roseGold(
+        .float2(size.width, size.height),
+        .float2(tilt.x, tilt.y),
+        .float(time),
+        .float(intensity)
+      ),
+      maxSampleOffset: .zero
+    )
+
+  case .liquidMercury(let intensity):
+    return view.layerEffect(
+      shaders.liquidMercury(
+        .float2(size.width, size.height),
+        .float2(tilt.x, tilt.y),
+        .float(time),
+        .float(intensity)
+      ),
+      maxSampleOffset: .zero
+    )
+
+  case .anodizedTitanium(let intensity):
+    return view.layerEffect(
+      shaders.anodizedTitanium(
+        .float2(size.width, size.height),
+        .float2(tilt.x, tilt.y),
+        .float(time),
+        .float(intensity)
+      ),
+      maxSampleOffset: .zero
+    )
+
+  case .damascusSteel(let intensity):
+    return view.layerEffect(
+      shaders.damascusSteel(
+        .float2(size.width, size.height),
+        .float2(tilt.x, tilt.y),
+        .float(time),
+        .float(intensity)
+      ),
+      maxSampleOffset: .zero
+    )
+
+  case .forgedCarbon(let intensity):
+    return view.layerEffect(
+      shaders.forgedCarbon(
+        .float2(size.width, size.height),
+        .float2(tilt.x, tilt.y),
+        .float(time),
+        .float(intensity)
+      ),
+      maxSampleOffset: .zero
+    )
+
+  case .copperPatina(let intensity):
+    return view.layerEffect(
+      shaders.copperPatina(
+        .float2(size.width, size.height),
+        .float2(tilt.x, tilt.y),
+        .float(time),
+        .float(intensity)
+      ),
+      maxSampleOffset: .zero
+    )
+
+  case .pearlCeramic(let intensity):
+    return view.layerEffect(
+      shaders.pearlCeramic(
+        .float2(size.width, size.height),
+        .float2(tilt.x, tilt.y),
+        .float(time),
+        .float(intensity)
+      ),
+      maxSampleOffset: .zero
+    )
+
+  case .oilSlick(let intensity):
+    return view.layerEffect(
+      shaders.oilSlick(
+        .float2(size.width, size.height),
+        .float2(tilt.x, tilt.y),
+        .float(time),
+        .float(intensity)
+      ),
+      maxSampleOffset: .zero
+    )
+
+    // MARK: - Trading Card Holo Catalog
+
+  case .tradingCardHolo(let style, let intensity):
+    let pointer = touchPosition ?? CGPoint(x: -1, y: -1)
+    return view.layerEffect(
+      shaders.tradingCardHolo(
+        .float2(size.width, size.height),
+        .float2(tilt.x, tilt.y),
+        .float2(pointer.x, pointer.y),
+        .float(time),
+        .float(intensity),
+        .float(Float(style.rawValue))
       ),
       maxSampleOffset: .zero
     )
