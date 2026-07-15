@@ -282,6 +282,71 @@ public extension View {
     ))
   }
 
+  // MARK: - Premium Material Effects
+
+  /// Apply satin brushed titanium that reacts to the current tilt.
+  func brushedTitanium(intensity: Double = 0.85) -> some View {
+    shader(.brushedTitanium(intensity: intensity))
+  }
+
+  /// Apply deep mirror-black chrome with spectral edge reflections.
+  func blackChrome(intensity: Double = 0.88) -> some View {
+    shader(.blackChrome(intensity: intensity))
+  }
+
+  /// Apply warm brushed rose-gold plating.
+  func roseGold(intensity: Double = 0.82) -> some View {
+    shader(.roseGold(intensity: intensity))
+  }
+
+  /// Apply flowing mirror-silver liquid mercury folds.
+  func liquidMercury(intensity: Double = 0.84) -> some View {
+    shader(.liquidMercury(intensity: intensity))
+  }
+
+  /// Apply colorful oxidation over a titanium base.
+  func anodizedTitanium(intensity: Double = 0.84) -> some View {
+    shader(.anodizedTitanium(intensity: intensity))
+  }
+
+  /// Apply layered, wavy Damascus steel grain.
+  func damascusSteel(intensity: Double = 0.86) -> some View {
+    shader(.damascusSteel(intensity: intensity))
+  }
+
+  /// Apply chopped-carbon composite with reactive flakes.
+  func forgedCarbon(intensity: Double = 0.88) -> some View {
+    shader(.forgedCarbon(intensity: intensity))
+  }
+
+  /// Apply aged copper with procedural turquoise patina.
+  func copperPatina(intensity: Double = 0.82) -> some View {
+    shader(.copperPatina(intensity: intensity))
+  }
+
+  /// Apply an opaque ceramic surface with pearlescent glaze.
+  func pearlCeramic(intensity: Double = 0.80) -> some View {
+    shader(.pearlCeramic(intensity: intensity))
+  }
+
+  /// Apply dark chrome with fluid thin-film rainbow bands.
+  func oilSlick(intensity: Double = 0.84) -> some View {
+    shader(.oilSlick(intensity: intensity))
+  }
+
+  // MARK: - Trading Card Holo Catalog
+
+  /// Apply one of the complete modern trading-card foil constructions.
+  /// - Parameters:
+  ///   - style: The physical foil family to reproduce.
+  ///   - intensity: Overall blend strength over the source content.
+  func tradingCardHolo(
+    _ style: TradingCardHoloStyle,
+    intensity: Double = 0.85
+  ) -> some View {
+    shader(.tradingCardHolo(style: style, intensity: intensity))
+  }
+
   // MARK: - Tech Effects
 
   /// Apply liquid tech procedural effect inspired by Twigl GLSL.

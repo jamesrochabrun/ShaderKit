@@ -18,6 +18,18 @@ let package = Package(
             name: "ShaderKitUI",
             targets: ["ShaderKitUI"]
         ),
+        .library(
+            name: "ShaderCards",
+            targets: ["ShaderCards"]
+        ),
+        .executable(
+            name: "ShaderCardsDemo",
+            targets: ["ShaderCardsDemo"]
+        ),
+        .plugin(
+            name: "InstallClaudeSkills",
+            targets: ["InstallClaudeSkills"]
+        ),
     ],
     targets: [
         .target(
@@ -30,9 +42,33 @@ let package = Package(
             name: "ShaderKitUI",
             dependencies: ["ShaderKit"]
         ),
+        .target(
+            name: "ShaderCards",
+            dependencies: ["ShaderKit"]
+        ),
+        .executableTarget(
+            name: "ShaderCardsDemo",
+            dependencies: ["ShaderCards"]
+        ),
         .testTarget(
             name: "ShaderKitTests",
             dependencies: ["ShaderKit"]
+        ),
+        .testTarget(
+            name: "ShaderCardsTests",
+            dependencies: ["ShaderCards"]
+        ),
+        .plugin(
+            name: "InstallClaudeSkills",
+            capability: .command(
+                intent: .custom(
+                    verb: "install-claude-skills",
+                    description: "Copies the Claude Code skills bundled with ShaderKit into this project's .claude/skills directory"
+                ),
+                permissions: [
+                    .writeToPackageDirectory(reason: "Installs the bundled Claude Code skills into .claude/skills")
+                ]
+            )
         ),
     ]
 )

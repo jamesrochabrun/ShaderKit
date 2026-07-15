@@ -13,3 +13,6 @@ Package.resolved
 
 # IDE
 *.xcodeproj/xcuserdata/
+
+# Claude Code (local settings only; .claude/skills ships with the package)
+.claude/settings.local.json
