@@ -2,9 +2,10 @@
 //  InstallClaudeSkillsPlugin.swift
 //  ShaderKit
 //
-//  Command plugin that copies the Claude Code skills bundled with this
-//  package into the consuming project's `.claude/skills/` directory, where
-//  Claude Code discovers them.
+//  Command plugin that copies the agent skills bundled with this package
+//  into the consuming project's skills directories, where coding agents
+//  discover them: `.claude/skills/` (Claude Code) and, when a `.codex/`
+//  directory exists or `--codex` is passed, `.codex/skills/` (Codex).
 //
 //  From a package:  swift package --allow-writing-to-package-directory install-claude-skills
 //  From Xcode:      right-click the ShaderKit package → InstallClaudeSkills
@@ -16,7 +17,7 @@ import PackagePlugin
 @main
 struct InstallClaudeSkillsPlugin: CommandPlugin {
   func performCommand(context: PluginContext, arguments: [String]) async throws {
-    try SkillInstaller.install(intoProjectAt: context.package.directory.string)
+    try SkillInstaller.install(intoProjectAt: context.package.directory.string, arguments: arguments)
   }
 }
 
@@ -25,7 +26,7 @@ import XcodeProjectPlugin
 
 extension InstallClaudeSkillsPlugin: XcodeCommandPlugin {
   func performCommand(context: XcodePluginContext, arguments: [String]) throws {
-    try SkillInstaller.install(intoProjectAt: context.xcodeProject.directory.string)
+    try SkillInstaller.install(intoProjectAt: context.xcodeProject.directory.string, arguments: arguments)
   }
 }
 #endif
@@ -51,11 +52,22 @@ enum SkillInstaller {
     return skills
   }
 
-  static func install(intoProjectAt projectPath: String) throws {
+  /// Where to install in the consuming project. Claude Code's directory is
+  /// always included; Codex's is included when the project already uses
+  /// Codex (a `.codex/` directory exists) or `--codex` is passed.
+  static func destinationRoots(projectURL: URL, arguments: [String]) -> [URL] {
+    var roots = [projectURL.appendingPathComponent(".claude/skills", isDirectory: true)]
+    let codexDirectory = projectURL.appendingPathComponent(".codex", isDirectory: true)
+    if arguments.contains("--codex") || FileManager.default.fileExists(atPath: codexDirectory.path) {
+      roots.append(codexDirectory.appendingPathComponent("skills", isDirectory: true))
+    }
+    return roots
+  }
+
+  static func install(intoProjectAt projectPath: String, arguments: [String] = []) throws {
     let fileManager = FileManager.default
     let source = try bundledSkillsDirectory()
-    let destinationRoot = URL(fileURLWithPath: projectPath)
-      .appendingPathComponent(".claude/skills", isDirectory: true)
+    let projectURL = URL(fileURLWithPath: projectPath)
 
     let skillDirectories = try fileManager
       .contentsOfDirectory(at: source, includingPropertiesForKeys: [.isDirectoryKey])
@@ -66,25 +78,27 @@ enum SkillInstaller {
       throw InstallError(description: "No skills found in \(source.path)")
     }
 
-    try fileManager.createDirectory(at: destinationRoot, withIntermediateDirectories: true)
-
     var installed: [String] = []
-    for skill in skillDirectories {
-      let destination = destinationRoot.appendingPathComponent(skill.lastPathComponent, isDirectory: true)
-      guard skill.standardizedFileURL.path != destination.standardizedFileURL.path else {
-        print("Skill '\(skill.lastPathComponent)' is already in place (running inside the ShaderKit package).")
-        continue
+    for destinationRoot in destinationRoots(projectURL: projectURL, arguments: arguments) {
+      try fileManager.createDirectory(at: destinationRoot, withIntermediateDirectories: true)
+
+      for skill in skillDirectories {
+        let destination = destinationRoot.appendingPathComponent(skill.lastPathComponent, isDirectory: true)
+        guard skill.standardizedFileURL.path != destination.standardizedFileURL.path else {
+          print("Skill '\(skill.lastPathComponent)' is already in place (running inside the ShaderKit package).")
+          continue
+        }
+        if fileManager.fileExists(atPath: destination.path) {
+          try fileManager.removeItem(at: destination)
+        }
+        try fileManager.copyItem(at: skill, to: destination)
+        installed.append(skill.lastPathComponent)
+        print("Installed skill '\(skill.lastPathComponent)' → \(destination.path)")
       }
-      if fileManager.fileExists(atPath: destination.path) {
-        try fileManager.removeItem(at: destination)
-      }
-      try fileManager.copyItem(at: skill, to: destination)
-      installed.append(skill.lastPathComponent)
-      print("Installed skill '\(skill.lastPathComponent)' → \(destination.path)")
     }
 
     if !installed.isEmpty {
-      print("Done. Restart your Claude Code session to pick up the new skill\(installed.count == 1 ? "" : "s").")
+      print("Done. Restart your agent session to pick up the new skill\(installed.count == 1 ? "" : "s").")
     }
   }
 }
