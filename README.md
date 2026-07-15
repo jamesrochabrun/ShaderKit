@@ -524,7 +524,9 @@ The package bundles **holo-card-designer**, a [Claude Code](https://claude.com/c
 swift package --allow-writing-to-package-directory install-claude-skills
 ```
 
-or in Xcode: right-click the ShaderKit package in the navigator → **InstallClaudeSkills**. The skill lands in your project's `.claude/skills/`.
+or in Xcode: right-click the ShaderKit package in the navigator → **InstallClaudeSkills**. The skill lands in your project's `.claude/skills/`. If your project uses Codex, the plugin also installs into `.codex/skills/` (automatic when a `.codex/` directory exists, or pass `--codex`). Commit the installed skills directory so teammates get the skill from git with zero setup.
+
+> Adding the package dependency alone does **not** activate the skill — SPM's sandbox prevents packages from writing into your project, so this one-time command is required.
 
 To use it, restart your Claude Code session and ask something like *"make me a holo card from this photo"*. The skill then:
 
