@@ -1,6 +1,6 @@
 ---
 name: holo-card-designer
-description: This skill should be used when a designer wants a personalized Pokémon-style holographic trading card built from their own image using the ShaderCards package — e.g. "make me a holo card from this photo", "turn this image into a foil trading card", "create my personal holographic card", or "make a metal shader card for me". It interviews the user (favorite colors, layout, personal details), maps the answers to ShaderCards finishes and gradients layered over the image, and renders the card with the tilt-interactive holographic container on a dark showcase screen.
+description: This skill should be used when a designer wants a personalized Pokémon-style holographic trading card built from their own image using the ShaderCards package — e.g. "make me a holo card from this photo", "turn this image into a foil trading card", "create my personal holographic card", or "make a metal shader card for me". It interviews the user (favorite colors, layout, personal details), maps the answers to ShaderCards finishes and gradients layered over the image, and renders the card with the tilt-interactive holographic container on a dark showcase screen. For fully custom cards composed from raw ShaderKit primitives (no ShaderCards), use holo-card-composer instead.
 ---
 
 # Holo Card Designer

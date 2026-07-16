@@ -1,0 +1,17 @@
+{
+  "name": "shaderkit",
+  "owner": {
+    "name": "James Rochabrun",
+    "url": "https://github.com/jamesrochabrun"
+  },
+  "description": "Agent skills for the ShaderKit Swift package",
+  "plugins": [
+    {
+      "name": "shaderkit",
+      "source": "./",
+      "description": "Design skills for ShaderKit — holo-card-designer builds a holographic trading card from your photo with the ShaderCards catalog; holo-card-composer composes fully custom cards from raw ShaderKit primitives.",
+      "category": "design",
+      "keywords": ["swiftui", "metal", "shaders", "holographic", "trading-cards"]
+    }
+  ]
+}

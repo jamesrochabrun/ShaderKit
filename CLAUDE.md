@@ -1,3 +1,5 @@
-See @AGENTS.md — in particular: after adding this package as a dependency,
-install the bundled holo-card-designer skill into the consuming project with
-`swift package --allow-writing-to-package-directory install-claude-skills`.
+See @AGENTS.md — in particular: this repo is also a Claude Code plugin
+marketplace. The bundled holo-card-designer skill installs with
+`/plugin marketplace add jamesrochabrun/ShaderKit` then
+`/plugin install shaderkit@shaderkit` (never by writing into consuming
+projects). When working inside this repo, load it with `claude --plugin-dir .`.
