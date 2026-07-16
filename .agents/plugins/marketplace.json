@@ -1,0 +1,12 @@
+{
+  "name": "shaderkit",
+  "plugins": [
+    {
+      "name": "shaderkit",
+      "source": {
+        "source": "local",
+        "path": "./"
+      }
+    }
+  ]
+}

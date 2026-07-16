@@ -516,19 +516,29 @@ NavigationStack { CardStudioView() }
 
 Open the package in Xcode and run the **ShaderCardsDemo** scheme (macOS or iOS) to browse the full library, foil showcase, special editions, the premium-material collection, and Card Studio.
 
-### Claude Code skill: holo-card-designer
+### Agent skills: holo-card-designer & holo-card-composer
 
-The package bundles **holo-card-designer**, a [Claude Code](https://claude.com/claude-code) skill that turns one of your photos into a personalized holographic trading card. Install it into your project after adding the dependency:
+The repo doubles as an agent plugin bundling two skills:
 
-```bash
-swift package --allow-writing-to-package-directory install-claude-skills
+- **holo-card-designer** — turns one of your photos into a personalized Pokémon-style trading card using the ShaderCards catalog (needs the `ShaderCards` product).
+- **holo-card-composer** — full creative control: composes a custom card directly from ShaderKit primitives (`HolographicCardContainer` + hand-tuned shader stacks over gradients and images), like the cards in the demo app. Needs only the `ShaderKit` product.
+
+Both install through the standard plugin mechanisms — nothing writes into your project.
+
+**[Claude Code](https://claude.com/claude-code):**
+
+```
+/plugin marketplace add jamesrochabrun/ShaderKit
+/plugin install shaderkit@shaderkit
 ```
 
-or in Xcode: right-click the ShaderKit package in the navigator → **InstallClaudeSkills**. The skill lands in your project's `.claude/skills/`. If your project uses Codex, the plugin also installs into `.codex/skills/` (automatic when a `.codex/` directory exists, or pass `--codex`). Commit the installed skills directory so teammates get the skill from git with zero setup.
+Get skill updates later with `/plugin marketplace update`. To try the skill while working inside this repo, run `claude --plugin-dir .` instead.
 
-> Adding the package dependency alone does **not** activate the skill — SPM's sandbox prevents packages from writing into your project, so this one-time command is required.
+**Codex:** register the marketplace with `codex plugin marketplace add jamesrochabrun/ShaderKit`, then install **ShaderKit** from the `/plugins` browser (or the ChatGPT desktop app's Plugins pane).
 
-To use it, restart your Claude Code session and ask something like *"make me a holo card from this photo"*. The skill then:
+> Adding the Swift package dependency alone does **not** activate the skill — agents don't scan package checkouts, so install the plugin once per machine.
+
+Once installed, ask something like *"make me a holo card from this photo"* (designer) or *"build me a custom holo card with ShaderKit"* (composer). The designer skill, for example:
 
 1. Asks for your image (PNG/JPEG/HEIC) if you haven't provided one.
 2. Interviews you in two short rounds — the **look** (favorite colors, foil vibe, layout) and the **person** (card name, role/title, a motto for the flavor text, two signature skills that become attack names).

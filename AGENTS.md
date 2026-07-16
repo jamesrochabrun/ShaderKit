@@ -1,30 +1,41 @@
 # ShaderKit — Notes for Coding Agents
 
-## Bundled skill: holo-card-designer (install it after adding this package)
+## Bundled skills (installed as a plugin)
 
-This package ships an agent skill at `.claude/skills/holo-card-designer/` that
-builds a personalized holographic trading card from a user's photo. It needs
-the `ShaderCards` library product.
+This repo is also an agent plugin. It ships two skills under `skills/`:
 
-**Adding ShaderKit as a dependency does NOT activate the skill** — agents do
-not scan package checkouts for skills, and SPM's sandbox prevents packages
-from writing into the consuming project automatically. After adding the
-dependency, install the skill into the project once:
+- `holo-card-designer` — personalized Pokémon-style trading card from a
+  user's photo, built on the ShaderCards catalog (needs `ShaderCards`).
+- `holo-card-composer` — fully custom card composed from raw ShaderKit
+  primitives with hand-tuned shader stacks (needs only `ShaderKit`).
 
-```bash
-swift package --allow-writing-to-package-directory install-claude-skills
-```
+**Adding ShaderKit as a Swift package dependency does NOT activate the
+skills** — agents do not scan package checkouts for skills. The skills are
+distributed through the standard plugin mechanisms instead; nothing is
+written into the consuming project.
 
-- **Xcode app project:** right-click the ShaderKit package in the Project
-  navigator → **InstallClaudeSkills** → approve the write permission.
-- **Claude Code:** the skill lands in `.claude/skills/`; restart the session
-  to pick it up.
-- **Codex:** the plugin also copies into `.codex/skills/` when the project has
-  a `.codex/` directory, or when you pass `--codex`:
-  `swift package --allow-writing-to-package-directory install-claude-skills --codex`
-- **Teams:** commit the installed skills directory so everyone gets the skill
-  from git with zero setup. Re-run the command to pull an updated skill after
-  bumping the package version.
+- **Claude Code:** the repo doubles as a plugin marketplace
+  (`.claude-plugin/marketplace.json` + `.claude-plugin/plugin.json`).
+  Install with:
+
+  ```
+  /plugin marketplace add jamesrochabrun/ShaderKit
+  /plugin install shaderkit@shaderkit
+  ```
+
+  The skills are then available as `shaderkit:holo-card-designer` and
+  `shaderkit:holo-card-composer`. Pull skill updates later with
+  `/plugin marketplace update`.
+- **Codex:** the repo also carries a Codex plugin manifest
+  (`.codex-plugin/plugin.json`) and a repo-scoped marketplace at
+  `.agents/plugins/marketplace.json`. Register it with
+  `codex plugin marketplace add jamesrochabrun/ShaderKit`, then install
+  from the `/plugins` browser (or the ChatGPT desktop app's Plugins pane).
+- **Working inside this repo:** load the plugin directly with
+  `claude --plugin-dir .` — no installation needed.
+
+When a skill changes, bump `version` in both `.claude-plugin/plugin.json`
+and `.codex-plugin/plugin.json` alongside the package release tag.
 
 ## Package layout
 
