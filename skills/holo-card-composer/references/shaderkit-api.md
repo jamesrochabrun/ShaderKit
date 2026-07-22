@@ -99,13 +99,23 @@ shaded view (e.g. `SIMD4<Float>(0.04, 0.20, 0.96, 0.64)` for a classic art windo
 | `.etchedFoil()` | `intensity: 0.7, density: 80` — engraved lines + rainbow interference (textured full-art treatment) |
 | `.shader(.spiralRings(...))` | `intensity: 0.8, ringCount: 20, spiralTwist: 0.5, baseColor:` golden default |
 
-### Glass (translucent — good closers)
+### Glass (translucent — good whole-card closers)
+These have **no convenience wrappers** — call them via `.shader(...)`. They are
+whole-card *surface finishes* (distort/reflect), NOT legible text backings.
+`.glassSheen` at low intensity (~0.15) is the best final laminating sheen.
+
 | Modifier | Params |
 |---|---|
 | `.shader(.glassSheen(...))` | `intensity: 0.7, spread: 0.5` — specular + sweep, layers well |
 | `.shader(.glassEnclosure(...))` | `intensity: 1.0, cornerRadius: 0.05, bevelSize: 0.7, glossiness: 0.8` — lamination look |
 | `.shader(.glassBevel(...))` | `intensity: 0.8, thickness: 0.6` — visual card thickness |
 | `.shader(.chromaticGlass(...))` | `intensity: 0.6, separation: 0.4` — RGB edge separation |
+
+**Readable "glass" text panels** are NOT made with these shaders and NOT with
+`.ultraThinMaterial` (which samples behind the app window, not the card art).
+Use a translucent fill + hairline stroke (house style, from `FullArtCardFace`):
+`RoundedRectangle(cornerRadius:).fill(.black.opacity(0.34)).overlay(RoundedRectangle(...).strokeBorder(.white.opacity(0.25), lineWidth: 0.5))`,
+over top/bottom legibility scrims.
 
 ### Atmosphere (translucent, colorable)
 | Modifier | Params |
