@@ -1,7 +1,9 @@
 # Composition recipes: stacking shaders, images, and gradients
 
 How to assemble a card from ShaderKit primitives so it looks like the demo
-cards, plus the interview → design mappings.
+cards, plus the vibe → design mappings. Every number here is copied from a
+real demo view in `Demo/ShaderKitDemo/.../Views/ComposableShaders/` — reproduce
+them, don't approximate.
 
 ## 1. The stack doctrine
 
@@ -10,145 +12,243 @@ A card is two stacks: the **content stack** (a ZStack, bottom → top) and the
 and almost any combination looks premium.
 
 **Content stack, bottom → top:**
-1. **Base gradient** — opaque `LinearGradient` in the palette; sets the card's
-   color identity and is the fallback if an image fails to load.
-2. **Image** (optional) — `.resizable().aspectRatio(contentMode: .fill)`,
-   explicit `.frame(...)`, `.clipped()` or clip shape.
-3. **Tint scrim** (only over an image) — a translucent `LinearGradient` whose
-   stops use **0.10–0.35 opacity**. This is what marries a photo to the foil
-   palette; skipping it is why cards look like "a photo with stickers".
-4. **Chrome** — name/title text, stat rows, icons. White text with `.opacity`
-   hierarchy (1.0 title → 0.5 footnotes) over dark art; black over gold/light.
-5. **Border** — `RoundedRectangle.strokeBorder` with a 2–5 pt metallic-feeling
-   gradient (e.g. `[.orange, .yellow, .red]` or gold tones).
+1. **Background** — the color identity. For the default construction this is a
+   procedural shader surface or a `LinearGradient` in the vibe's palette. It is
+   also the fallback when an image fails to load, so it is never skipped.
+2. **Subject** — the user's art. Two modes:
+   - *Transparent subject (default)*: a cutout PNG with no background of its
+     own. Use `.aspectRatio(contentMode: .fit)` and **do not clip to fill** —
+     the transparency is the point; the foil background must show around it.
+   - *Opaque photo*: a full-bleed photo. `.fill` + `.clipped()`, then a tint
+     scrim (step 3).
+3. **Tint scrim** (opaque photos only) — a translucent `LinearGradient` at
+   **0.10–0.35 opacity** that marries the photo to the palette. A transparent
+   subject needs **no** scrim; instead it needs legibility scrims only where
+   text sits (see §6).
+4. **Glass info panels + chrome** — name/title/stats/flavor, each on a
+   translucent backing (§6). White text over dark art; black over gold/light.
+5. **Border** — `RoundedRectangle.strokeBorder` with a 2–5 pt metallic gradient
+   echoing the palette.
 
 **Effect stack (modifier chain), first → last:**
 1. **Foil / pattern base** — exactly one dominant identity:
    `.foil()`, `.blendedHolo()`, `.galaxyHolo()`, `.etchedFoil()`,
-   `.tradingCardHolo(style)`, `.verticalBeams()`, …
+   `.starburst()`, `.verticalBeams()`, `.tradingCardHolo(style)`, …
 2. **Texture / sparkle** — `.glitter()`, `.multiGlitter()`, `.shimmer()`.
-3. **Light** — `.lightSweep()`, `.glare()`, or `.shader(.glassSheen())` LAST,
-   so the reflection reads as sitting on top of everything.
+3. **Light** — `.lightSweep()`, `.radialSweep()`, `.glare()`, or
+   `.shader(.glassSheen())` LAST, so the reflection sits on top of everything.
 
 Budget: **2–4 effects total**. One pattern + one sparkle + one light is the
-demo-proven formula (`.foil().glitter().lightSweep()`). Two competing
-patterns = mud. When layering more, lower each `intensity` (0.5–0.7).
+demo-proven formula (`.foil().glitter().lightSweep()`). Two competing patterns
+= mud. When layering more, lower each `intensity` (0.5–0.7).
 
-Critical rule: premium materials (`.brushedTitanium`, `.blackChrome`,
-`.oilSlick`, …) are **opaque** — never apply them over a photo you want
-visible. Everything else in the catalog is translucent.
+**Where effects attach = the whole card vs. a sub-layer.** This is the single
+most important choice:
+- Attach the chain to the **whole card** → the foil shimmers over the subject
+  too (Gradient Foil, Psychic Holo). Good for opaque photos and abstract cards.
+- Attach the chain to the **background sub-layer only** → the subject stays
+  pristine and the foil shimmers *around/behind* it (Foil+Glitter+Sweep,
+  Layered Holo, Starburst). **This is the default for transparent subjects** —
+  the cutout reveals a shimmering foil pocket behind it.
 
-## 2. The four constructions
+Critical rule: premium materials (`.polishedAluminum`, `.brushedTitanium`,
+`.blackChrome`, `.oilSlick`, …) are **opaque** — never over a subject you want
+visible. Use them as the card surface itself (no photo) or on chrome elements.
 
-Pick one per card. Each is proven by a demo view in this repo.
+## 2. Default construction — Transparent Full-Bleed Subject
 
-### A. Full-Art Foil (like `GradientFoilView`) — best with a photo
-Whole-card effects over a full-bleed image. Simplest and most reliable.
+The primary layout. A large transparent-PNG subject floats over a shimmering
+foil background; glass panels carry the text. It is the Foil+Glitter+Sweep
+technique (effects on the base, clean art on top) fused with the
+`FullArtCardFace` info-panel idiom.
 
 ```swift
-HolographicCardContainer(width: 280, height: 400, cornerRadius: 20, shadowColor: .orange) {
+HolographicCardContainer(
+  width: 280, height: 400, cornerRadius: 20,
+  shadowColor: vibe.shadow, rotationMultiplier: 13,
+  interactionMode: .surfacePointer
+) {
   ZStack {
-    RoundedRectangle(cornerRadius: 20).fill(baseGradient)   // 1 base
-    portraitImage                                           // 2 full-bleed image
-    LinearGradient(colors: scrimStops, ...)                 // 3 tint scrim
-    chromeOverlay                                           // 4 name/stats
-    RoundedRectangle(cornerRadius: 20).strokeBorder(borderGradient, lineWidth: 3)
+    // 1 — background carries the foil (effects on THIS layer only)
+    RoundedRectangle(cornerRadius: 20)
+      .fill(LinearGradient(colors: vibe.base, startPoint: .topLeading, endPoint: .bottomTrailing))
+      .foil().glitter().lightSweep()          // ← per-vibe effect stack
+
+    // 2 — transparent subject, clean, fit (NOT clipped/filled)
+    Image(subject).resizable()
+      .aspectRatio(contentMode: .fit)
+      .frame(width: 280, height: 400)
+
+    // 3 — legibility scrims only where text sits (top + bottom)
+    VStack {
+      LinearGradient(colors: [.black.opacity(0.55), .clear], startPoint: .top, endPoint: .bottom)
+        .frame(height: 400 * 0.16)
+      Spacer()
+      LinearGradient(colors: [.clear, .black.opacity(0.62)], startPoint: .top, endPoint: .bottom)
+        .frame(height: 400 * 0.42)
+    }
+
+    // 4 — glass info panels + chrome (see §6)
+    cardChrome
+
+    // 5 — border
+    RoundedRectangle(cornerRadius: 20)
+      .strokeBorder(vibe.borderGradient, lineWidth: 3)
   }
-  .foil()          // effect stack applies to the WHOLE card
-  .glitter()
-  .lightSweep()
 }
 ```
 
-### B. Split-Layer Holo (like `LayeredHoloView`) — crisp art over shimmer
-Effects go on individual layers, not the whole card. The artwork sits on top
-**with no effects**, so it stays clean while everything behind it shimmers.
+Why the effects are on the background sub-layer, not the whole card: a
+transparent subject has holes, so whole-card foil would shimmer *through* the
+subject and flatten it. Keeping foil on the background makes the subject read
+as a solid object sitting in a holographic well.
 
-```swift
-HolographicCardContainer(width: 260, height: 364, shadowColor: .yellow, rotationMultiplier: 12) {
-  ZStack {
-    cardFrameAndStats                    // full-card frame + text
-      .blendedHolo(intensity: 0.7, saturation: 0.75)
-    artWindowBackdrop                    // gradient sized to the art window
-      .verticalBeams()                   //   animated depth behind the art
-      .offset(y: -height * 0.198)
-    artworkImage                         // CLEAN — zero effects
-      .offset(y: -height * 0.198)        //   same frame + offset as backdrop
-  }
-}
-```
-The sparkle backdrop and the clean artwork must share the same frame size and
-offset; the art then appears to float on an animated foil pocket.
+If the user's image is actually an opaque photo, fall back to the classic
+Full-Art construction (§5-A) with a tint scrim.
 
-### C. Reverse Holo / Framed window (like `MaskedFoilView`) — foil frame, clean window
-One flat content view; the masked effects skip the art window in UV space.
+## 3. Hero recipes — the seven analyzed demo cards
 
-```swift
-ZStack {
-  goldGradient
-    .maskedFoil(imageWindow: window)     // foil OUTSIDE the window
-    .maskedSparkle(imageWindow: window)
-    .foilTexture(imageWindow: window)
-  VStack { header; artImage; stats }     // art laid out INSIDE the window
-}
-```
-`window` is `SIMD4<Float>(minX, minY, maxX, maxY)` in 0–1 coordinates of the
-card. Compute it from the layout: the demo's art occupies x 4–96 %,
-y 20–64 % → `SIMD4<Float>(0.04, 0.20, 0.96, 0.64)`. If the foil bleeds into
-the art or hugs it too loosely, adjust the window, not the layout.
+Each is a proven, copy-ready preset. Values are exact.
 
-### D. Atmosphere card (like `CosmosHoloView` / `FrozenView`) — no photo needed
-A near-black gradient plus one atmospheric effect; ideal when the user has no
-image or wants a moody abstract card. Pair with `SimpleCardContent` for
-instant framing:
+### R1 · Iridescent Premium (`FoilGlitterSweepView`)
+Container `260×380, cornerRadius 16, shadowColor .orange, rotationMultiplier 12`.
+Base gradient (topLeading→bottomTrailing):
+`(0.95,0.85,0.5) → (0.9,0.75,0.4) → (0.85,0.7,0.35)`.
+Effects **on the base layer**: `.glitter().foil()`. Subject + text sit on top
+clean. Border `[.yellow.opacity(0.8), .orange.opacity(0.6), .yellow.opacity(0.8)]`, lineWidth 4.
 
+### R2 · Sunset Gradient (`GradientFoilView`)
+Container `280×400, cornerRadius 20, shadowColor .orange`.
+Base `[.pink, .purple, .blue, .orange]` (system), topLeading→bottomTrailing.
+Effects **whole card**: `.foil().glitter().lightSweep()`.
+Border `[.orange, .yellow, .red]`, lineWidth 3.
+
+### R3 · Tech-Mono / Codex (`CodexGradientFoilView`)
+Container `280×400, cornerRadius 20, shadowColor = mid`.
+Palette (vertical top→bottom): `light (177,167,255) → mid (122,157,255) → deep (57,65,255)` (÷255).
+Effects **whole card**: `.foil().glitter().lightSweep()`.
+Every text label gets `.shadow(color: .black.opacity(0.65), radius: 2, y: 1)`.
+Border reuses the same vertical palette gradient, lineWidth 3.
+
+### R4 · Psychic Cosmic (`PsychicHoloView`)
+Container `280×392 (width×1.4), shadowColor .purple`.
+Base `[.purple, .pink, .purple.opacity(0.8)]` topLeading→bottomTrailing.
+**Dual scrim** for legibility: top `[.purple.opacity(0.9), .purple.opacity(0.7), .clear]` (height h×0.18); bottom `[.clear, .black.opacity(0.6), .black.opacity(0.85)]` (height h×0.45).
+Effects **whole card**: `.foil().glitter().lightSweep()`.
+Border `[.white.opacity(0.6), .purple.opacity(0.8), .white.opacity(0.3)]`, lineWidth 3. Clip corner 16.
+
+### R5 · Burst Hero (`StarburstRadialView`)
+Container `260×364, shadowColor .yellow, rotationMultiplier 12`.
+Base gold `(1.0,0.85,0.2) → (1.0,0.85,0.2)·0.9 → (1.0,0.7,0.0)·0.7`.
+**Two effect sites**: base layer `.starburst()`; whole card `.radialSweep().multiGlitter()`.
+Subject is only 70% card height, `.offset(y: -h×0.05)`; an opaque gold panel
+covers the lower third for text. Border is 5-stop gold/white, lineWidth 5.
+
+### R6 · Floating Depth (`LayeredHoloView`) — split-layer
+Container `260×364, shadowColor .yellow, rotationMultiplier 12`. Three siblings:
+1. Background (frame w×h) `.blendedHolo(intensity: 0.7, saturation: 0.75)`,
+   gold base `(0.92,0.85,0.55) → (0.88,0.8,0.45) → (0.85,0.75,0.4)`.
+2. Sparkle pocket (frame `w×0.88 × h×0.41`, dark-teal fill) `.verticalBeams()`,
+   `.offset(y: -h×0.198)`.
+3. Clean subject — **same frame + same offset** as the pocket, **no effects**.
+The shared frame/offset is what makes the art float on an animated foil pocket.
+
+### R7 · Reverse-Holo Framed (`MaskedFoilView`)
+Container `260×364, shadowColor .yellow, rotationMultiplier 12`.
+`imageWindow = SIMD4<Float>(0.04, 0.20, 0.96, 0.64)`.
+Base gold `(0.95,0.9,0.6) → (0.92,0.85,0.5) → (0.88,0.8,0.45)`.
+Effects **on the base layer**, all passing the same window:
+`.maskedFoil(imageWindow:).maskedSparkle(imageWindow:).foilTexture(imageWindow:)`.
+The art window ZStack is laid out on top at the matching screen position
+(`w×0.92 × h×0.44`), staying clean while the frame shimmers.
+
+## 4. Named vibes → recipe + palette
+
+The interview asks for a **vibe**, not colors. Map the answer to a recipe (§3),
+a palette, and a `shadowColor`. Palettes below are lifted from the ShaderCards
+premium editions (`(r,g,b)` = `Color(red:green:blue:)`).
+
+| Vibe | Recipe / effect stack | Base palette | shadow |
+|---|---|---|---|
+| Iridescent Premium (gold) | R1 · base `.glitter().foil()` | `(0.95,0.85,0.5)/(0.9,0.75,0.4)/(0.85,0.7,0.35)` | `.orange` |
+| Sunset Gradient | R2 · whole `.foil().glitter().lightSweep()` | `[.pink,.purple,.blue,.orange]` | `.orange` |
+| Tech-Mono / Codex | R3 · whole `.foil().glitter().lightSweep()` + text shadows | `(177,167,255)/(122,157,255)/(57,65,255)` ÷255 | mid |
+| Psychic Cosmic | R4 · whole `.foil().glitter().lightSweep()` + dual scrim | `[.purple,.pink,.purple·0.8]` | `.purple` |
+| Burst Hero | R5 · base `.starburst()` + whole `.radialSweep().multiGlitter()` | gold `(1.0,0.85,0.2)…` | `.yellow` |
+| Floating Depth | R6 split-layer · `.blendedHolo(0.7,0.75)` + `.verticalBeams()` | gold `(0.92,0.85,0.55)…` | `.yellow` |
+| Reverse-Holo Framed | R7 · `.maskedFoil/.maskedSparkle/.foilTexture` (window) | gold `(0.95,0.9,0.6)…` | `.yellow` |
+| Winter Frost (glacier) | whole `.frozen()` + `.lightSweep()` | `(0.78,0.88,0.96)/(0.55,0.72,0.88)/(0.30,0.48,0.70)` | `.cyan` |
+| Pastel Pop (bubblegum) | whole `.halftonePastel()` + `.rainbowGlitter()` | `(0.98,0.75,0.85)/(0.85,0.80,0.95)/(0.70,0.92,0.90)` | `.pink` |
+| Oil-Slick (interference) | **opaque** `.oilSlick()` — no subject | `(0.015,0.02,0.045)/(0.13,0.06,0.23)/(0.02,0.14,0.18)` | `.purple` |
+| Copper Patina (verdigris) | **opaque** `.copperPatina()` — no subject | `(0.22,0.08,0.035)/(0.50,0.22,0.08)/(0.04,0.30,0.25)` | `.green` |
+| Industrial Metal (titan/mercury/quicksilver) | **opaque** `.brushedTitanium()` / `.liquidMercury()` / `.polishedAluminum()` | titan `(0.20,0.25,0.32)/(0.52,0.59,0.68)/(0.16,0.20,0.27)` | `.white` |
+
+**One-shot trading-card holos** (`.tradingCardHolo(style)` — a full foil recipe
+in one call; still pairs with `.glitter()`/`.lightSweep()`):
+Pikachu Secret Rare → `.pikachuSecretRare` · Shiny V → `.shinyV` · Rainbow
+Alternate → `.rainbowAlternate` · V Full Art → `.vFullArt` · Tidecaller V →
+`.vRegular`. Use with a transparent subject over a dark base.
+
+Notes: "mindware" → closest catalog match is `mindwave` (psychic wave, purple
+`(0.38,0.12,0.55)/(0.62,0.20,0.62)/(0.88,0.40,0.70)`). "thornspite" has no
+catalog match — treat as a custom green/thorn palette or ask.
+
+## 5. Other constructions (secondary)
+
+### A. Full-Art opaque photo — when the image is a real photo, not a cutout
+Same as §2 but the subject is `.aspectRatio(.fill).clipped()` and step 3 is a
+full tint scrim (`0.10–0.35` opacity), not just edge scrims.
+
+### B. Split-Layer — see R6. Best when you want a crisp subject over shimmer.
+
+### C. Masked window — see R7. Reverse-holo: foil frame, clean art window.
+
+### D. Atmosphere (no photo) — near-black gradient + one atmospheric effect.
 ```swift
 SimpleCardContent(title: "COSMOS HOLO", subtitle: "Galaxy Rare") {
   RoundedRectangle(cornerRadius: 16)
-    .fill(LinearGradient(colors: deepSpaceStops, ...))   // 0.02–0.15 RGB channels
+    .fill(LinearGradient(colors: deepSpaceStops, startPoint: .top, endPoint: .bottom))
     .galaxyHolo(intensity: 0.8)
 }
 ```
-Swap `.galaxyHolo` for `.frozen()`, `.snowfall()`, `.liquidTech()`, or
-`.tradingCardHolo(.cosmosHolo)` to change the weather.
+Swap `.galaxyHolo` for `.frozen()`, `.snowfall()`, `.liquidTech()`,
+`.halftonePastel()`, or an **opaque** material for the metal vibes.
 
-## 3. Interview → design mappings
+## 6. Glass & translucent info panels
 
-### Favorite colors → base gradient + scrim + shadow
-Base stops are opaque; scrim stops are the same hues at 0.10–0.35 opacity.
-`shadowColor` on the container should echo the dominant hue.
+The user wants text on "glass". Two facts from the codebase decide how:
 
-| Answer | Base gradient stops | shadowColor |
-|---|---|---|
-| Warm reds/oranges | `Color(red: 0.85, green: 0.25, blue: 0.15)` → `Color(red: 0.95, green: 0.55, blue: 0.15)` | `.orange` |
-| Ocean blues | `Color(red: 0.05, green: 0.25, blue: 0.5)` → `Color(red: 0.1, green: 0.55, blue: 0.75)` | `.cyan` |
-| Purples/violets | `Color(red: 0.3, green: 0.1, blue: 0.5)` → `Color(red: 0.6, green: 0.3, blue: 0.8)` | `.purple` |
-| Greens | `Color(red: 0.05, green: 0.4, blue: 0.25)` → `Color(red: 0.3, green: 0.7, blue: 0.4)` | `.green` |
-| Golds/yellows | `Color(red: 0.92, green: 0.85, blue: 0.55)` → `Color(red: 0.85, green: 0.75, blue: 0.4)` | `.yellow` |
-| Pinks/pastels | `Color(red: 0.95, green: 0.6, blue: 0.75)` → `Color(red: 0.7, green: 0.65, blue: 0.9)` | `.pink` |
-| Silver/monochrome | `Color(red: 0.75, green: 0.78, blue: 0.82)` → `Color(red: 0.35, green: 0.38, blue: 0.45)` | `.white` |
-| Black/moody | `Color(red: 0.05, green: 0.02, blue: 0.15)` → `Color(red: 0.08, green: 0.02, blue: 0.12)` | `.purple` |
+1. **`.ultraThinMaterial` samples what is behind the app window, not the card
+   art.** On a card face it looks wrong/flat. Reserve Material for floating
+   HUD/editor chrome that sits over a real blurred backdrop — not card panels.
+2. **The glass Metal shaders** (`.shader(.glassEnclosure())`,
+   `.glassSheen()`, `.glassBevel()`, `.chromaticGlass()`) are whole-card
+   *surface finishes* — they distort/reflect, they are not a legible flat
+   backing. `.shader(.glassSheen(intensity: 0.15, spread: 0.5))` is a great
+   final whole-card closer for a laminated sheen; the others are for atmosphere.
 
-### Foil vibe → effect stack
-| Vibe | Stack (in chain order) |
-|---|---|
-| Classic TCG holo | `.blendedHolo(intensity: 0.7, saturation: 0.75)` + `.sparkles()` + `.lightSweep()` — or one `.tradingCardHolo(.regularHolo)` + `.glitter()` |
-| Rainbow / iridescent | `.foil(intensity: 0.8)` + `.glitter()` + `.lightSweep()` |
-| Etched premium full-art | `.etchedFoil(intensity: 0.75)` + `.glare(intensity: 0.6)` |
-| Cosmic / night sky | `.galaxyHolo(intensity: 0.8)` + `.multiGlitter()` + `.shader(.glassSheen())` |
-| Ice / winter | `.frozen()` + `.lightSweep()` |
-| Gold secret-rare | `.tradingCardHolo(.secretRareGold)` + `.glitter(density: 60)` + `.glare(intensity: 0.5)` |
-| Metal (no photo) | `.brushedTitanium()` or `.oilSlick()` + `.shader(.glassBevel())` — construction D only |
+**The correct on-card info panel** (house style, from `FullArtCardFace`):
+translucent color fill + hairline white stroke, over legibility scrims.
 
-### Personality → chrome
-- **Card name** → header title (bold, 16–20 pt equivalent).
-- **Role/title** → the small line under the art (species line).
-- **Motto/fun fact** → italic flavor text near the footer, ~0.55 opacity.
-- **Two signature skills** → stat rows: name + a bold "damage" number
-  (pick 90–200; bigger number for the skill they're proudest of).
-- **Energy/HP number** → header right side ("HP 200" style).
+```swift
+Text("…")                                   // plain white text
+  .padding(10)
+  .background(
+    RoundedRectangle(cornerRadius: 12)
+      .fill(.black.opacity(0.34))           // .white.opacity(0.55–0.75) on light cards
+      .overlay(
+        RoundedRectangle(cornerRadius: 12)
+          .strokeBorder(.white.opacity(0.25), lineWidth: 0.5)
+      )
+  )
+```
 
-## 4. The dark stage
+So: **scrims** for global legibility (§2 step 3), **translucent-fill panels**
+for stat/name blocks, and **`.glassSheen` as the whole-card closer** if you
+want a true glass sheen on top of the lamination. That trio is the "glass" look
+without the Material pitfall.
+
+## 7. The dark stage
 
 Present the finished card centered on a near-black radial gradient so the foil
 reads; never on white.
@@ -160,17 +260,22 @@ RadialGradient(
 )
 .ignoresSafeArea()
 ```
-`stageCast` = the palette hue at roughly `Color(red: 0.10, green: 0.06, blue: 0.16)`
+`stageCast` ≈ the palette hue near `Color(red: 0.10, green: 0.06, blue: 0.16)`
 brightness. Add `.preferredColorScheme(.dark)`, a headline above and a
-"Drag to tilt" hint below the card.
+"Drag to tilt" hint below.
 
-## 5. Tuning checklist
+## 8. Tuning checklist
 
+- Foil shimmers *through* the transparent subject → move the effect chain from
+  the whole card onto the background sub-layer only (§1).
+- Subject edges look cut-out/harsh → add a faint inner shadow or a 1px
+  `.white.opacity(0.15)` stroke matching the subject silhouette isn't possible
+  for arbitrary PNGs; instead darken the background directly behind the subject
+  or add a soft radial vignette.
 - Foil invisible → raise the pattern's `intensity` before adding effects.
-- Photo washed out → lower scrim stop opacities (toward 0.10) or drop the
-  pattern intensity to ~0.5.
+- Text unreadable → deepen the local scrim or the panel fill opacity, don't
+  brighten the text past white.
 - Looks noisy → remove one effect; two patterns never beat one.
 - Whole card too dark → the base gradient is too dark for a translucent
   pattern; lighten it one step.
-- Foil bleeding over the art window (construction C) → tighten the
-  `imageWindow` UV rect.
+- Foil bleeding over the art window (R7) → tighten the `imageWindow` UV rect.
