@@ -45,6 +45,7 @@ enum ShaderType: String, CaseIterable, Identifiable {
   case glassEnclosure = "Glass Enclosure"
   case frostFang = "Frost Fang"
   case nocturne = "Nocturne"
+  case cosmicApex = "Cosmic Apex"
 
   // Paper Shaders (1 item)
   case water = "Water"
@@ -66,7 +67,7 @@ enum ShaderType: String, CaseIterable, Identifiable {
       return .basic
     case .foilGlitterSweep, .cardLayerExplode, .codexGradientFoil, .gradientFoil,
         .psychicHolo, .starburstRadial, .layeredHolo, .maskedFoil, .glassEnclosure,
-        .frostFang, .nocturne:
+        .frostFang, .nocturne, .cosmicApex:
       return .composable
     case .water:
       return .paper
@@ -133,6 +134,8 @@ enum ShaderType: String, CaseIterable, Identifiable {
       return "Husky full-art with frozen shimmer and glass panels"
     case .nocturne:
       return "Spirit-wolf with cosmic purple foil and glass panels"
+    case .cosmicApex:
+      return "Secret-rare galaxy holo with chromatic edges and rainbow border"
     case .water:
       return "Water surface caustic light refraction"
     case .liquidTech:
@@ -177,6 +180,7 @@ enum ShaderType: String, CaseIterable, Identifiable {
     case .glassEnclosure: return "rectangle.inset.filled.and.cursorarrow"
     case .frostFang: return "pawprint.fill"
     case .nocturne: return "moon.stars.fill"
+    case .cosmicApex: return "atom"
     // Paper Shaders
     case .water: return "drop.fill"
     // Experimental Shaders
@@ -246,6 +250,8 @@ enum ShaderType: String, CaseIterable, Identifiable {
       FrostFangView()
     case .nocturne:
       NocturneView()
+    case .cosmicApex:
+      CosmicApexView()
     // Paper Shaders
     case .water:
       WaterView()
