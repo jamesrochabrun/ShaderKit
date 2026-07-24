@@ -2,7 +2,7 @@
 //  CosmicApexView.swift
 //  ShaderKitDemo
 //
-//  Composed with the holo-card-composer skill — an over-the-top "Secret Rare"
+//  Composed with the trading-card skill — an over-the-top "Secret Rare"
 //  treatment. The husky, ascended: deep-space galaxy holo + radial sweep +
 //  multi-glitter, closed with a chromatic-glass edge fringe, under a rainbow
 //  border. Effects live on the photo layer so the glass chrome stays crisp.

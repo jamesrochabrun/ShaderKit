@@ -2,7 +2,7 @@
 //  NocturneView.swift
 //  ShaderKitDemo
 //
-//  Composed with the holo-card-composer skill — "Psychic Cosmic" vibe.
+//  Composed with the trading-card skill — "Psychic Cosmic" vibe.
 //  The same husky, recast as a spirit-wolf: a purple cosmic wash + rainbow
 //  foil/glitter/sweep over the photo, with translucent "glass" info panels.
 //  Effects live on the photo layer so the chrome stays crisp on top.

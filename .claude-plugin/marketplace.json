@@ -9,7 +9,7 @@
     {
       "name": "shaderkit",
       "source": "./",
-      "description": "Design skill for ShaderKit — holo-card-composer composes fully custom holographic trading cards from raw ShaderKit primitives.",
+      "description": "Design skill for ShaderKit — trading-card turns an image into a holographic Pokémon-style trading card built from raw ShaderKit primitives.",
       "category": "design",
       "keywords": ["swiftui", "metal", "shaders", "holographic", "trading-cards"]
     }

@@ -1,7 +1,7 @@
 {
   "name": "shaderkit",
   "version": "1.4.0",
-  "description": "Design skill for the ShaderKit Swift package. holo-card-composer builds fully custom holographic trading cards from raw ShaderKit shader primitives.",
+  "description": "Design skill for the ShaderKit Swift package. trading-card turns an image into a holographic Pokémon-style trading card built from raw ShaderKit shader primitives.",
   "author": {
     "name": "James Rochabrun",
     "url": "https://github.com/jamesrochabrun"

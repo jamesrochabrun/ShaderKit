@@ -2,7 +2,7 @@
 //  FrostFangView.swift
 //  ShaderKitDemo
 //
-//  Composed with the holo-card-composer skill — "Winter Frost" vibe.
+//  Composed with the trading-card skill — "Winter Frost" vibe.
 //  A husky full-art card: glacier palette + frozen shimmer + light sweep over
 //  the photo, with translucent "glass" info panels for the card text.
 //
