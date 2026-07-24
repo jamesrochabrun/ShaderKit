@@ -82,7 +82,10 @@ Load `references/composition-recipes.md` and pick a vibe → hero recipe:
 The chosen vibe fixes the palette, effect stack, and `shadowColor` together
 (§4). Default construction: subject over a foil background with the **effect
 stack on the background sub-layer** so the subject stays clean and the glass
-panels stay legible (§1–2).
+panels stay legible (§1–2). **Pattern effects always render BELOW the image,
+never over it** — a bright-core pattern (`.starburst()`, `.radialSweep()`, high
+holo) blooms and blows out the subject. For an opaque full-bleed photo, inset
+the subject into an art window (§1 hard rule, §5-B) so the effect frames it.
 
 ### Step 4 — Generate the showcase view
 Exact API signatures (container parameters, every effect modifier and its
