@@ -63,6 +63,24 @@ The package ships three library products — depend only on what you need:
 - **ShaderKitUI** — ready-made interactive components (jelly switch, jelly button)
 - **ShaderCards** — Pokémon-style holographic trading cards built on ShaderKit (see [ShaderCards](#shadercards))
 
+> ### ⚠️ Adding this Swift Package does NOT install the `trading-card` skill
+>
+> The **library** (added via SPM, above) and the **agent skill** are two separate
+> things. Coding agents do **not** scan Swift Package checkouts for skills, so
+> adding ShaderKit as a dependency will never install or activate the skill —
+> there is nothing to "also install the skill" as part of adding the package.
+>
+> The skill is a **Claude Code plugin**, installed independently of your SPM setup
+> (once per machine):
+>
+> ```
+> /plugin marketplace add jamesrochabrun/ShaderKit
+> /plugin install shaderkit@shaderkit
+> ```
+>
+> Then it's available as `shaderkit:trading-card`. Full details in
+> [Agent skill: trading-card](#agent-skill-trading-card).
+
 ## Available Shaders
 
 ShaderKit provides 52 composable shader effects, including holographic,
