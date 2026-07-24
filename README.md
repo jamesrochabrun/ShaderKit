@@ -516,14 +516,13 @@ NavigationStack { CardStudioView() }
 
 Open the package in Xcode and run the **ShaderCardsDemo** scheme (macOS or iOS) to browse the full library, foil showcase, special editions, the premium-material collection, and Card Studio.
 
-### Agent skills: holo-card-designer & holo-card-composer
+### Agent skill: holo-card-composer
 
-The repo doubles as an agent plugin bundling two skills:
+The repo doubles as an agent plugin bundling one skill:
 
-- **holo-card-designer** — turns one of your photos into a personalized Pokémon-style trading card using the ShaderCards catalog (needs the `ShaderCards` product).
-- **holo-card-composer** — full creative control: composes a custom card directly from ShaderKit primitives (`HolographicCardContainer` + hand-tuned shader stacks over gradients and images), like the cards in the demo app. Needs only the `ShaderKit` product.
+- **holo-card-composer** — full creative control: composes a custom holographic card directly from ShaderKit primitives (`HolographicCardContainer` + hand-tuned shader stacks over gradients and images), like the cards in the demo app. Needs only the `ShaderKit` product.
 
-Both install through the standard plugin mechanisms — nothing writes into your project.
+It installs through the standard plugin mechanisms — nothing writes into your project.
 
 **[Claude Code](https://claude.com/claude-code):**
 
@@ -538,13 +537,13 @@ Get skill updates later with `/plugin marketplace update`. To try the skill whil
 
 > Adding the Swift package dependency alone does **not** activate the skill — agents don't scan package checkouts, so install the plugin once per machine.
 
-Once installed, ask something like *"make me a holo card from this photo"* (designer) or *"build me a custom holo card with ShaderKit"* (composer). The designer skill, for example:
+Once installed, ask something like *"build me a custom holo card with ShaderKit"*. The composer skill:
 
-1. Asks for your image (PNG/JPEG/HEIC) if you haven't provided one.
-2. Interviews you in two short rounds — the **look** (favorite colors, foil vibe, layout) and the **person** (card name, role/title, a motto for the flavor text, two signature skills that become attack names).
-3. Maps the answers to an element, a `CardFinish`, and a gradient/scrim recipe that marries your photo to the foil palette.
-4. Generates a single SwiftUI showcase view: your card, tilt-interactive with live Metal foil, centered on a dark stage.
-5. Offers quick one-line variations — swap the finish, adjust the scrim, try another layout.
+1. Asks for your image — ideally a large transparent-background PNG (a cutout subject) — or builds a photo-free abstract card.
+2. Interviews you by **vibe** (not raw colors) — a named look like Iridescent Premium, Psychic Cosmic, Winter Frost, or Burst Hero — plus the **person** (card name, role/title, a motto for the flavor text, two signature skills that become attack names).
+3. Maps the vibe to one of the demo-verified hero recipes: a palette, a hand-tuned shader effect stack, and translucent "glass" info panels.
+4. Generates a single SwiftUI showcase view: your subject floating over a shimmering foil background, tilt-interactive with live Metal effects, centered on a dark stage.
+5. Offers quick one-line variations — swap the vibe, adjust an intensity, or move the effect stack between the whole card and the background.
 
 ## Requirements
 

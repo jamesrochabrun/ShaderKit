@@ -1,6 +1,6 @@
 ---
 name: holo-card-composer
-description: This skill should be used when a user wants a custom holographic trading card composed directly from ShaderKit primitives — full creative control over shader stacking, e.g. "build me a custom holo card with ShaderKit", "compose foil and glitter over my image", "make a card like the ShaderKit demo cards", "stack shaders over a gradient", or when the project depends on the ShaderKit library but not ShaderCards. It interviews the user by VIBE (not raw colors), places a large transparent-PNG subject over a shimmering foil background, adds translucent "glass" info panels, and renders the tilt-interactive result on a dark showcase screen using HolographicCardContainer. For preset Pokémon-style cards built with the ShaderCards catalog, use holo-card-designer instead.
+description: This skill should be used when a user wants a custom holographic trading card composed directly from ShaderKit primitives — full creative control over shader stacking, e.g. "build me a custom holo card with ShaderKit", "compose foil and glitter over my image", "make a card like the ShaderKit demo cards", "stack shaders over a gradient", or when the project depends on the ShaderKit library but not ShaderCards. It interviews the user by VIBE (not raw colors), places a large transparent-PNG subject over a shimmering foil background, adds translucent "glass" info panels, and renders the tilt-interactive result on a dark showcase screen using HolographicCardContainer.
 ---
 
 # Holo Card Composer
