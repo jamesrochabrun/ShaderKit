@@ -51,6 +51,23 @@ most important choice:
   Layered Holo, Starburst). **This is the default for transparent subjects** —
   the cutout reveals a shimmering foil pocket behind it.
 
+**Hard rule — pattern effects render BELOW the subject, never over it.** A
+bright-core pattern (`.starburst()`, `.radialSweep()`, `.intenseBling()`,
+`.galaxyHolo()` at high intensity) has a hot center that blooms and blows out
+whatever it's composited over — put one on the whole card and it burns a white
+hole through the subject. Only genuinely *translucent overlays* (a foil sheen,
+frost, glitter, scattered stars, a light sweep) are safe on top of the subject.
+Everything with structure or a hotspot goes on the background layer, below the
+image. This holds for **any image** — opaque or transparent.
+
+Consequence for **opaque full-bleed photos**: you cannot simply background-attach
+a starburst, because the opaque photo would cover it entirely. Instead, inset
+the subject into an **art window** (split-layer, §5-B) so the effect fills the
+whole card and *frames* the clean subject, bursting around it — e.g. a starburst
+on the full-card background with the subject in a rounded art window on top, rays
+radiating in the margins and from behind the portrait. Never full-bleed a photo
+over a bright pattern.
+
 Critical rule: premium materials (`.polishedAluminum`, `.brushedTitanium`,
 `.blackChrome`, `.oilSlick`, …) are **opaque** — never over a subject you want
 visible. Use them as the card surface itself (no photo) or on chrome elements.
@@ -268,6 +285,10 @@ brightness. Add `.preferredColorScheme(.dark)`, a headline above and a
 
 - Foil shimmers *through* the transparent subject → move the effect chain from
   the whole card onto the background sub-layer only (§1).
+- A bright pattern (starburst/radial sweep/intense holo) blooms over and washes
+  out the subject → it's composited on top of the image. Move it to the
+  background layer BELOW the image; for an opaque photo, inset the subject into
+  an art window (§1 hard rule, §5-B) so the effect frames it instead.
 - Subject edges look cut-out/harsh → add a faint inner shadow or a 1px
   `.white.opacity(0.15)` stroke matching the subject silhouette isn't possible
   for arbitrary PNGs; instead darken the background directly behind the subject

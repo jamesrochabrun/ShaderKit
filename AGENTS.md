@@ -2,15 +2,15 @@
 
 ## Bundled skills (installed as a plugin)
 
-This repo is also an agent plugin. It ships two skills under `skills/`:
+This repo is also an agent plugin. It ships one skill under `skills/`:
 
-- `holo-card-designer` — personalized Pokémon-style trading card from a
-  user's photo, built on the ShaderCards catalog (needs `ShaderCards`).
-- `holo-card-composer` — fully custom card composed from raw ShaderKit
-  primitives with hand-tuned shader stacks (needs only `ShaderKit`).
+- `trading-card` — turns an image into a holographic Pokémon-style trading card
+  built from raw ShaderKit primitives. Invoke `/trading-card <image-path>` (plus
+  an optional description hint); no interview — it invents the creature name and
+  stats and picks a holographic design (needs only `ShaderKit`).
 
 **Adding ShaderKit as a Swift package dependency does NOT activate the
-skills** — agents do not scan package checkouts for skills. The skills are
+skill** — agents do not scan package checkouts for skills. The skill is
 distributed through the standard plugin mechanisms instead; nothing is
 written into the consuming project.
 
@@ -23,9 +23,8 @@ written into the consuming project.
   /plugin install shaderkit@shaderkit
   ```
 
-  The skills are then available as `shaderkit:holo-card-designer` and
-  `shaderkit:holo-card-composer`. Pull skill updates later with
-  `/plugin marketplace update`.
+  The skill is then available as `shaderkit:trading-card`. Pull skill
+  updates later with `/plugin marketplace update`.
 - **Codex:** the repo also carries a Codex plugin manifest
   (`.codex-plugin/plugin.json`) and a repo-scoped marketplace at
   `.agents/plugins/marketplace.json`. Register it with

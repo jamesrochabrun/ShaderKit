@@ -63,6 +63,24 @@ The package ships three library products — depend only on what you need:
 - **ShaderKitUI** — ready-made interactive components (jelly switch, jelly button)
 - **ShaderCards** — Pokémon-style holographic trading cards built on ShaderKit (see [ShaderCards](#shadercards))
 
+> ### ⚠️ Adding this Swift Package does NOT install the `trading-card` skill
+>
+> The **library** (added via SPM, above) and the **agent skill** are two separate
+> things. Coding agents do **not** scan Swift Package checkouts for skills, so
+> adding ShaderKit as a dependency will never install or activate the skill —
+> there is nothing to "also install the skill" as part of adding the package.
+>
+> The skill is a **Claude Code plugin**, installed independently of your SPM setup
+> (once per machine):
+>
+> ```
+> /plugin marketplace add jamesrochabrun/ShaderKit
+> /plugin install shaderkit@shaderkit
+> ```
+>
+> Then it's available as `shaderkit:trading-card`. Full details in
+> [Agent skill: trading-card](#agent-skill-trading-card).
+
 ## Available Shaders
 
 ShaderKit provides 52 composable shader effects, including holographic,
@@ -516,14 +534,13 @@ NavigationStack { CardStudioView() }
 
 Open the package in Xcode and run the **ShaderCardsDemo** scheme (macOS or iOS) to browse the full library, foil showcase, special editions, the premium-material collection, and Card Studio.
 
-### Agent skills: holo-card-designer & holo-card-composer
+### Agent skill: trading-card
 
-The repo doubles as an agent plugin bundling two skills:
+The repo doubles as an agent plugin bundling one skill:
 
-- **holo-card-designer** — turns one of your photos into a personalized Pokémon-style trading card using the ShaderCards catalog (needs the `ShaderCards` product).
-- **holo-card-composer** — full creative control: composes a custom card directly from ShaderKit primitives (`HolographicCardContainer` + hand-tuned shader stacks over gradients and images), like the cards in the demo app. Needs only the `ShaderKit` product.
+- **trading-card** — turn an image into a holographic Pokémon-style trading card built from ShaderKit primitives (`HolographicCardContainer` + a hand-tuned shader stack + glass info panels), like the cards in the demo app. Invoke `/trading-card <image-path>` — no interview. Needs only the `ShaderKit` product.
 
-Both install through the standard plugin mechanisms — nothing writes into your project.
+It installs through the standard plugin mechanisms — nothing writes into your project.
 
 **[Claude Code](https://claude.com/claude-code):**
 
@@ -538,13 +555,15 @@ Get skill updates later with `/plugin marketplace update`. To try the skill whil
 
 > Adding the Swift package dependency alone does **not** activate the skill — agents don't scan package checkouts, so install the plugin once per machine.
 
-Once installed, ask something like *"make me a holo card from this photo"* (designer) or *"build me a custom holo card with ShaderKit"* (composer). The designer skill, for example:
+Once installed, run `/trading-card <image-path>` (optionally add a short hint like *"icy"* or *"gold legendary"* to steer the look). No interview — the skill:
 
-1. Asks for your image (PNG/JPEG/HEIC) if you haven't provided one.
-2. Interviews you in two short rounds — the **look** (favorite colors, foil vibe, layout) and the **person** (card name, role/title, a motto for the flavor text, two signature skills that become attack names).
-3. Maps the answers to an element, a `CardFinish`, and a gradient/scrim recipe that marries your photo to the foil palette.
-4. Generates a single SwiftUI showcase view: your card, tilt-interactive with live Metal foil, centered on a dark stage.
-5. Offers quick one-line variations — swap the finish, adjust the scrim, try another layout.
+1. Reads your image and **invents a cool Pokémon-style creature name and stats** (HP, role/title, a motto, two signature attacks with damage numbers).
+2. **Randomly picks a holographic design** — or maps your hint to the closest vibe (Winter Frost, Psychic Cosmic, Burst Hero, Secret Rare, …), which fixes the palette, effect stack, and glow together.
+3. Composes the card from ShaderKit primitives: your subject over a shimmering foil background with translucent "glass" info panels.
+4. Renders a single SwiftUI showcase view — tilt-interactive with live Metal effects, centered on a dark stage.
+5. Offers quick variations — reroll the design, swap the pattern effect, or tweak the stats.
+
+> **Metal toolchain:** ShaderKit foils are Metal shaders. On Xcode 26+ the Metal Toolchain is a separate download; if a build reports `missing Metal Toolchain`, run `xcodebuild -downloadComponent MetalToolchain` once.
 
 ## Requirements
 

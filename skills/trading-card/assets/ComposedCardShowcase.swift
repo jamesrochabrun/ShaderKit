@@ -2,7 +2,7 @@
 //  ComposedCardShowcase.swift
 //
 //  {{OWNER_NAME}}'s holographic card, composed from ShaderKit primitives by
-//  the holo-card-composer skill. Drag the card to tilt it in 3D.
+//  the trading-card skill. Drag the card to tilt it in 3D.
 //
 //  This file implements the DEFAULT construction: a large transparent-PNG
 //  subject floating over a shimmering foil background, with translucent
