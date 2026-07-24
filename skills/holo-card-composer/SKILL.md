@@ -41,29 +41,59 @@ Ask whether the card should feature an image or be a pure shader/gradient piece
 Generated code loads the image from a hardcoded absolute path (fine for a
 personal demo card) and falls back to the base gradient when loading fails.
 
-### Step 2 — Interview the user
+### Step 2 — Preview the fields, THEN interview
 
-Use AskUserQuestion. Two rounds. Keep options visual and descriptive, not
-technical. **Ask for a VIBE, not colors** — the vibe fixes the palette, effect
-stack, and shadow together (recipes §4).
+Real user feedback: being asked for many fields one at a time, with no warning,
+feels abrupt and catches people off guard. So set expectations first, make the
+one visual choice actually visual, and batch the rest.
 
-**Round 1 — the vibe (pick one; each maps to a hero recipe):**
-- Iridescent Premium · Sunset Gradient · Tech-Mono/Codex · Psychic Cosmic ·
-  Burst Hero · Floating Depth · Reverse-Holo Framed · Winter Frost ·
-  Pastel Pop · Industrial Metal · Oil-Slick · Copper Patina.
-- Offer the one-shot trading-card holos too when relevant (Pikachu Secret Rare,
-  Shiny V, Rainbow Alternate, V Full Art, Tidecaller V).
-- Optionally a second question for construction if ambiguous: whole-card foil
-  (shimmer over everything) vs. clean subject (foil only behind the subject —
-  the default for transparent PNGs).
+**2a — Show what's coming before asking anything.** Post a short heads-up that
+lists every field you'll collect and WHERE each lands on the card, so the user
+can prepare their answers. Share this checklist and anatomy:
 
-**Round 2 — the person (this data gets printed on the card, in glass panels):**
-1. Card name (their name, nickname, or alter ego).
-2. Role/title — printed under the art (e.g. "Senior Product Designer").
-3. A motto or fun fact — printed as italic flavor text.
-4. Two signature skills — become the stat rows with bold damage numbers
-   (e.g. "Design Review — 120").
-5. Optional HP / power number for the header.
+> I'll build your card from: **image · vibe · name · HP (optional) · role ·
+> motto · two skills (each with a damage number)**. Here's where each shows up:
+
+```
+┌──────────────────────────┐
+│ NAME             HP ###   │  name → header       HP → header (optional)
+│                           │
+│       [ your image ]      │  image → full-bleed subject
+│                           │
+│  ┌─────────────────────┐  │
+│  │ ⚡ Skill One    ###  │  │  skill 1 + damage → stat row
+│  │ ✦ Skill Two    ###  │  │  skill 2 + damage → stat row
+│  │    ROLE / TITLE     │  │  role → line under the art
+│  │  "your motto here"  │  │  motto → italic flavor text
+│  └─────────────────────┘  │
+└──────────────────────────┘
+   the VIBE = the whole foil + color treatment wrapping all of it
+```
+If a live example helps, point the user at the demo cards (FrostFang, Nocturne,
+VOIDMAW under ShaderKitDemo → Composable Shaders) so they can see finished cards
+before answering.
+
+**2b — Pick the vibe (AskUserQuestion, single-select, WITH previews).** The vibe
+is the one genuinely visual decision, so give every option a `preview` that
+describes its look (palette + effect) so the user can picture the style before
+choosing — don't make them guess from a name alone. Vibes (each maps to a hero
+recipe, recipes §4): Iridescent Premium · Sunset Gradient · Tech-Mono/Codex ·
+Psychic Cosmic · Burst Hero · Floating Depth · Reverse-Holo Framed · Winter
+Frost · Pastel Pop · Industrial Metal · Oil-Slick · Copper Patina. Offer the
+one-shot trading-card holos when relevant (Pikachu Secret Rare, Shiny V, Rainbow
+Alternate, V Full Art, Tidecaller V). Only ask a follow-up construction question
+(whole-card foil vs. clean subject) if the image type leaves it genuinely
+ambiguous.
+
+**2c — Collect the text fields in ONE prompt, not one at a time.** Ask for all
+of the person fields together in a single message so it never feels like an
+interrogation, and offer to invent any the user doesn't care to supply:
+- **Card name** — header (their name, nickname, or alter ego).
+- **Role / title** — line under the art (e.g. "Senior Product Designer").
+- **Motto / fun fact** — italic flavor text.
+- **Two signature skills**, each with a damage number 90–300 — the stat rows
+  (e.g. "Design Review — 120").
+- **HP / power number** (optional) — header.
 
 ### Step 3 — Map the vibe to a composition
 
